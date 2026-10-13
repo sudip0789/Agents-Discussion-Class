@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 1: From chat to agents · Class 3 Workbook</title>
+  <meta name="description" content="The three ways people work with AI, and what a model is: tokens, parameters, context windows, system prompts, sampling and hallucination.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-01">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 1 · Part 1: Foundations</p>
+        <h1>From chat to agents</h1>
+        <span class="badge">Talk + discussion</span>
+        <p class="goal"><strong>Goal:</strong> learn the three ways people work with AI, and what a model actually is.</p>
+      </header>
+
+      <h2>Three ways to work with AI</h2>
+      <p>The same model can sit behind all three. What changes is <em>who decides the next step</em>.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Level</th><th scope="col">You do</th><th scope="col">The AI does</th><th scope="col">Example</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1.&nbsp;Chat</th><td>Ask a question</td><td>Answers once</td><td>ChatGPT or Claude in a browser</td></tr>
+            <tr><th scope="row">2.&nbsp;Workflow</th><td>Set the steps in advance</td><td>Carries out each step, in the same order every time</td><td>“Summarize each new filing, then draft an email to the team”</td></tr>
+            <tr><th scope="row">3.&nbsp;Agentic</th><td>Describe the goal</td><td>Plans the steps, uses tools, adjusts, asks when unsure</td><td>The legal research agent you’ll build today</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 720 170" role="img" aria-labelledby="l1-levels-t l1-levels-d">
+            <title id="l1-levels-t">Who holds the steering wheel</title>
+            <desc id="l1-levels-d">A scale from “you decide every step” on the left to “the AI decides the steps” on the right. Chat sits at the left, workflow in the middle, agentic at the right.</desc>
+            <defs>
+              <linearGradient id="l1-grad" x1="0" x2="1">
+                <stop offset="0" style="stop-color: var(--accent); stop-opacity: 0.12"/>
+                <stop offset="1" style="stop-color: var(--accent); stop-opacity: 0.6"/>
+              </linearGradient>
+            </defs>
+            <rect x="40" y="70" width="640" height="14" rx="7" fill="url(#l1-grad)"/>
+            <text class="d-text d-text--label" x="40" y="40">You decide every step</text>
+            <text class="d-text d-text--label" x="680" y="40" text-anchor="end">The AI decides the steps</text>
+            <circle class="d-box--accent" cx="90" cy="77" r="16"/><text class="d-text d-text--title" x="90" y="82" text-anchor="middle">1</text>
+            <circle class="d-box--accent" cx="360" cy="77" r="16"/><text class="d-text d-text--title" x="360" y="82" text-anchor="middle">2</text>
+            <circle class="d-box--agent" cx="630" cy="77" r="16"/><text class="d-text d-text--title d-text--on-agent" x="630" y="82" text-anchor="middle">3</text>
+            <text class="d-text d-text--title" x="90" y="124" text-anchor="middle">Chat</text>
+            <text class="d-text d-text--small" x="90" y="144" text-anchor="middle">one question, one answer</text>
+            <text class="d-text d-text--title" x="360" y="124" text-anchor="middle">Workflow</text>
+            <text class="d-text d-text--small" x="360" y="144" text-anchor="middle">you set the steps, it follows them</text>
+            <text class="d-text d-text--title" x="630" y="124" text-anchor="middle">Agentic</text>
+            <text class="d-text d-text--small" x="630" y="144" text-anchor="middle">you set the goal, it plans and acts</text>
+          </svg>
+        </div>
+        <figcaption>The further right you go, the more the AI decides, and the more you need to check its work.</figcaption>
+      </figure>
+
+      <h2>What is a model?</h2>
+      <p>Every AI product you use is built around a <strong>model</strong>: a program that reads text and predicts what comes next. The app around it adds instructions, memory, tools and a chat window.</p>
+
+      <div class="terms">
+        <p class="terms__title">Terms</p>
+        <dl>
+          <div><dt>Model (LLM)</dt><dd>A large language model: the trained program that predicts the next piece of text. ChatGPT and Claude are apps built around models.</dd></div>
+          <div><dt>Token</dt><dd>The unit a model reads and writes, roughly three-quarters of an English word. Context limits and prices are counted in tokens.</dd></div>
+          <div><dt>Parameters</dt><dd>The billions of numbers adjusted during training until the model predicts text well. Once training ends, they’re fixed.</dd></div>
+          <div><dt>Context window</dt><dd>Everything the model can see at once: instructions, the conversation so far, and every file an agent reads.</dd></div>
+          <div><dt>System prompt</dt><dd>Hidden instructions the app gives the model before your message. Agent files and CLAUDE.md work the same way.</dd></div>
+          <div><dt>Knowledge cutoff</dt><dd>The date where the training data stops. Anything newer reaches the model only through tools like search.</dd></div>
+          <div><dt>Sampling and temperature</dt><dd>The model picks among likely next tokens with some randomness, so the same prompt can give different answers. Temperature sets how much randomness.</dd></div>
+          <div><dt>Hallucination</dt><dd>Confident output that isn’t true, such as an invented case or a paper that doesn’t exist.</dd></div>
+        </dl>
+      </div>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>A model doesn’t look anything up unless the app gives it a tool. When it “remembers” a case name, it is predicting text that <em>looks like</em> a case name. That is why the agent you build today has to verify every source.</p>
+      </div>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>Which of the three levels do you use today? Where would you want an agent, and where wouldn’t you?</li>
+          <li>A model doesn’t know today’s date unless the app tells it. What else can’t it know on its own?</li>
+        </ol>
+      </div>
+
+      <details class="deeper">
+        <summary>What happens when you press Enter</summary>
+        <div class="deeper__body">
+          <p>When you send a message, the app doesn’t send just your words. It assembles a context window, and the model writes its reply <strong>one token at a time</strong>. Each new token is added to the context before the next one is predicted.</p>
+          <figure class="diagram">
+            <div class="figure-scroll">
+              <svg viewBox="0 0 720 310" role="img" aria-labelledby="l1-enter-t l1-enter-d">
+                <title id="l1-enter-t">How a reply is generated</title>
+                <desc id="l1-enter-d">The context window stacks a system prompt, instruction files, the conversation, files and search results, and your message. It goes into the model, which predicts one next token. That token is appended to the context and the loop repeats until the reply is finished.</desc>
+                <defs>
+                  <marker id="l1-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+                </defs>
+                <rect class="d-group" x="20" y="34" width="262" height="236" rx="12"/>
+                <text class="d-text d-text--label" x="34" y="26">Context window</text>
+                <rect class="d-box" x="36" y="50" width="230" height="36" rx="7"/><text class="d-text" x="50" y="73">System prompt (from the app)</text>
+                <rect class="d-box" x="36" y="92" width="230" height="36" rx="7"/><text class="d-text" x="50" y="115">Instructions, e.g. CLAUDE.md</text>
+                <rect class="d-box" x="36" y="134" width="230" height="36" rx="7"/><text class="d-text" x="50" y="157">The conversation so far</text>
+                <rect class="d-box" x="36" y="176" width="230" height="36" rx="7"/><text class="d-text" x="50" y="199">Files and search results it read</text>
+                <rect class="d-box--accent" x="36" y="218" width="230" height="36" rx="7"/><text class="d-text d-text--accent d-text--title" x="50" y="241">Your message</text>
+                <path class="d-line" d="M284 152H326" marker-end="url(#l1-ah)"/>
+                <rect class="d-box--agent" x="332" y="104" width="160" height="96" rx="12"/>
+                <text class="d-text d-text--title d-text--on-agent" x="412" y="144" text-anchor="middle">Model</text>
+                <text class="d-text d-text--on-agent" x="412" y="166" text-anchor="middle" style="font-size:12px">fixed parameters</text>
+                <path class="d-line" d="M494 152H536" marker-end="url(#l1-ah)"/>
+                <rect class="d-box--ok" x="542" y="112" width="160" height="80" rx="12"/>
+                <text class="d-text d-text--title" x="622" y="146" text-anchor="middle">Next token</text>
+                <text class="d-text d-text--mono" x="622" y="170" text-anchor="middle">“The”</text>
+                <path class="d-line d-line--dash" d="M622 194V298H151V274" marker-end="url(#l1-ah)"/>
+                <text class="d-text d-text--small" x="386" y="288" text-anchor="middle">append the new token, then predict again, until the reply is done</text>
+              </svg>
+            </div>
+            <figcaption>Simplified. Real apps also add tool results between steps, and agents may run this loop thousands of times on one task.</figcaption>
+          </figure>
+          <p>Three consequences worth remembering:</p>
+          <ul>
+            <li><strong>Nothing you type changes the model.</strong> Corrections live in the context window, and disappear when the conversation does.</li>
+            <li><strong>The context window fills up.</strong> Long conversations and big files push older material out or crowd it, which is why you’ll start each new topic with <code>/clear</code>.</li>
+            <li><strong>Randomness is built in.</strong> Ask twice, get two answers. That’s fine for drafting and a problem for anything you’ll cite.</li>
+          </ul>
+          <h3>Watch and try</h3>
+          <ul class="reading">
+            <li><a href="https://www.youtube.com/watch?v=LPZh9BOjkQs">Large Language Models explained briefly</a> <span class="by">· 3Blue1Brown (video, 8 min)</span><p>The clearest short visual explanation of next-word prediction and training.</p></li>
+            <li><a href="https://platform.openai.com/tokenizer">Tokenizer</a> <span class="by">· OpenAI</span><p>Paste a paragraph and see how it splits into tokens. Try a case citation.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-01-models.html">Read more: <strong>N1 Models</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next lesson"></nav>
+    </main>
+  </div>
+</body>
+</html>

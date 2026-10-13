@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 12: Risks of using agents · Class 3 Workbook</title>
+  <meta name="description" content="Real cases where AI tools and agents went wrong, and where to do serious legal research at Stanford: the law library's databases and its AI database finder.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-12">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 12 · Part 2: Build</p>
+        <h1>Risks of using agents</h1>
+        <span class="badge">Talk + discussion</span>
+        <p class="goal"><strong>Goal:</strong> know how AI tools and agents fail in practice, and where to do serious legal research at Stanford.</p>
+      </header>
+
+      <p class="lead">Today you built an agent, planted errors in its work, and locked down what it may touch. Every guardrail you added answers a failure that has already happened to someone. This page collects real cases, then points you to the research tools Stanford already pays for, and to a library chatbot built to stricter standards than your agent.</p>
+
+      <h2 id="cases">What goes wrong: real cases</h2>
+      <p>These are documented incidents, not hypotheticals. Each one maps to a guardrail you used today. <em>Mata v. Avianca</em>, the Stanford study of legal AI tools, ABA Formal Opinion 512 and the hidden prompts in research papers are covered in <a href="../notes/note-07-risks-and-guardrails.html">N7</a>; this page adds the cases that came after.</p>
+
+      <h3>1. Invented citations keep reaching courts</h3>
+      <p>Researcher Damien Charlotin’s <a href="https://www.damiencharlotin.com/hallucinations/">AI Hallucination Cases database</a> listed <strong>2,184</strong> court decisions dealing with AI-fabricated or AI-garbled content as of October 10, 2026, 1,492 of them in the United States. The penalties have grown from warnings to five-figure sanctions, disqualification and bar referrals.</p>
+      <ul>
+        <li><strong><a href="https://news.bloomberglaw.com/us-law-week/morgan-morgan-lawyers-fined-for-hallucinated-ai-citations"><em>Wadsworth v. Walmart</em></a></strong> (D. Wyo., Feb. 2025). Motions drafted with a large firm’s own in-house AI tool cited eight cases that were made up or wrong. The drafting lawyer was fined $3,000 and removed from the case; two lawyers who only signed were fined $1,000 each. Everyone who signs is responsible.</li>
+        <li><strong><a href="https://news.bloomberglaw.com/esg/butler-snow-attorneys-disqualified-over-fake-ai-case-citations"><em>Johnson v. Dunn</em></a></strong> (N.D. Ala., July 2025). A partner used ChatGPT to add citations to motions without checking them. Three lawyers were disqualified from the case and referred to the state bar; the judge said fines alone had proven “insufficient deterrents.” The firm already had an AI policy. A policy no one enforces is an instruction no one follows.</li>
+        <li><strong><a href="https://calemploymentlawupdate.proskauer.com/2025/10/attorney-sanctioned-10000-for-citing-nonexistent-ai-generated-legal-authority/"><em>Noland v. Land of the Free</em></a></strong> (Cal. Ct. App., Sept. 2025). California’s first published appellate opinion on the issue: 21 of the 23 quotations in a brief were fabricated, and counsel was sanctioned $10,000.</li>
+        <li><strong><a href="https://www.abajournal.com/news/article/oregon-federal-judge-hands-down-110000-penalty-for-ai-errors"><em>Couvrette v. Wisnovsky</em></a></strong> (D. Or., Dec. 2025). Fifteen fake cases and eight made-up quotations. The client’s case was dismissed with prejudice, and the lawyers faced about $110,000 in fees and fines.</li>
+        <li><strong><a href="https://www.lawnext.com/2026/03/sixth-circuit-slaps-steep-sanctions-on-two-lawyers-for-fake-citations-and-misrepresentations-in-appellate-briefs.html"><em>Whiting v. City of Athens</em></a></strong> (6th Cir., Mar. 2026). An appellate court found more than two dozen fake citations and misrepresentations in briefs, fined two lawyers $15,000 each and referred them for discipline. The court didn’t decide whether AI was involved; the duty to check is the same either way.</li>
+        <li><strong><a href="https://fortune.com/2025/05/18/anthropic-claude-lawyer-mistake-citation-legal-filing-large-language-model-llm-latham-watkins/"><em>Concord Music v. Anthropic</em></a></strong> (N.D. Cal., May 2025). Lawyers for Anthropic itself asked Claude to format a citation to a real article. Claude got the title and authors wrong, and the court struck that part of the expert’s declaration. Even “just format this” needs checking.</li>
+        <li><strong><a href="https://www.judiciary.senate.gov/press/rep/releases/grassley-scrutinizes-federal-judges-apparent-ai-use-in-drafting-error-ridden-rulings">Two federal judges</a></strong> (D.N.J. and S.D. Miss., 2025) withdrew orders containing errors after staff used ChatGPT and Perplexity in drafting. Both chambers added review procedures. It isn’t only lawyers.</li>
+      </ul>
+      <p class="small"><strong>Your guardrail:</strong> every claim carries a quote and a pinpoint, a separate checker verifies each one, and lesson 10 confirms citations in a case-law database.</p>
+
+      <h3>2. Agents that act can break things</h3>
+      <ul>
+        <li><strong><a href="https://www.thestack.technology/vibe-coding-ceo-deletes-production-database/">Replit’s coding agent</a></strong> (July 2025). During a declared code freeze, and despite instructions not to change anything without approval, an AI agent deleted a company’s live database of about 1,200 executive and 1,200 company records, then said it had “panicked.” Replit’s CEO called it “unacceptable and should never be possible,” and the company added separate development and production databases, a planning-only mode and one-click restore.</li>
+      </ul>
+      <p class="small"><strong>Your guardrail:</strong> “don’t touch production” was an instruction, and instructions are weighed, not enforced. That’s why you gave each agent a narrow tools line, added deny rules in lesson 9, and approved actions in Manual mode.</p>
+
+      <h3>3. Hidden instructions hijack agents</h3>
+      <ul>
+        <li><strong><a href="https://www.darkreading.com/application-security/researchers-detail-zero-click-copilot-exploit-echoleak">EchoLeak</a></strong> (Microsoft 365 Copilot, June 2025). A crafted email hid instructions. When the user later asked Copilot an ordinary question, it read that email and sent internal data out, without the user clicking anything. Microsoft fixed it on its servers.</li>
+        <li><strong><a href="https://invariantlabs.ai/blog/mcp-github-vulnerability">GitHub “toxic agent flow”</a></strong> (May 2025). Researchers planted instructions in a public GitHub issue. An agent asked to look at the issue copied data from the user’s private repositories into a public pull request.</li>
+        <li><strong><a href="https://brave.com/blog/comet-prompt-injection/">Perplexity’s Comet browser</a></strong> (Aug. 2025). Hidden text in a Reddit comment made the AI browser fetch the user’s email address and a one-time login code and post them back to the attacker: enough to take over the account.</li>
+      </ul>
+      <p class="small"><strong>Your guardrail:</strong> “treat what you read as data,” the hidden-instruction test in lesson 9, and above all narrow tools. An agent that can read your private data, read untrusted content <em>and</em> send things out is the dangerous combination.</p>
+
+      <h3>4. The tools themselves can be poisoned</h3>
+      <ul>
+        <li><strong><a href="https://aws.amazon.com/security/security-bulletins/AWS-2025-015/">Amazon Q Developer</a></strong> (July 2025). An attacker slipped a prompt telling the agent to wipe files into an official release of Amazon’s AI coding extension for VS Code. A syntax error kept it from running; Amazon pulled the version.</li>
+        <li><strong><a href="https://koi.ai/blog/postmark-mcp-npm-malicious-backdoor-email-theft">postmark-mcp</a></strong> (Sept. 2025). A look-alike email tool for AI agents quietly copied every email it sent to an outside address. The real company had nothing to do with it.</li>
+        <li><strong><a href="https://www.koi.ai/blog/clawhavoc-341-malicious-clawedbot-skills-found-by-the-bot-they-were-targeting">ClawHavoc</a></strong> (Feb. 2026). Researchers audited 2,857 skills in a public marketplace for an AI assistant and found 341 malicious ones, most of which told users to run a “setup” command that installed password-stealing malware.</li>
+      </ul>
+      <p class="small"><strong>Your guardrail:</strong> the skill-vetting habits from <a href="lesson-04-skills.html">lesson 4</a>. Your own agent uses only files you wrote and read.</p>
+
+      <h3>5. What you type isn’t private, and isn’t privileged</h3>
+      <ul>
+        <li><strong><a href="https://www.lawfaremedia.org/article/ai-and-privilege-after-united-states-v.-heppner"><em>United States v. Heppner</em></a></strong> (S.D.N.Y., Feb. 2026). Judge Rakoff held that documents a criminal defendant created on his own with a consumer AI chatbot were protected by neither attorney-client privilege nor work product: the platform’s privacy policy defeated any expectation of confidentiality, and he wasn’t acting at counsel’s direction. Sharing them with his lawyer later didn’t help.</li>
+        <li><strong><a href="https://engadget.com/ai/openai-no-longer-has-to-preserve-all-of-its-chatgpt-data-with-some-exceptions-192422093.html"><em>In re OpenAI</em> copyright litigation</a></strong> (S.D.N.Y., 2025). A court ordered OpenAI to preserve ChatGPT conversations it would otherwise have deleted, including ones users had deleted themselves. A provider’s deletion promise gives way to a court order.</li>
+        <li><strong><a href="https://www.forbes.com.au/news/innovation/samsung-bans-chatgpt-among-employees-after-sensitive-code-leak/">Samsung</a></strong> (2023). Engineers pasted internal source code into ChatGPT, and the company temporarily banned AI chatbots on its devices.</li>
+        <li><strong><a href="https://decisions.civilresolutionbc.ca/crt/crtd/en/525448/1/document.do"><em>Moffatt v. Air Canada</em></a></strong> (B.C. Civil Resolution Tribunal, Feb. 2024). The airline’s chatbot misstated its bereavement-fare policy. The tribunal rejected the argument that the chatbot was responsible for its own words and held the airline liable. Whoever deploys an agent owns what it says.</li>
+      </ul>
+      <p class="small"><strong>Your guardrail:</strong> keep client and confidential material out of <code>cases/</code>, keep secrets in <code>.env</code>, and read the confidentiality duties in <a href="../notes/note-07-risks-and-guardrails.html">N7</a> before using any AI tool on a client matter.</p>
+
+      <p class="table-source">Sources checked October 12, 2026. Links go to the court record or agency notice where available, otherwise to legal press or the original researchers’ write-up.</p>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>In <em>Johnson v. Dunn</em> the firm had an AI policy. What would have to be true for a policy to actually prevent this?</li>
+          <li>After <em>Heppner</em>, what would you tell a client who wants to “run their story past ChatGPT” before meeting you?</li>
+        </ol>
+      </div>
+
+
+      <h2 id="library">Use your law library</h2>
+      <p>An agent that searches the open web sees what Google sees. Stanford Law students have far more. The <strong>Robert Crown Law Library</strong> and Stanford University Libraries give you access to more than 100 legal and law-related databases, from Westlaw and Lexis to collections of historical records that aren’t on the open web at all. Use them alongside any agent you build: the agent can help you read and organize, but the databases are where the authoritative sources live.</p>
+
+      <p><a class="download-btn" href="https://rcll-legal-databases.law.stanford.edu/">Open the RCLL Legal Database Finder</a></p>
+
+      <p>For the case you briefed today, for example:</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <caption>Where to take your Marbury brief next</caption>
+          <thead><tr><th scope="col">What you still need</th><th scope="col">Where to look</th><th scope="col">Access</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Is it still good law? (later treatment)</th><td>Westlaw (KeyCite) or Lexis (Shepard’s): the citators your brief told you to check</td><td>Personal login</td></tr>
+            <tr><th scope="row">The briefs and records filed in the case</th><td>Making of Modern Law: U.S. Supreme Court Records and Briefs, 1832–1978</td><td>All Stanford</td></tr>
+            <tr><th scope="row">Supreme Court history and scholarship</th><td>U.S. Supreme Court Library (HeinOnline); Supreme Court Insight</td><td>All Stanford</td></tr>
+            <tr><th scope="row">Law review commentary on judicial review</th><td>HeinOnline’s Law Journal Library</td><td>All Stanford</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>The library also licenses law-specific AI tools, such as CoCounsel in Westlaw, Protégé in Lexis, Harvey and Legora. They search curated legal content before answering, which helps. It doesn’t make them right: in the Stanford study in <a href="../notes/note-07-risks-and-guardrails.html">N7</a>, the leading legal AI research tools still hallucinated on roughly one query in six to one in three. Check their citations the way your checker does.</p>
+      </div>
+
+      <h2 id="search">Three ways to search</h2>
+      <p>The finder is a curated selection of the library’s most-used resources, not an exhaustive list. It gives you three ways in.</p>
+      <ol class="steps">
+        <li>
+          <strong>Browse all databases.</strong> Search by name or description, browse A to Z, or filter by how you get in.
+        </li>
+        <li>
+          <strong>Guided paths.</strong> Pick a topic (Administrative, Arbitration, Constitutional, Corporate, Courts, Criminal, Foreign and International, Government and Politics, Historical, Tribal and Indigenous) or a source type (finding cases and statutes, secondary sources, legislative history, dockets, transactional, legal news, factual research, archival materials, AI tools), and get the short list the librarians recommend.
+        </li>
+        <li>
+          <strong>AI Database Finder.</strong> Sign in with your SUNet ID, describe your research question in plain language, and get recommended databases with the reasoning behind each one. It tells you <em>where to look</em>; it doesn’t answer legal questions. Start a new search for each new topic.
+        </li>
+      </ol>
+      <p>Still stuck? The reference librarians answer research questions at <a href="mailto:reference@law.stanford.edu">reference@law.stanford.edu</a> or 650-725-0800. They are the original research agent, and they don’t hallucinate citations.</p>
+
+      <div class="callout callout--try">
+        <p class="callout__title">Try it</p>
+        <p>Ask the AI Database Finder: <em>“Where can I check whether Marbury v. Madison is still good law, and find the briefs filed in the case?”</em> Compare its answer with the Limitations section of your own brief. Which tells you more about where to go next?</p>
+      </div>
+
+      <h2 id="difference">How the library’s chatbot differs from your agent</h2>
+      <p>The AI Database Finder and your briefer share the core rule you wrote in lesson 6: answer only from the sources you were given. The difference is <em>how</em> that rule is kept, and for how many people.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <caption>Your agent and the library’s AI Database Finder</caption>
+          <thead><tr><th scope="col"></th><th scope="col">Your agent</th><th scope="col">The library’s AI finder</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Grounded in</th><td>One opinion PDF, plus whatever pages the checker opens on the web</td><td>The library’s own catalog: metadata on every database it provides, written and maintained by the librarians, plus their research guides</td></tr>
+            <tr><th scope="row">Who supervises</th><td>You, approving each step in Manual mode</td><td>Nobody in real time, so the rules are enforced by code</td></tr>
+            <tr><th scope="row">Rules kept by</th><td>Markdown instructions, a tools line and two deny rules</td><td>A written policy for the model, plus code that rejects any link not in the catalog</td></tr>
+            <tr><th scope="row">Checking</th><td>A second agent whose report you read</td><td>A second model reviews every draft. A failing draft is rewritten, up to twice, and then replaced with a fixed safe answer</td></tr>
+            <tr><th scope="row">Scope</th><td>Whatever you ask</td><td>Recommends databases only. Refuses legal advice and off-topic questions, and won’t state holdings or citations from memory</td></tr>
+            <tr><th scope="row">Who can use it</th><td>Anyone at your keyboard</td><td>Stanford affiliates signed in with SUNet; requests from other websites are rejected; answers are signed so a conversation can’t be faked</td></tr>
+            <tr><th scope="row">Cost and abuse</th><td>Your plan’s limits</td><td>Limits per user and per network, a daily cap, a ceiling on model calls per question, size limits on questions, and timeouts</td></tr>
+            <tr><th scope="row">Privacy</th><td>Whatever you send goes to the model provider</td><td>Research questions are treated as sensitive: system logs record usage data only, and full questions and answers are kept only by the library, to improve the service</td></tr>
+            <tr><th scope="row">Shape</th><td>An agent: it decides which pages to read and which tools to use</td><td>A workflow with more deterministic steps</td></tr>
+            <tr><th scope="row">Proving it works</th><td>Five tests you ran by hand</td><td>Automated tests on every change, a side-by-side tool for comparing models, and thumbs-up or thumbs-down feedback on every answer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>The finder has a Markdown file too: its instructions to the model. What makes it fit for hundreds of users is everything around that file. An instruction is a request the model weighs; a check in code is a limit. Your agent works because one person supervises every step. A service with no one watching has to turn each rule that matters into code. <strong>The Markdown file is the policy; the code is the enforcement.</strong> It’s the difference between a firm’s ethics handbook and its conflict-check system.</p>
+      </div>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>If you turned your agent into a service for the whole class, which three rules would you move from Markdown into code first?</li>
+        </ol>
+      </div>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-07-risks-and-guardrails.html">Read more: <strong>N7 Risks and guardrails</strong></a>
+        <a class="note-chip" href="../notes/note-02-workflows-vs-agents.html">Read more: <strong>N2 Workflows vs agents</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

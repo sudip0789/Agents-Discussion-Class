@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N2: Workflows vs agents · Class 3 Workbook</title>
+  <meta name="description" content="Concept note on workflows, agents, subagents, skills, slash commands, CLAUDE.md and MCP servers: what each is, who decides the steps, when to use which, and why the checker is a separate agent.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-02">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N2</p>
+        <h1>Workflows vs agents</h1>
+        <p class="summary"><strong>In one line:</strong> a workflow follows steps you wrote; an agent chooses its own steps. Your project uses both: a workflow on the outside, agents inside.</p>
+      </header>
+
+      <p class="lead">The question that separates a workflow from an agent is simple: <strong>who decides the next step?</strong> In a workflow, you did, in advance, when you wrote the recipe. In an agent, the model decides as it goes, based on what it finds.</p>
+
+      <h2>Two definitions</h2>
+      <p>The most widely used definitions come from Anthropic’s engineering guide <em>Building effective agents</em>. Both kinds of system use a model and tools; the difference is who controls the path.</p>
+      <div class="cards">
+        <div class="card">
+          <p class="eyebrow">Workflow</p>
+          <p>“Workflows are systems where LLMs and tools are orchestrated through predefined code paths.”</p>
+          <p class="small">Predictable. Same steps, same order, every run.</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">Agent</p>
+          <p>“Agents, on the other hand, are systems where LLMs dynamically direct their own processes and tool usage.”</p>
+          <p class="small">Flexible. The path depends on what the model finds along the way.</p>
+        </div>
+      </div>
+      <p class="table-source">Source: Erik Schluntz and Barry Zhang, <a href="https://www.anthropic.com/engineering/building-effective-agents">“Building effective agents,”</a> Anthropic (Dec. 19, 2024).</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 380" role="img" aria-labelledby="n2-wa-t n2-wa-d">
+            <title id="n2-wa-t">A workflow follows a fixed path; an agent runs a loop</title>
+            <desc id="n2-wa-d">Top: a workflow. Input goes to step 1, an LLM call, then step 2, another LLM call, then step 3, a check, then output. The path is the same on every run because you wrote it in advance. Bottom: an agent. You give the LLM a goal. The LLM decides the next step and takes an action, a tool call, on the environment: files, the web, or databases. What the tool returns comes back to the LLM as feedback, and the loop repeats. The LLM can ask you questions or report back. The loop stops when the task is done, at a step limit, or at a checkpoint where it waits for you.</desc>
+            <defs>
+              <marker id="n2-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="n2-ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--accent" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+
+            <!-- Workflow row -->
+            <text class="d-text d-text--label" x="10" y="22">Workflow · the path is written in advance</text>
+            <rect class="d-box" x="10" y="38" width="120" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="70" y="78" text-anchor="middle">Input</text>
+            <rect class="d-box--accent" x="160" y="38" width="120" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="220" y="68" text-anchor="middle">Step 1</text>
+            <text class="d-text d-text--small" x="220" y="88" text-anchor="middle">LLM call</text>
+            <rect class="d-box--accent" x="310" y="38" width="120" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="370" y="68" text-anchor="middle">Step 2</text>
+            <text class="d-text d-text--small" x="370" y="88" text-anchor="middle">LLM call</text>
+            <rect class="d-box--accent" x="460" y="38" width="120" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="520" y="68" text-anchor="middle">Step 3</text>
+            <text class="d-text d-text--small" x="520" y="88" text-anchor="middle">a check or tool</text>
+            <rect class="d-box--ok" x="610" y="38" width="120" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="670" y="78" text-anchor="middle">Output</text>
+            <path class="d-line" d="M132 73H156" marker-end="url(#n2-ah)"/>
+            <path class="d-line" d="M282 73H306" marker-end="url(#n2-ah)"/>
+            <path class="d-line" d="M432 73H456" marker-end="url(#n2-ah)"/>
+            <path class="d-line" d="M582 73H606" marker-end="url(#n2-ah)"/>
+            <text class="d-text d-text--small" x="370" y="134" text-anchor="middle">Same steps, same order, every run. You decided them when you wrote it.</text>
+
+            <path class="d-line d-line--dash" d="M10 154H730" style="stroke: var(--line); stroke-width:1.2"/>
+
+            <!-- Agent row -->
+            <text class="d-text d-text--label" x="10" y="184">Agent · the model chooses the next step</text>
+            <rect class="d-box" x="10" y="215" width="120" height="80" rx="10"/>
+            <text class="d-text d-text--title" x="70" y="243" text-anchor="middle">You</text>
+            <text class="d-text d-text--small" x="70" y="262" text-anchor="middle">set the goal,</text>
+            <text class="d-text d-text--small" x="70" y="278" text-anchor="middle">answer questions</text>
+
+            <rect class="d-box--agent" x="180" y="205" width="160" height="100" rx="12"/>
+            <text class="d-text d-text--title d-text--on-agent" x="260" y="240" text-anchor="middle">LLM</text>
+            <text class="d-text d-text--on-agent" x="260" y="262" text-anchor="middle" style="font-size:12px">decides the next step,</text>
+            <text class="d-text d-text--on-agent" x="260" y="280" text-anchor="middle" style="font-size:12px">or that it’s done</text>
+
+            <rect class="d-box--accent" x="400" y="205" width="140" height="60" rx="10"/>
+            <text class="d-text d-text--title" x="470" y="230" text-anchor="middle">Action</text>
+            <text class="d-text d-text--small" x="470" y="250" text-anchor="middle">a tool call</text>
+
+            <rect class="d-box--file" x="590" y="205" width="140" height="60" rx="10"/>
+            <text class="d-text d-text--title" x="660" y="230" text-anchor="middle">Environment</text>
+            <text class="d-text d-text--small" x="660" y="250" text-anchor="middle">files, web, databases</text>
+
+            <path class="d-line" d="M132 240H176" marker-end="url(#n2-ah)"/>
+            <path class="d-line d-line--dash" d="M178 272H134" marker-end="url(#n2-ah)"/>
+            <path class="d-line" d="M342 235H396" marker-end="url(#n2-ah)"/>
+            <path class="d-line" d="M542 235H586" marker-end="url(#n2-ah)"/>
+            <path class="d-line d-line--accent" d="M660 267V288H344" marker-end="url(#n2-ah2)"/>
+            <text class="d-text d-text--small" x="500" y="304" text-anchor="middle" style="fill: var(--accent-ink)">feedback: what the tool returned · loop again</text>
+
+            <rect class="d-box--ok" x="400" y="320" width="330" height="44" rx="10"/>
+            <text class="d-text" x="414" y="347" style="font-size:13px"><tspan font-weight="700">Stops</tspan> when done, at a step limit, or to ask you</text>
+            <path class="d-line" d="M260 307V342H396" marker-end="url(#n2-ah)"/>
+          </svg>
+        </div>
+        <figcaption>Top: a workflow runs a fixed sequence. Bottom: an agent loops, choosing an action, seeing the result, and choosing again until it stops. The dashed arrow is the agent pausing to ask you. <span class="source">Source: adapted from Anthropic, <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> (2024).</span></figcaption>
+      </figure>
+
+      <p>The loop is the whole idea. Anthropic describes agents as “typically just LLMs using tools based on environmental feedback in a loop.” Each pass, the model gets “ground truth” from the environment (a file’s contents, a search result, an error message) and uses it to decide what to do next. Claude Code’s own documentation describes the same loop as <em>gather context → take action → verify results</em>, repeated until the task is done, and you can interrupt it at any point.</p>
+
+      <h2>The pieces, side by side</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Piece</th><th scope="col">What it is</th><th scope="col">In your project</th><th scope="col">Who decides the steps</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Chat</th><td>One question, one answer</td><td>Not used</td><td>Nobody; there are no steps</td></tr>
+            <tr><th scope="row">Workflow</th><td>A fixed recipe of steps</td><td>The <code>/brief</code> skill</td><td>You, when you write it</td></tr>
+            <tr><th scope="row">Agent</th><td>A model plus tools plus a loop that runs until the task is done</td><td>Claude Code itself</td><td>The agent</td></tr>
+            <tr><th scope="row">Subagent</th><td>A separate agent with its own instructions, tools, and fresh context</td><td>case-briefer, brief-checker</td><td>The agent, within its tools</td></tr>
+            <tr><th scope="row">Skill</th><td>Instructions an agent loads when relevant, or that you run by name</td><td><code>/brief</code></td><td>You or the agent</td></tr>
+            <tr><th scope="row">Slash command</th><td>A skill you run by typing <code>/name</code>; anything after the name fills in <code>$ARGUMENTS</code></td><td><code>/brief cases/[file]</code></td><td>You</td></tr>
+            <tr><th scope="row">CLAUDE.md / AGENTS.md</th><td>Standing instructions read at the start of every session</td><td>CLAUDE.md</td><td>Applies to everything</td></tr>
+            <tr><th scope="row">MCP server</th><td>A packaged connection to an outside service (MCP is the Model Context Protocol)</td><td>Instructor demo</td><td>The agent, if allowed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Your project uses both</h2>
+      <p>Your legal research agent is a workflow on the outside and agents on the inside. The <code>/brief</code> skill fixes the order: check that the case file exists, ask three questions, show a plan, hand off to the briefer, save the brief, hand off to the checker, append the checker’s report. Inside step 3, though, the case-briefer is an agent: it decides how to read the opinion page by page, which passages to quote, and which statements are holding and which are dicta.</p>
+
+      <figure class="diagram" id="agent-diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 770 350" role="img" aria-labelledby="ad-t ad-d">
+            <title id="ad-t">How your legal research agent works</title>
+            <desc id="ad-d">You type /brief and the path to a court opinion in cases/. The workflow checks that the file exists, asks you three questions (your level, your purpose, the length) and waits for your OK on a short plan. It hands the opinion to the case-briefer agent (tools: Read, Glob, Write), which briefs only that opinion, with an exact quote and a pinpoint for every claim, and never uses the web. The brief is saved as output/[case]/brief.md; a rerun writes brief-2.md instead of overwriting. The brief-checker agent (tools: Read, Glob, WebSearch, WebFetch) reads the whole opinion itself, checks every claim and confirms each cited case exists by opening a web page; it cannot edit anything. Its claims table, citations table and verdict are appended to the brief as the checker report. From lesson 10, lookup.py results from CourtListener replace the checker's web check.</desc>
+            <defs>
+              <marker id="ad-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="ad-ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--accent" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+            <rect class="d-group" x="6" y="30" width="758" height="314" rx="14"/>
+            <text class="d-text d-text--label" x="20" y="22">The /brief workflow · .claude/skills/brief/SKILL.md</text>
+
+            <!-- Row 1 -->
+            <rect class="d-box--accent" x="20" y="56" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label" x="34" y="78">1 · Command</text>
+            <text class="d-text d-text--mono d-text--title" x="34" y="104">/brief</text>
+            <text class="d-text d-text--small" x="34" y="126">+ an opinion in cases/, such as</text>
+            <text class="d-text d-text--mono" x="34" y="144" style="font-size:11.5px">cases/marbury-v-madison.pdf</text>
+
+            <rect class="d-box" x="272" y="56" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label" x="286" y="78">2 · You answer</text>
+            <text class="d-text d-text--title" x="286" y="104">Three questions</text>
+            <text class="d-text d-text--small" x="286" y="126">your level · purpose · length</text>
+            <text class="d-text d-text--small" x="286" y="142">then you OK a short plan</text>
+
+            <rect class="d-box--agent" x="524" y="56" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label d-text--on-agent" x="538" y="78" style="fill: var(--on-accent); opacity: .8">3 · Agent</text>
+            <text class="d-text d-text--title d-text--on-agent" x="538" y="102">case-briefer</text>
+            <text class="d-text d-text--on-agent" x="538" y="124" style="font-size:12px">Read, Glob, Write</text>
+            <text class="d-text d-text--on-agent" x="538" y="142" style="font-size:11.5px">quotes and pinpoints; no web</text>
+
+            <path class="d-line" d="M248 106H268" marker-end="url(#ad-ah)"/>
+            <path class="d-line" d="M500 106H520" marker-end="url(#ad-ah)"/>
+            <path class="d-line" d="M637 158V222" marker-end="url(#ad-ah)"/>
+
+            <!-- Row 2 (right to left) -->
+            <rect class="d-box--file" x="524" y="226" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label" x="538" y="248">4 · File</text>
+            <text class="d-text d-text--title" x="538" y="274">Brief saved</text>
+            <text class="d-text d-text--mono" x="538" y="296" style="font-size:11.5px">output/[case]/brief.md</text>
+            <text class="d-text d-text--small" x="538" y="314">a rerun writes brief-2.md</text>
+
+            <rect class="d-box--agent" x="272" y="226" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label d-text--on-agent" x="286" y="248" style="fill: var(--on-accent); opacity: .8">5 · Agent</text>
+            <text class="d-text d-text--title d-text--on-agent" x="286" y="272">brief-checker</text>
+            <text class="d-text d-text--on-agent" x="286" y="294" style="font-size:12px">Read, Glob, WebSearch,</text>
+            <text class="d-text d-text--on-agent" x="286" y="312" style="font-size:12px">WebFetch · can’t edit anything</text>
+
+            <rect class="d-box--ok" x="20" y="226" width="226" height="100" rx="10"/>
+            <text class="d-text d-text--label" x="34" y="248">6 · Result</text>
+            <text class="d-text d-text--title" x="34" y="274">Checker report</text>
+            <text class="d-text d-text--small" x="34" y="296">appended to the brief: claims</text>
+            <text class="d-text d-text--small" x="34" y="312">table, citations table, verdict</text>
+
+            <path class="d-line" d="M522 276H502" marker-end="url(#ad-ah)"/>
+            <path class="d-line" d="M270 276H250" marker-end="url(#ad-ah)"/>
+            <path class="d-line d-line--accent d-line--dash" d="M385 200V222" marker-end="url(#ad-ah2)"/>
+            <text class="d-text d-text--small" x="385" y="192" text-anchor="middle" style="fill: var(--accent-ink)">from lesson 10: lookup.py (CourtListener) replaces the web check</text>
+          </svg>
+        </div>
+        <figcaption>How your legal research agent works. The dashed outline is the workflow (the /brief skill); the filled boxes are agents, each labeled with the tools it’s allowed. In lesson 10 you switch the checker’s citation check from the web to <code>lookup.py</code>, which asks CourtListener; the checker’s tools then shrink to Read, Glob.</figcaption>
+      </figure>
+
+      <p>That split is deliberate. The parts you want to happen <em>every time</em>, like asking your level and running the checker, are fixed in the workflow, so the model can’t skip them. The parts that depend on the case, like which passages matter, are left to the agent.</p>
+
+      <h2>When to use which</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">The task</th><th scope="col">Use</th><th scope="col">Why</th><th scope="col">Example</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Predictable, and you repeat it</th><td>A workflow</td><td>It runs the same way every time, so you can check it once and trust the shape</td><td>The <code>/brief</code> steps</td></tr>
+            <tr><th scope="row">Open-ended; the path depends on what it finds</th><td>An agent</td><td>Nobody can write the steps in advance</td><td>Reading a long opinion and finding the passages that state the holding</td></tr>
+            <tr><th scope="row">Should be done separately, like checking someone else’s work</th><td>A subagent with narrower tools</td><td>Fresh context and limited powers keep it independent</td><td>brief-checker</td></tr>
+            <tr><th scope="row">A rule that applies to everything</th><td>CLAUDE.md</td><td>Loaded at the start of every session</td><td>“Never read, print, or edit .env.”</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Start with the simplest thing that works. Anthropic’s advice is to find “the simplest solution possible, and only increas[e] complexity when needed.” If a fixed checklist does the job, you don’t need an agent.</p>
+      </div>
+
+      <h2>Why the checker is a separate agent</h2>
+      <p>Lawyers already know this principle as <strong>separation of duties</strong>. The associate who drafted a brief shouldn’t be the only person who cite-checks it, and the person who approves a payment shouldn’t be the one who requested it. The same logic applies to agents. Three design choices make the brief-checker independent of the case-briefer:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Design choice</th><th scope="col">What it prevents</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Fresh context</th><td>The checker never sees the briefer’s reasoning, so it isn’t persuaded by it. It sees only the finished brief, the way a reader would, and reads the whole opinion itself.</td></tr>
+            <tr><th scope="row">Narrow tools (<code>Read, Glob, WebSearch, WebFetch</code>)</th><td>It has no Write or Edit, so it can’t quietly “fix” a bad quote and hide the problem. It can only report.</td></tr>
+            <tr><th scope="row">A different job</th><td>Its instructions are to find problems, not to finish the brief. An agent asked to check its own work tends to confirm it.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>A model that invented a citation will often defend it if asked in the same conversation, because the invented text is now part of its context. A checker that starts fresh, has to find the quote in the opinion, and has to open a page showing the cited case doesn’t have that problem.</p>
+      </div>
+
+      <h2>Memory: subagents start blank</h2>
+      <p>Each subagent starts with a fresh context window. It doesn’t remember previous runs, and it doesn’t see your conversation with the main agent. What it does get is limited and predictable:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">A subagent starts with</th><th scope="col">A subagent does <em>not</em> get</th></tr></thead>
+          <tbody>
+            <tr><td>Its own instructions (the body of its agent file)</td><td>Your conversation with the main agent</td></tr>
+            <tr><td>Your CLAUDE.md files</td><td>Files the main agent already read</td></tr>
+            <tr><td>The task message the main agent writes for it</td><td>Anything from previous runs, unless it’s in a file</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://code.claude.com/docs/en/subagents">Subagents</a>, Claude Code docs.</p>
+      <p>So <strong>anything an agent should remember has to be written to a file</strong>. In your project that means:</p>
+      <ul>
+        <li><code>CLAUDE.md</code>: rules for every session, written by you.</li>
+        <li><code>.claude/agents/</code> and <code>.claude/skills/</code>: the briefer’s, the checker’s and <code>/brief</code>’s instructions, written by you.</li>
+        <li><code>output/</code>: every brief, in a folder per case, never overwritten.</li>
+      </ul>
+      <p>This is also why <code>/clear</code> is safe to use often. It empties the conversation, but the files stay, and the next run reads them again. Your agent doesn’t learn between runs: a rerun of the same case starts from the same instructions, so the wording may differ but the holding, disposition and pinpoints shouldn’t. Memory in plain files has a bonus: you can open it, read it and correct it, the way you’d correct a file memo.</p>
+
+      <details class="deeper">
+        <summary>Five workflow patterns, and where your project fits</summary>
+        <div class="deeper__body">
+          <p><em>Building effective agents</em> names five common workflow patterns. Real systems mix them. Your project uses several:</p>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Pattern</th><th scope="col">How it works</th><th scope="col">In your project</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Prompt chaining</th><td>A task broken into a sequence of steps, each working on the output of the last, with optional checks (“gates”) between steps</td><td>The <code>/brief</code> steps, with your OK on the plan as a gate</td></tr>
+                <tr><th scope="row">Routing</th><td>Sort the input first, then send it to the step best suited to it</td><td>After lesson 10, <code>/brief</code> sends a file in <code>cases/</code> straight to the briefer, but fetches a citation from CourtListener first</td></tr>
+                <tr><th scope="row">Parallelization</th><td>Several model calls at once, either splitting the work or voting on the same question</td><td>Not used</td></tr>
+                <tr><th scope="row">Orchestrator-workers</th><td>A central model breaks the task down, hands pieces to workers and combines the results</td><td>Claude Code handing work to the briefer and the checker</td></tr>
+                <tr><th scope="row">Evaluator-optimizer</th><td>One model drafts, another evaluates and gives feedback, in a loop</td><td>A light version: the checker evaluates once and reports; you decide what to fix</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a>, Anthropic (2024).</p>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>Why not make everything an agent?</summary>
+        <div class="deeper__body">
+          <p>Agents are impressive, so it’s tempting to use them everywhere. Anthropic’s guide is blunt that you shouldn’t: “workflows offer predictability and consistency for well-defined tasks, whereas agents are the better option when flexibility and model-driven decision-making are needed at scale.” The costs of an agent are real:</p>
+          <ul>
+            <li><strong>Errors compound.</strong> Each loop builds on the last. One wrong turn early, like a misread search result, can steer every later step.</li>
+            <li><strong>It’s harder to check.</strong> A workflow takes the same path every time, so you can review the path once. An agent takes a different path every run.</li>
+            <li><strong>It costs more.</strong> Every pass through the loop adds tokens to the context window, which means more time and money.</li>
+            <li><strong>It has more power to misuse.</strong> An agent needs tools to act, and every tool is something that can go wrong. See <a href="note-03-tools-and-permissions.html">N3 Tools and permissions</a>.</li>
+          </ul>
+          <p>The guide also lists safeguards that make agents workable: ground truth from the environment at every step, pauses for human feedback at checkpoints, and stopping conditions such as a maximum number of steps. Your project has all three: the opinion itself and the checker’s citation lookups supply ground truth, the plan approval is a checkpoint, and the workflow ends after a fixed number of steps.</p>
+        </div>
+      </details>
+
+      <h2>Further reading</h2>
+      <ul class="reading">
+        <li><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> <span class="by">· Anthropic (Erik Schluntz and Barry Zhang, Dec 2024)</span><p>The standard explainer on workflows vs agents, the five workflow patterns, and the tool-use loop.</p></li>
+        <li><a href="https://code.claude.com/docs/en/how-claude-code-works">How Claude Code works</a> <span class="by">· Claude Code docs</span><p>The agentic loop (gather context, take action, verify), tools, checkpoints and permissions.</p></li>
+        <li><a href="https://code.claude.com/docs/en/subagents">Subagents</a> <span class="by">· Claude Code docs</span><p>How to create helper agents with their own instructions and tool limits, and what context they start with.</p></li>
+        <li><a href="https://code.claude.com/docs/en/skills">Extend Claude with skills</a> <span class="by">· Claude Code docs</span><p>How a skill becomes a <code>/command</code>, and how <code>$ARGUMENTS</code> works.</p></li>
+        <li><a href="https://code.claude.com/docs/en/memory">How Claude remembers your project</a> <span class="by">· Claude Code docs</span><p>Where CLAUDE.md files live and when they load.</p></li>
+        <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents</a> <span class="by">· Anthropic (Sept 2025)</span><p>Why agents keep notes in files, and how they manage a limited context window.</p></li>
+        <li><a href="https://modelcontextprotocol.io/">Model Context Protocol</a> <span class="by">· MCP project</span><p>The open standard for connecting AI apps to outside tools and data, described as “a USB-C port for AI applications.”</p></li>
+      </ul>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-02-workflows-agents-and-tools.html">Used in: <strong>Lesson 2</strong></a>
+        <a class="note-chip" href="../lessons/lesson-08-checker-and-brief-command.html">Used in: <strong>Lesson 8</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

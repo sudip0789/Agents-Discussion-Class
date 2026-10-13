@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N5: APIs and databases · Class 3 Workbook</title>
+  <meta name="description" content="What an API is, how a request and response work, the free research databases your agent can query, rate limits, and how to keep API keys safe.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-05">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N5</p>
+        <h1>APIs and databases</h1>
+        <p class="summary"><strong>In one line:</strong> an API is how one program asks another for data. A database’s API returns real records; a search engine returns web pages.</p>
+      </header>
+
+      <p class="lead">When your agent “looks something up,” it either searches the open web or asks a specific database. The second is slower to set up and narrower, but what comes back is a record that actually exists. This note covers the vocabulary, the databases you used in class, and the rules that keep your keys safe.</p>
+
+      <h2>The vocabulary</h2>
+      <div class="terms">
+        <p class="terms__title">Terms</p>
+        <dl>
+          <div><dt>API (application programming interface)</dt><dd>A set of web addresses a program can call to get data or take an action. It’s a front desk built for programs instead of people.</dd></div>
+          <div><dt>Endpoint</dt><dd>One of those addresses, such as CourtListener’s citation lookup address, Crossref’s address for looking up a single DOI, or arXiv’s address for searching preprints.</dd></div>
+          <div><dt>Request and response</dt><dd>Your program asks (the request); the service answers (the response), usually with a status code and the data you asked for.</dd></div>
+          <div><dt>JSON</dt><dd>JavaScript Object Notation: a structured text format of labeled fields, like <code>"title": "…"</code>. Most APIs answer in JSON because programs can read it reliably.</dd></div>
+          <div><dt>API key or token</dt><dd>A password for a program. It identifies you and is sent with each request. CourtListener expects it as a header: <code>Authorization: Token &lt;your key&gt;</code>.</dd></div>
+          <div><dt>Rate limit</dt><dd>How many requests you may make in a period. Go over it and requests fail (usually with error 429) until you wait.</dd></div>
+          <div><dt>Cost</dt><dd>The research databases in this note are free. AI model APIs are billed per token; a paid Claude or ChatGPT plan covers Claude Code or Codex within its usage limits, without a separate API key.</dd></div>
+        </dl>
+      </div>
+
+      <h2>What a request looks like</h2>
+      <p>Here is what one API call looks like. The example uses Crossref, a free database of published articles that needs no key: a program sends one line to Crossref’s endpoint, and Crossref answers with a structured record, or with “not found” if there is no such article. The CourtListener calls your <code>lookup.py</code> makes in lesson 10 work the same way, with case citations instead of article IDs, plus your token.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 720 290" role="img" aria-labelledby="n5-api-t n5-api-d">
+            <title id="n5-api-t">An API request and response</title>
+            <desc id="n5-api-d">On the left, a short Python program. On the right, the Crossref database. Step 1, the request: the program sends GET https://api.crossref.org/works/10.1111/jels.12413 to Crossref. Step 2, the response: Crossref returns status 200 OK and a JSON record with the DOI, the title “Hallucination-Free?”, the authors Magesh, Surani and others, and the year 2025. Below: if the DOI does not exist, Crossref answers 404 Not Found, which is how a program can tell an invented source from a real one.</desc>
+            <defs>
+              <marker id="n5-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="n5-ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--warn" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+
+            <rect class="d-box" x="16" y="30" width="170" height="200" rx="12"/>
+            <text class="d-text d-text--title" x="101" y="112" text-anchor="middle">Your program</text>
+            <text class="d-text d-text--mono" x="101" y="134" text-anchor="middle">a Python script</text>
+            <text class="d-text d-text--small" x="101" y="156" text-anchor="middle">asks for one record</text>
+
+            <rect class="d-box--agent" x="534" y="30" width="170" height="200" rx="12"/>
+            <text class="d-text d-text--title d-text--on-agent" x="619" y="112" text-anchor="middle">Crossref</text>
+            <text class="d-text d-text--on-agent" x="619" y="134" text-anchor="middle" style="font-size:12px">database of DOI</text>
+            <text class="d-text d-text--on-agent" x="619" y="150" text-anchor="middle" style="font-size:12px">records, via its API</text>
+
+            <path class="d-line" d="M188 62H530" marker-end="url(#n5-ah)"/>
+            <rect class="d-box--file" x="208" y="28" width="306" height="68" rx="8"/>
+            <text class="d-text d-text--label" x="222" y="46">1 · Request</text>
+            <text class="d-text d-text--mono" x="222" y="66">GET https://api.crossref.org</text>
+            <text class="d-text d-text--mono" x="240" y="84">/works/10.1111/jels.12413</text>
+
+            <path class="d-line d-line--accent" d="M532 176H190" marker-end="url(#n5-ah)"/>
+            <rect class="d-box--ok" x="208" y="112" width="306" height="118" rx="8"/>
+            <text class="d-text d-text--label" x="222" y="130">2 · Response: 200 OK, JSON</text>
+            <text class="d-text d-text--mono" x="222" y="152">"DOI": "10.1111/jels.12413",</text>
+            <text class="d-text d-text--mono" x="222" y="171">"title": ["Hallucination-Free?…"],</text>
+            <text class="d-text d-text--mono" x="222" y="190">"author": [Magesh, Surani, …],</text>
+            <text class="d-text d-text--mono" x="222" y="209">"published": 2025</text>
+
+            <path class="d-line d-line--warn d-line--dash" d="M361 238V256" marker-end="url(#n5-ahw)"/>
+            <text class="d-text d-text--warn" x="361" y="278" text-anchor="middle" style="font-size:13px">Invented DOI? Crossref answers 404 Not Found: no such record.</text>
+          </svg>
+        </div>
+        <figcaption>A program asks a database for one record and gets structured data back. The JSON is shortened for the drawing. <span class="source">Source: request and DOI from a live call to the <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>.</span></figcaption>
+      </figure>
+
+      <p>Here is the same response as a program sees it, trimmed to the fields a citation needs. The full record has dozens more fields (references, license, funding and so on).</p>
+      <div class="copy-block">
+        <div class="copy-block__bar"><span class="copy-block__kind">Simplified example</span></div>
+        <pre><code>{
+  "status": "ok",
+  "message-type": "work",
+  "message": {
+    "DOI": "10.1111/jels.12413",
+    "type": "journal-article",
+    "title": ["Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools"],
+    "author": [
+      { "given": "Varun", "family": "Magesh" },
+      { "given": "Faiz", "family": "Surani" }
+    ],
+    "container-title": ["Journal of Empirical Legal Studies"],
+    "volume": "22",
+    "issue": "2",
+    "page": "216-242",
+    "published": { "date-parts": [[2025, 4, 23]] }
+  }
+}</code></pre>
+      </div>
+      <p class="small">The real record lists six authors; two are shown. Not every API answers in JSON: arXiv’s API answers in XML (an Atom feed), which a program reads the same way, just with different punctuation.</p>
+
+      <h2>Search engine vs database</h2>
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>WebSearch is Google, not Westlaw. It finds public web pages; it doesn’t search scholarly or legal databases.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Search engine (WebSearch)</th><th scope="col">Database API</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Returns</th><td>Public web pages</td><td>Structured records: title, authors, date, ID</td></tr>
+            <tr><th scope="row">Coverage</th><td>Broad</td><td>Narrow: only that database</td></tr>
+            <tr><th scope="row">Reliability</th><td>Pages may be wrong, old, or written by another AI</td><td>The record exists in the database</td></tr>
+            <tr><th scope="row">Analogy</th><td>Google</td><td>Westlaw</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A record existing is not the same as a record <em>supporting your point</em>. A database tells you the paper or case is real and gives you its citation. Whether it says what the agent claims is a separate check: in your project, the brief-checker compares every quote with the opinion itself.</p>
+
+      <h2>Free research databases</h2>
+      <p>Your agent uses one of these, CourtListener, from lesson 10. The others are worth knowing about for other research.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Database</th><th scope="col">Covers</th><th scope="col">Key needed</th><th scope="col">Docs</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">arXiv</th><td>Preprints in science, math, computer science, economics</td><td>No</td><td><a href="https://info.arxiv.org/help/api/user-manual.html">API user’s manual</a></td></tr>
+            <tr><th scope="row">Crossref</th><td>Published articles with DOIs, most fields</td><td>No (“no sign-up is required”)</td><td><a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">REST API</a></td></tr>
+            <tr><th scope="row">Semantic Scholar</th><td>Papers across fields, with citation links</td><td>Optional. Works without one, but the shared pool is often throttled; a free key helps</td><td><a href="https://www.semanticscholar.org/product/api">Overview</a> · <a href="https://api.semanticscholar.org/api-docs/">API docs</a></td></tr>
+            <tr><th scope="row">Federal Register and eCFR</th><td>Federal rules, proposed rules and notices; current text of the Code of Federal Regulations</td><td>No</td><td><a href="https://www.federalregister.gov/developers/documentation/api/v1">Federal Register API</a> · <a href="https://www.ecfr.gov/developers/documentation/api/v1">eCFR API</a></td></tr>
+            <tr><th scope="row">CourtListener</th><td>U.S. federal and state case law; can verify citations. Your <code>lookup.py</code> uses this one.</td><td>Yes, a free token (required for citation lookup)</td><td><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">REST API</a> · <a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation lookup</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Most law review articles live on SSRN, which has no public search API. So for legal scholarship, an agent still has to lean on web search, and every result needs extra checking.</p>
+      </div>
+
+      <h2>Rate limits you’ll actually hit</h2>
+      <p>Free APIs protect themselves by limiting how often you can ask. The limits below are why <code>lookup.py search</code> asks for five results, not fifty.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Service</th><th scope="col">Limit</th><th scope="col">What it means for you</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">CourtListener (general API)</th><td>For authenticated users, by default: <strong>5 requests per minute, 50 per hour, 125 per day</strong></td><td>A few dozen lookups in class is fine; a loop over hundreds of cases is not</td></tr>
+            <tr><th scope="row">CourtListener citation lookup</th><td>Up to <strong>60 valid citations per minute</strong>; up to 250 citations per request</td><td>Verifying one brief at a time is well within the limit</td></tr>
+            <tr><th scope="row">arXiv</th><td>Asks for about a <strong>3-second delay</strong> between repeated calls</td><td>Space out searches; don’t hammer it</td></tr>
+            <tr><th scope="row">Semantic Scholar</th><td>The unauthenticated pool is shared by everyone and often returns 429; a key starts at 1 request per second</td><td>If it fails, wait and retry, or get a free key</td></tr>
+            <tr><th scope="row">Crossref</th><td>Open to all; adding <code>mailto=you@example.edu</code> to requests puts you in the “polite pool”</td><td>Identify yourself and you get more reliable service</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Sources: <a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">CourtListener REST API v4 overview</a>; <a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a>; <a href="https://info.arxiv.org/help/api/user-manual.html">arXiv API User’s Manual</a>; <a href="https://www.semanticscholar.org/product/api">Semantic Scholar API</a>; <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>. Limits change; check the docs.</p>
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Keep results small, and if you hit a limit, wait a minute and try again. A 429 error isn’t a bug in your code; it’s the database asking you to slow down.</p>
+      </div>
+
+      <h2>Keeping keys safe</h2>
+      <p>Treat an API key like a password to an account in your name: anyone holding it can make requests as you.</p>
+      <ol class="steps">
+        <li><strong>Store keys in a <code>.env</code> file, never in code.</strong> Your project’s <code>lookup.py</code> reads <code>COURTLISTENER_TOKEN</code> from <code>.env</code> and never prints it.</li>
+        <li><strong>List <code>.env</code> in <code>.gitignore</code></strong> so Git never commits it and it never reaches GitHub. The starter project already does this.</li>
+        <li><strong>Don’t paste keys into a chat with an agent.</strong> Everything you type is sent to the model provider’s servers. Your permission rules also block the agent from reading <code>.env</code>.</li>
+        <li><strong>If a key leaks, revoke it and create a new one.</strong> Deleting the file isn’t enough once it has been shared or committed.</li>
+      </ol>
+
+      <h2>MCP vs API</h2>
+      <p>You’ll hear about <strong>MCP</strong>, the <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>, an open standard for connecting AI apps to outside tools and data. An MCP server packages an API as ready-made tools an agent can call.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Call the API yourself (lookup.py)</th><th scope="col">Use an MCP server</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Setup</th><td>Write or generate a small program</td><td>Install and connect a server</td></tr>
+            <tr><th scope="row">What you can see</th><td>Every line of the code that runs</td><td>Usually someone else’s code</td></tr>
+            <tr><th scope="row">Trust</th><td>You control where your key goes</td><td>You trust the server’s author with your access</td></tr>
+            <tr><th scope="row">Best for</th><td>Learning, and small focused tasks</td><td>Many tools at once, from a source you trust</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <details class="deeper">
+        <summary>Reading an API call like a citation</summary>
+        <div class="deeper__body">
+          <p>A request URL has parts, much like a citation has volume, reporter and page. Once you can name them, you can read what any program, including your <code>lookup.py</code>, is asking for.</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Example request</span></div>
+            <pre><code>https://api.crossref.org/works?query=legal+hallucination&amp;rows=5&amp;mailto=you@example.edu</code></pre>
+          </div>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Part</th><th scope="col">In the example</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Base address</th><td><code>api.crossref.org</code></td><td>Which service you’re calling</td></tr>
+                <tr><th scope="row">Endpoint path</th><td><code>/works</code></td><td>Which kind of record (here, published works)</td></tr>
+                <tr><th scope="row">Parameters</th><td><code>query=…</code>, <code>rows=5</code>, <code>mailto=…</code></td><td>The details of your question: search terms, how many results, who you are</td></tr>
+                <tr><th scope="row">Header (not in the URL)</th><td><code>Authorization: Token &lt;your key&gt;</code></td><td>Sent alongside the request, for services like CourtListener that need a key</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Status codes worth knowing</h3>
+          <p>Every response starts with a three-digit status code. Four cover almost everything you’ll see:</p>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Code</th><th scope="col">Meaning</th><th scope="col">What to do</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">200 OK</th><td>It worked; the data is in the response</td><td>Read the record</td></tr>
+                <tr><th scope="row">401 / 403</th><td>Missing, wrong or insufficient key</td><td>Check <code>.env</code> and the header</td></tr>
+                <tr><th scope="row">404 Not Found</th><td>No such record</td><td>For a citation check, this is the signal that a source may be invented</td></tr>
+                <tr><th scope="row">429 Too Many Requests</th><td>You hit the rate limit</td><td>Wait, then retry with fewer requests</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a> <span class="by">· Crossref</span><p>Free DOI and metadata lookup; no sign-up needed. Explains the polite pool.</p></li>
+            <li><a href="https://info.arxiv.org/help/api/user-manual.html">arXiv API User’s Manual</a> <span class="by">· arXiv</span><p>Free, no key; please wait about 3 seconds between calls.</p></li>
+            <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">CourtListener REST API v4 overview</a> <span class="by">· Free Law Project</span><p>How the token header works, and the default rate limits.</p></li>
+            <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a> <span class="by">· Free Law Project</span><p>Built to catch hallucinated citations: paste text, get back which citations are real.</p></li>
+            <li><a href="https://www.semanticscholar.org/product/api">Semantic Scholar API</a> <span class="by">· Allen Institute for AI</span><p>Paper search with citation links; works without a key but is often throttled.</p></li>
+            <li><a href="https://www.federalregister.gov/developers/documentation/api/v1">Federal Register API</a> and <a href="https://www.ecfr.gov/developers/documentation/api/v1">eCFR API</a> <span class="by">· Office of the Federal Register</span><p>Search federal rules and notices, and read the current CFR; no key needed.</p></li>
+            <li><a href="https://modelcontextprotocol.io/">Model Context Protocol</a> <span class="by">· MCP project</span><p>The “USB-C port” standard for connecting AI apps to outside tools and data.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-05-where-agents-get-facts.html">Used in: <strong>Lesson 5</strong></a>
+        <a class="note-chip" href="../lessons/lesson-10-switch-to-courtlistener.html">Used in: <strong>Lesson 10</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

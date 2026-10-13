@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N6: Git and GitHub · Class 3 Workbook</title>
+  <meta name="description" content="Git records every version of your project on your computer; GitHub keeps a copy online. Key terms, how a change travels, rewind vs Git, and keeping secrets out of history.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-06">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N6</p>
+        <h1>Git and GitHub</h1>
+        <p class="summary"><strong>In one line:</strong> Git records every version of your project on your computer; GitHub keeps a copy online so you can share it.</p>
+      </header>
+
+      <p class="lead">Think of Git as a redline history for a whole folder. Every time you commit, it saves a snapshot with a note about what changed and why. When an agent edits your files, that history is how you see exactly what it did, and how you get back to a version that worked.</p>
+
+      <h2>Git vs GitHub</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Git</h3>
+          <p>The tool. It runs on your computer and works entirely offline. It keeps the history in a hidden <code>.git</code> folder inside your project.</p>
+          <p>Legal analogy: the version history of a document, kept in your own files.</p>
+        </div>
+        <div class="card">
+          <h3>GitHub</h3>
+          <p>One website that stores Git projects online, so you can back them up, share them, and review each other’s changes. GitLab and Bitbucket are others.</p>
+          <p>Legal analogy: a shared document system where colleagues can see the file and propose edits.</p>
+        </div>
+      </div>
+      <p>You can use Git without GitHub. You can’t really use GitHub without Git: it stores Git histories.</p>
+
+      <h2>How a change travels</h2>
+      <p>Git has three places a change can be. You edit files in your working folder, choose which changes go into the next snapshot (staging), and then commit. Pushing copies your commits to GitHub; pulling brings down commits made elsewhere.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 780 300" role="img" aria-labelledby="n6-flow-t n6-flow-d">
+            <title id="n6-flow-t">From your working folder to GitHub</title>
+            <desc id="n6-flow-d">Inside your computer, the local repository: the working folder holds modified files you edit; staging moves chosen changes to the staging area; committing records them as a snapshot in the commit history, inside the .git folder. Pushing copies commits to GitHub, the remote copy online. Pulling brings commits from GitHub back down into your working folder.</desc>
+            <defs>
+              <marker id="n6-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="n6-aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--accent" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+
+            <rect class="d-group" x="10" y="40" width="580" height="196" rx="14"/>
+            <text class="d-text d-text--label" x="24" y="32">Your computer · local repository</text>
+            <text class="d-text d-text--label" x="640" y="72">Online</text>
+
+            <rect class="d-box" x="24" y="80" width="140" height="110" rx="10"/>
+            <text class="d-text d-text--label" x="38" y="102">Modified</text>
+            <text class="d-text d-text--title" x="38" y="126">Working folder</text>
+            <text class="d-text d-text--small" x="38" y="148">the files you edit</text>
+            <text class="d-text d-text--small" x="38" y="166">and see in Explorer</text>
+
+            <path class="d-line" d="M166 135H220" marker-end="url(#n6-ah)"/>
+            <text class="d-text" x="194" y="126" text-anchor="middle" style="font-size:12px">stage</text>
+            <text class="d-text d-text--mono" x="194" y="212" text-anchor="middle" style="font-size:11px">git add</text>
+
+            <rect class="d-box--why" x="226" y="80" width="140" height="110" rx="10"/>
+            <text class="d-text d-text--label" x="240" y="102">Staged</text>
+            <text class="d-text d-text--title" x="240" y="126">Staging area</text>
+            <text class="d-text d-text--small" x="240" y="148">changes picked for</text>
+            <text class="d-text d-text--small" x="240" y="166">the next commit</text>
+
+            <path class="d-line" d="M368 135H420" marker-end="url(#n6-ah)"/>
+            <text class="d-text" x="394" y="126" text-anchor="middle" style="font-size:12px">commit</text>
+            <text class="d-text d-text--mono" x="394" y="212" text-anchor="middle" style="font-size:11px">git commit</text>
+
+            <rect class="d-box--accent" x="426" y="80" width="150" height="110" rx="10"/>
+            <text class="d-text d-text--label" x="440" y="102">Committed</text>
+            <text class="d-text d-text--title" x="440" y="126">Commit history</text>
+            <text class="d-text d-text--small" x="440" y="148">saved snapshots in</text>
+            <text class="d-text d-text--small" x="440" y="166">the hidden .git folder</text>
+
+            <path class="d-line d-line--accent" d="M578 135H636" marker-end="url(#n6-aha)"/>
+            <text class="d-text d-text--accent" x="608" y="126" text-anchor="middle" style="font-size:12px">push</text>
+            <text class="d-text d-text--mono" x="608" y="212" text-anchor="middle" style="font-size:11px">git push</text>
+
+            <rect class="d-box--agent" x="640" y="80" width="130" height="110" rx="10"/>
+            <text class="d-text d-text--title d-text--on-agent" x="654" y="120">GitHub</text>
+            <text class="d-text d-text--on-agent" x="654" y="142" style="font-size:12px">remote copy,</text>
+            <text class="d-text d-text--on-agent" x="654" y="160" style="font-size:12px">private or public</text>
+
+            <path class="d-line d-line--dash" d="M705 192V262H94V194" marker-end="url(#n6-ah)"/>
+            <text class="d-text" x="400" y="284" text-anchor="middle" style="font-size:12.5px">pull (<tspan class="d-text--mono" style="font-size:11px">git pull</tspan>): bring down commits made elsewhere</text>
+          </svg>
+        </div>
+        <figcaption>In VS Code you rarely type these commands: the Source Control panel stages and commits, and the Sync button pushes and pulls. <span class="source">Source: adapted from <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Pro Git, §1.3 What is Git?</a> (three states: modified, staged, committed).</span></figcaption>
+      </figure>
+
+      <h2>The vocabulary</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th><th scope="col">In VS Code</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Repository (repo)</th><td>A project folder whose history Git tracks</td><td>The folder you opened</td></tr>
+            <tr><th scope="row">Commit</th><td>One saved snapshot, with a message saying what changed</td><td>Source Control panel, <strong>Commit</strong></td></tr>
+            <tr><th scope="row">Diff</th><td>What changed between two snapshots, line by line</td><td>Click a file in Source Control</td></tr>
+            <tr><th scope="row">History (log)</th><td>The list of all commits</td><td>Source Control Graph, in the Source Control panel</td></tr>
+            <tr><th scope="row">Branch</th><td>A separate line of changes you can keep or discard</td><td>Branch name in the bottom status bar</td></tr>
+            <tr><th scope="row">Merge</th><td>Combining one branch into another</td><td>Source Control <strong>…</strong> menu</td></tr>
+            <tr><th scope="row">Merge conflict</th><td>Two changes edit the same lines differently, and a person must choose</td><td>Highlighted in the editor</td></tr>
+            <tr><th scope="row">Clone</th><td>Copying a repo, with its whole history, to your computer</td><td>Command Palette, <strong>Git: Clone</strong></td></tr>
+            <tr><th scope="row">Push / Pull</th><td>Upload your commits to GitHub / download others’</td><td><strong>Sync</strong> button</td></tr>
+            <tr><th scope="row">.gitignore</th><td>A list of files Git never tracks</td><td>A file in your project</td></tr>
+            <tr><th scope="row">Pull request</th><td>Asking someone to review and merge your changes</td><td>On github.com</td></tr>
+            <tr><th scope="row">Revert</th><td>A new commit that undoes an earlier one, without erasing it</td><td>Source Control <strong>…</strong> menu</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Your commits are a research log</h2>
+      <p>In lesson 11 you save your finished agent as your first commit. After that, each commit records one change with a short message: a new brief, or a rule you changed in an agent. Read in order, those messages tell the story of the project, and each one is a version you can open, compare or return to.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 30 720 160" role="img" aria-labelledby="n6-log-t n6-log-d">
+            <title id="n6-log-t">The project’s commit history</title>
+            <desc id="n6-log-d">A timeline from left to right: git init and your first commit in lesson 11, which saves the briefer, the checker, the /brief command and lookup.py; then a dashed line to future commits, such as one for each new brief and one when you change a rule in an agent.</desc>
+            <path class="d-line d-line--dash" d="M120 105H690"/>
+
+            <circle class="d-box--agent" cx="120" cy="105" r="11"/>
+            <text class="d-text d-text--title" x="120" y="58" text-anchor="middle">Your first commit</text>
+            <text class="d-text d-text--small" x="120" y="77" text-anchor="middle">Lesson 11: the whole agent</text>
+            <text class="d-text d-text--small" x="120" y="146" text-anchor="middle">after <tspan class="d-text--mono">git init</tspan></text>
+
+            <circle class="d-box" cx="360" cy="105" r="8" style="stroke-dasharray:3 3"/>
+            <text class="d-text d-text--title" x="360" y="146" text-anchor="middle">“Brief: Lindke v. Freed”</text>
+            <text class="d-text d-text--small" x="360" y="165" text-anchor="middle">after class</text>
+
+            <circle class="d-box" cx="590" cy="105" r="8" style="stroke-dasharray:3 3"/>
+            <text class="d-text d-text--title" x="590" y="58" text-anchor="middle">“Tightened a checker rule”</text>
+            <text class="d-text d-text--small" x="590" y="77" text-anchor="middle">the diff shows the exact lines</text>
+          </svg>
+        </div>
+        <figcaption>Oldest on the left, newest on the right. Clicking any commit in the Source Control Graph shows its diff: exactly which lines changed.</figcaption>
+      </figure>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Write commit messages for a reader six months from now: what changed and why, in a few words. “Tightened a checker rule” beats “update.” After class, commit after each brief and your history becomes a dated research log.</p>
+      </div>
+
+      <h2>Rewind vs Git</h2>
+      <p>Claude Code has its own undo, called <strong>checkpoints</strong>. It’s handy, but it isn’t a substitute for Git.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Rewind (Claude Code checkpoints)</th><th scope="col">Git</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">How</th><td>Press <kbd>Esc</kbd> twice on an empty prompt, or type <code>/rewind</code></td><td>Commit in the Source Control panel</td></tr>
+            <tr><th scope="row">What it restores</th><td>The conversation, the code, or both, to an earlier point in the session</td><td>Any committed version of any file</td></tr>
+            <tr><th scope="row">What it misses</th><td>Files changed by Bash commands (such as <code>rm</code>, <code>mv</code>, <code>cp</code>), most subagent edits, and edits made outside Claude Code</td><td>Anything you never committed, and files listed in <code>.gitignore</code></td></tr>
+            <tr><th scope="row">How long it lasts</th><td>A quick undo for recent work</td><td>The permanent record, across sessions and computers</td></tr>
+            <tr><th scope="row">Analogy</th><td>Ctrl+Z</td><td>A dated, filed version of the document</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://code.claude.com/docs/en/checkpointing">Checkpointing</a>, Claude Code docs.</p>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Never commit secrets or personal files. Once committed, a file stays in the history even after you delete it, and pushing to GitHub copies that history online. If a key gets committed, revoke it and make a new one. That’s why <code>.env</code> (your token) is in <code>.gitignore</code> from the start.</p>
+      </div>
+
+      <details class="deeper">
+        <summary>Keeping secrets out of history, and what to do if one gets in</summary>
+        <div class="deeper__body">
+          <h3>What .gitignore does and doesn’t do</h3>
+          <p>Your starter project’s <code>.gitignore</code> lists your token file, plus a few personal and system files:</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__file">.gitignore</span></div>
+            <pre><code># Your API token. Never commit it.
+.env
+# Personal Claude Code settings and system files.
+.claude/settings.local.json
+.DS_Store
+__pycache__/</code></pre>
+          </div>
+          <ul>
+            <li><strong>It does</strong> stop Git from ever staging or committing those files, so they never reach GitHub.</li>
+            <li><strong>It doesn’t</strong> remove a file that was already committed. Git keeps tracking it until you remove it from the repository, and the old versions stay in history.</li>
+            <li><strong>It doesn’t</strong> hide the file from the agent. Keeping an agent away from <code>.env</code> is a job for permission rules (see <a href="note-03-tools-and-permissions.html">N3</a>).</li>
+          </ul>
+          <h3>If a secret gets committed</h3>
+          <ol class="steps">
+            <li><strong>Revoke the key first.</strong> For CourtListener, generate a new token in your account and update <code>.env</code>. Assume the old one is compromised the moment it was pushed.</li>
+            <li><strong>Then clean up.</strong> Removing a file from history takes special tools and rewrites every later commit. GitHub’s guide below walks through it; ask for help if the repo is shared.</li>
+            <li><strong>Add the file to <code>.gitignore</code></strong> so it can’t happen again.</li>
+          </ol>
+          <h3>Private isn’t the same as secret</h3>
+          <p>A private GitHub repo is visible only to you and the people you invite. That’s the right setting for this project. But anyone you add later can read the full history, so secrets still don’t belong in it.</p>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://git-scm.com/book/en/v2">Pro Git</a> <span class="by">· Scott Chacon and Ben Straub (free book)</span><p>The standard free Git textbook. Chapters 1 and 2 cover everything in this note.</p></li>
+            <li><a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Pro Git §1.3: What is Git?</a> <span class="by">· git-scm.com</span><p>The three states (modified, staged, committed) that the diagram above is based on.</p></li>
+            <li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files">Ignoring files</a> <span class="by">· GitHub Docs</span><p>How <code>.gitignore</code> works, and how to stop tracking a file that’s already committed.</p></li>
+            <li><a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">Removing sensitive data from a repository</a> <span class="by">· GitHub Docs</span><p>What to do if you commit a password or key (rotate it first).</p></li>
+            <li><a href="https://code.visualstudio.com/docs/sourcecontrol/overview">Source control in VS Code</a> <span class="by">· Microsoft</span><p>Staging, committing, the Source Control Graph and diffs, without the command line.</p></li>
+            <li><a href="https://github.com/skills/introduction-to-github">Introduction to GitHub</a> <span class="by">· GitHub Skills</span><p>A free hands-on course of under an hour: branch, commit, pull request, merge.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-11-git-and-github.html">Used in: <strong>Lesson 11</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

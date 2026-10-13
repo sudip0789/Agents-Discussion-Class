@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N4: Skills, and how to choose them · Class 3 Workbook</title>
+  <meta name="description" content="Concept note on agent skills: what a skill is, where it lives, how it loads, how it differs from a subagent and CLAUDE.md, which skills are worth knowing, and a checklist for vetting a skill before you install it.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-04">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N4</p>
+        <h1>Skills, and how to choose them</h1>
+        <p class="summary"><strong>In one line:</strong> a skill is a folder of instructions an agent loads when it’s relevant; choose few, choose well, and read them before installing.</p>
+      </header>
+
+      <p class="lead">A skill is the agent version of a practice guide: written instructions for doing one kind of task well, which the agent pulls off the shelf when the task comes up. Because a skill is instructions the agent will follow, and sometimes code it will run, installing a stranger’s skill is closer to installing software than to bookmarking a web page.</p>
+
+      <h2>What a skill is</h2>
+      <p>A skill is a <strong>folder</strong> containing a file named <code>SKILL.md</code>, and sometimes scripts or reference files. <code>SKILL.md</code> is a Markdown file with a short header (the <em>frontmatter</em>, between two <code>---</code> lines) followed by plain-language instructions.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Part</th><th scope="col">What it’s for</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>SKILL.md</code> (required)</th><td>The frontmatter and the instructions themselves</td></tr>
+            <tr><th scope="row"><code>scripts/</code> (optional)</th><td>Programs the agent can run as part of the skill</td></tr>
+            <tr><th scope="row"><code>references/</code> (optional)</th><td>Longer documents the agent reads only if it needs them</td></tr>
+            <tr><th scope="row"><code>assets/</code> (optional)</th><td>Templates, images and other files the skill uses</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The frontmatter</h3>
+      <p>Here’s what each field in your own <code>/brief</code> skill does:</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">What it does</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>name</code></th><td>The skill’s name, and the command you type: <code>name: brief</code> becomes <code>/brief</code></td></tr>
+            <tr><th scope="row"><code>description</code></th><td>Tells the agent <em>when</em> to use the skill. This is the line the agent always sees, so it does most of the work</td></tr>
+            <tr><th scope="row"><code>argument-hint</code></th><td>A Claude Code extra: the hint shown after <code>/brief</code> as you type; yours is <code>[path to an opinion in cases/]</code></td></tr>
+            <tr><th scope="row"><code>$ARGUMENTS</code></th><td>Not a field but a placeholder in the instructions: replaced by whatever you type after the command, such as <code>cases/marbury-v-madison.pdf</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Other optional fields in Claude Code include <code>disable-model-invocation</code> (only you can run the skill; the agent can’t load it on its own) and <code>allowed-tools</code> (tools the skill may use without asking). The second one deserves a close look in any skill you didn’t write.</p>
+
+      <h3>Where skills live</h3>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Location</th><th scope="col">Available in</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>.claude/skills/&lt;name&gt;/SKILL.md</code></th><td>This project only. Committed with the project, so anyone who copies it gets the skill</td></tr>
+            <tr><th scope="row"><code>~/.claude/skills/&lt;name&gt;/SKILL.md</code></th><td>All your projects on this computer</td></tr>
+            <tr><th scope="row">A plugin</th><td>Wherever you install it. Plugins bundle skills (and sometimes agents and other settings) for sharing</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>An open standard</h3>
+      <p>Agent Skills is an <strong>open standard</strong>, originally developed by Anthropic and published at <a href="https://agentskills.io/">agentskills.io</a>. The same <code>SKILL.md</code> format works in Claude Code, OpenAI’s Codex, Gemini CLI, GitHub Copilot, VS Code, Cursor and other tools. A skill you write for one agent will mostly work in the others, though some fields, like <code>argument-hint</code>, are extras particular to one tool.</p>
+
+      <h2>What loads when: progressive disclosure</h2>
+      <p>If every skill’s full instructions sat in the context window all the time, a dozen skills would crowd out your actual work. Skills avoid that with a design Anthropic calls <strong>progressive disclosure</strong>: the agent sees a little about every skill, and reads more only when it needs to.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 330" role="img" aria-labelledby="n4-pd-t n4-pd-d">
+            <title id="n4-pd-t">Progressive disclosure: what loads when</title>
+            <desc id="n4-pd-d">Three levels. Level 1: the name and description of every installed skill load at the start of every session, costing a line or two per skill. Level 2: the body of SKILL.md, the full instructions, loads when the skill looks relevant to the task or when you type its slash command. Level 3: scripts and reference files load only when the instructions call for them, and only the files actually needed.</desc>
+            <text class="d-text d-text--label" x="84" y="22">What loads</text>
+            <text class="d-text d-text--label" x="354" y="22">When</text>
+            <text class="d-text d-text--label" x="584" y="22">Room it takes</text>
+
+            <!-- Level 1 -->
+            <rect class="d-box--accent" x="10" y="36" width="720" height="80" rx="12"/>
+            <circle class="d-box--agent" cx="44" cy="76" r="20"/>
+            <text class="d-text d-text--title d-text--on-agent" x="44" y="81" text-anchor="middle">1</text>
+            <text class="d-text d-text--title" x="84" y="70">Name + description</text>
+            <text class="d-text d-text--small" x="84" y="90">of every installed skill</text>
+            <text class="d-text" x="354" y="70" style="font-size:13px;font-weight:600">Always</text>
+            <text class="d-text d-text--small" x="354" y="90">at the start of every session</text>
+            <rect class="d-fill-accent" x="584" y="64" width="22" height="14" rx="3"/>
+            <text class="d-text d-text--small" x="584" y="98">a line or two per skill</text>
+
+            <!-- Level 2 -->
+            <rect class="d-box" x="10" y="128" width="720" height="80" rx="12"/>
+            <circle class="d-box--agent" cx="44" cy="168" r="20"/>
+            <text class="d-text d-text--title d-text--on-agent" x="44" y="173" text-anchor="middle">2</text>
+            <text class="d-text d-text--title" x="84" y="162">SKILL.md body</text>
+            <text class="d-text d-text--small" x="84" y="182">the full instructions</text>
+            <text class="d-text" x="354" y="162" style="font-size:13px;font-weight:600">When it’s relevant</text>
+            <text class="d-text d-text--small" x="354" y="182">or when you type /name</text>
+            <rect class="d-fill-accent" x="584" y="156" width="70" height="14" rx="3"/>
+            <text class="d-text d-text--small" x="584" y="190">one skill’s instructions</text>
+
+            <!-- Level 3 -->
+            <rect class="d-box--file" x="10" y="220" width="720" height="80" rx="12"/>
+            <circle class="d-box--agent" cx="44" cy="260" r="20"/>
+            <text class="d-text d-text--title d-text--on-agent" x="44" y="265" text-anchor="middle">3</text>
+            <text class="d-text d-text--title" x="84" y="254">Scripts and reference files</text>
+            <text class="d-text d-text--small" x="84" y="274">templates, examples, code</text>
+            <text class="d-text" x="354" y="254" style="font-size:13px;font-weight:600">Only when needed</text>
+            <text class="d-text d-text--small" x="354" y="274">when the instructions call for them</text>
+            <rect class="d-fill-muted" x="584" y="248" width="120" height="14" rx="3"/>
+            <text class="d-text d-text--small" x="584" y="282">only the files opened</text>
+
+            <text class="d-text d-text--small" x="370" y="322" text-anchor="middle">Bars are illustrative, not to scale. Scripts the agent runs may never enter the context window at all; only their output does.</text>
+          </svg>
+        </div>
+        <figcaption>Each level loads only when the one above it says it’s needed. That is why the <code>description</code> line matters so much: it is the only part the agent always sees. <span class="source">Source: adapted from Anthropic, <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a> (Oct. 16, 2025), and <a href="https://agentskills.io/">agentskills.io</a>.</span></figcaption>
+      </figure>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>Level 1 is paid in every session, for every skill you install, whether you use it or not. Twenty skills means twenty descriptions in the context window before you’ve typed anything, and twenty chances for the agent to load the wrong one. Fewer, well-described skills work better.</p>
+      </div>
+
+      <h2>Skill vs subagent vs CLAUDE.md</h2>
+      <p>All three are Markdown files of instructions, which makes them easy to confuse. The difference is when they load and whose context they live in.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Skill</th><th scope="col">Subagent</th><th scope="col">CLAUDE.md</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">What it is</th><td>A folder of instructions, sometimes with scripts</td><td>A separate agent with its own instructions and tools</td><td>A file of standing instructions</td></tr>
+            <tr><th scope="row">When it loads</th><td>Description always; full instructions when relevant, or when you type <code>/name</code></td><td>When the main agent hands it a task</td><td>At the start of every session</td></tr>
+            <tr><th scope="row">Whose context</th><td>Adds to the current conversation</td><td>Its own fresh context window</td><td>Every conversation, including subagents’</td></tr>
+            <tr><th scope="row">Tools</th><td>Uses the current agent’s tools</td><td>Only those on its <code>tools:</code> line</td><td>None; it’s just text</td></tr>
+            <tr><th scope="row">Best for</th><td>A repeatable procedure</td><td>An independent job, like checking someone else’s work</td><td>Rules that always apply</td></tr>
+            <tr><th scope="row">Lives in</th><td><code>.claude/skills/</code></td><td><code>.claude/agents/</code></td><td>The project folder</td></tr>
+            <tr><th scope="row">In your project</th><td><code>/brief</code></td><td>case-briefer, brief-checker</td><td>CLAUDE.md</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A useful test: if it’s a <em>procedure</em> (“when asked to do X, do these steps”), make it a skill. If it’s a <em>job for someone else</em>, especially one that needs different powers, make it a subagent. If it’s a <em>rule</em> that should never be off, put it in CLAUDE.md.</p>
+
+      <h2>Skills worth knowing</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Skill</th><th scope="col">Good for</th><th scope="col">Where</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Superpowers</th><td>Brainstorming, planning, testing, debugging and code review, before and while building. A community library by Jesse Vincent (MIT license).</td><td><a href="https://github.com/obra/superpowers">github.com/obra/superpowers</a></td></tr>
+            <tr><th scope="row">Anthropic’s skills</th><td>Creating Word, PDF, PowerPoint and Excel files; <code>skill-creator</code> for writing your own skills; many examples to read and copy</td><td><a href="https://github.com/anthropics/skills">github.com/anthropics/skills</a></td></tr>
+            <tr><th scope="row">Your Class 2 skill</th><td>The workflow you designed yourself</td><td>Your own folder</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">Licenses differ even within one repository. Most of Anthropic’s example skills are open source (Apache 2.0), but its document skills (Word, PDF, PowerPoint, Excel) are <strong>source-available</strong>: you can read the code, but the license limits copying and reuse. Check the license file before adapting someone else’s skill.</p>
+
+      <h2>How to choose a skill</h2>
+      <ol class="steps">
+        <li><strong>Start from a task you repeat</strong>, not from a list of popular skills. If you can’t name the task, you don’t need the skill.</li>
+        <li><strong>Prefer known publishers</strong> and repositories that are actively maintained: recent updates, open issues that get answers, a clear license.</li>
+        <li><strong>Read the SKILL.md and any scripts</strong> before installing. It’s Markdown; you can read it in a few minutes. If there are scripts you can’t follow, that is itself a warning sign.</li>
+        <li><strong>Scan it with SkillSpector</strong>, NVIDIA’s free, open-source scanner for agent skills. It gives a risk score from 0 to 100 and a recommendation:
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Score</th><th scope="col">Risk</th><th scope="col">Recommendation</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">0–20</th><td>Low</td><td>Safe</td></tr>
+                <tr><th scope="row">21–50</th><td>Medium</td><td>Caution</td></tr>
+                <tr><th scope="row">51–80</th><td>High</td><td>Do Not Install</td></tr>
+                <tr><th scope="row">81–100</th><td>Critical</td><td>Do Not Install</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: <a href="https://github.com/NVIDIA/SkillSpector">SkillSpector README</a>, NVIDIA.</p>
+        </li>
+        <li><strong>Be extra careful with skills that include scripts.</strong> A 2026 academic study of about 31,000 public skills (Liu et al., “Agent Skills in the Wild”) found that skills bundling executable scripts were about <strong>2.12 times</strong> more likely to contain a vulnerability than instruction-only skills (<a href="https://arxiv.org/abs/2601.10338">source</a>).</li>
+        <li><strong>Install one at a time</strong>, in one project, and test it on a real task before relying on it.</li>
+        <li><strong>Remove skills you don’t use.</strong> Every installed skill’s description takes up room in the context window, in every session.</li>
+      </ol>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>The score helps you decide. It doesn’t replace reading the skill. A scanner looks for known patterns; a skill can be harmful in ways no pattern catches, and a low score is not a guarantee.</p>
+      </div>
+
+      <h2>Red flags</h2>
+      <p>Stop and think twice if a skill has any of these:</p>
+      <ul class="checklist">
+        <li>Instructions to read secrets: <code>.env</code> files, passwords, API keys, SSH keys, browser data</li>
+        <li>Sending data to websites or servers you don’t recognize</li>
+        <li>Hidden or encoded text: long strings of random-looking characters, or text formatted to be invisible</li>
+        <li>Instructions to ignore other rules, skip approvals or change permission settings</li>
+        <li>An <code>allowed-tools</code> line that grants more than the task needs, especially Bash</li>
+        <li>A vague description (“use for everything”), which makes it load when it shouldn’t</li>
+        <li>Scripts or code you can’t follow</li>
+      </ul>
+
+      <details class="deeper">
+        <summary>What the research on public skills found</summary>
+        <div class="deeper__body">
+          <p>In January 2026, researchers from several universities and a security firm published the first large-scale study of public agent skills. They collected 42,447 skills and analyzed 31,132 of them for security problems.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Finding</th><th scope="col">Figure</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Skills with at least one vulnerability</th><td>26.1%</td></tr>
+                <tr><th scope="row">Skills with high-severity patterns suggesting malicious intent</th><td>5.2%</td></tr>
+                <tr><th scope="row">Higher likelihood of a vulnerability when a skill bundles executable scripts</th><td>2.12× (odds ratio)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: Yi Liu et al., <a href="https://arxiv.org/abs/2601.10338">“Agent Skills in the Wild: An Empirical Study of Security Vulnerabilities at Scale,”</a> arXiv:2601.10338 (Jan. 15, 2026).</p>
+          <p>Two cautions when you repeat these numbers:</p>
+          <ul>
+            <li><strong>Who did the study.</strong> These figures come from the academic paper, not from NVIDIA. NVIDIA’s SkillSpector README cites the paper; some blog posts describe the numbers as “NVIDIA’s research,” which is wrong.</li>
+            <li><strong>What “malicious” means here.</strong> The 5.2% are skills showing high-severity patterns that <em>suggest</em> malicious intent, not confirmed malware. Treat the figure as a reason to read carefully, not as a count of attacks.</li>
+          </ul>
+          <p>Anthropic’s own advice points the same way: install skills only from trusted sources, and for anything less trusted, audit the skill first, starting with its bundled files and any instructions that reach out to the network.</p>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>Installing a skill library in Claude Code</summary>
+        <div class="deeper__body">
+          <p>Libraries like Superpowers and Anthropic’s skills are distributed as <strong>plugins</strong>. You type these commands into the Claude Code prompt box, not the terminal. Read the repository first, as the checklist above says.</p>
+          <p>Superpowers:</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/plugin install superpowers@claude-plugins-official</code></pre>
+          </div>
+          <p>Anthropic’s skills (add the marketplace, then install the document skills):</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/plugin marketplace add anthropics/skills</code></pre>
+          </div>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/plugin install document-skills@anthropic-agent-skills</code></pre>
+          </div>
+          <p>SkillSpector is a separate command-line program. It installs with <code>uv</code>, a Python tool installer; the README explains how to point it at a skill folder:</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>uv tool install git+https://github.com/NVIDIA/skillspector.git</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <h2>Further reading</h2>
+      <ul class="reading">
+        <li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a> <span class="by">· Anthropic (Oct 2025)</span><p>What skills are, progressive disclosure, and why to install only trusted skills.</p></li>
+        <li><a href="https://agentskills.io/">Agent Skills</a> <span class="by">· Agent Skills project (originally Anthropic)</span><p>The open, cross-tool SKILL.md format and the list of tools that support it. The <a href="https://agentskills.io/specification">specification</a> has every field.</p></li>
+        <li><a href="https://code.claude.com/docs/en/skills">Extend Claude with skills</a> <span class="by">· Claude Code docs</span><p>How to write a skill that becomes a <code>/command</code>, with <code>$ARGUMENTS</code> and frontmatter.</p></li>
+        <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Agent Skills overview: Security considerations</a> <span class="by">· Anthropic</span><p>The official warning: treat installing a skill like installing software.</p></li>
+        <li><a href="https://github.com/anthropics/skills">anthropics/skills</a> <span class="by">· Anthropic</span><p>Example skills to read and copy, including <code>skill-creator</code>.</p></li>
+        <li><a href="https://github.com/obra/superpowers">Superpowers</a> <span class="by">· Jesse Vincent / Prime Radiant</span><p>A popular community skills library for disciplined agent workflows.</p></li>
+        <li><a href="https://github.com/NVIDIA/SkillSpector">SkillSpector</a> <span class="by">· NVIDIA</span><p>Free scanner that rates a skill 0–100 and says Safe, Caution or Do Not Install.</p></li>
+        <li><a href="https://arxiv.org/abs/2601.10338">Agent Skills in the Wild</a> <span class="by">· Liu et al. (arXiv, 2026)</span><p>The study behind the 26.1% vulnerable and 5.2% likely-malicious figures.</p></li>
+      </ul>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-04-skills.html">Used in: <strong>Lesson 4</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

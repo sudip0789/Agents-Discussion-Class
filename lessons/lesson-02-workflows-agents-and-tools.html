@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 2: Workflows, agents, and tools · Class 3 Workbook</title>
+  <meta name="description" content="How a workflow differs from an agent, what a tool is, and the access ladder: each tool you give an agent adds a capability and a risk.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-02">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 2 · Part 1: Foundations</p>
+        <h1>Workflows, agents, and tools</h1>
+        <span class="badge">Talk + polls</span>
+        <p class="goal"><strong>Goal:</strong> tell a workflow from an agent, and see how tools turn a model into something that acts.</p>
+      </header>
+
+      <p class="lead">A model on its own only writes text. Everything an agent <em>does</em>, from opening a PDF to searching the web, happens through tools. The two questions for this lesson: <strong>who decides the steps</strong>, and <strong>what is the agent allowed to touch?</strong></p>
+
+      <h2>Four pieces you’ll hear about</h2>
+      <p>These words get used loosely. Here is how we’ll use them today, and where each one shows up in the agent you’ll build.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Piece</th><th scope="col">What it is</th><th scope="col">Who decides the steps</th><th scope="col">In your project</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Workflow</th><td>A fixed recipe of steps</td><td>You, when you write it</td><td>The <code>/brief</code> skill: ask three questions, brief the case, check the brief</td></tr>
+            <tr><th scope="row">Agent</th><td>A model plus tools plus a loop that runs until the task is done</td><td>The agent</td><td>Claude Code itself</td></tr>
+            <tr><th scope="row">Subagent</th><td>A separate agent with its own instructions and tools</td><td>The agent, within its tools</td><td>case-briefer and brief-checker</td></tr>
+            <tr><th scope="row">Skill</th><td>Instructions an agent loads when relevant, or that you run by name</td><td>You or the agent</td><td><code>/brief</code> is a skill</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A legal analogy: a <strong>workflow</strong> is a closing checklist. Every step is written down in advance, and the order doesn’t change. An <strong>agent</strong> is a junior associate handed a research assignment: you set the goal, and they decide which sources to pull, what to read next, and when they’re done. A <strong>subagent</strong> is a second associate you bring in for one job, like cite-checking, with access to only what that job needs.</p>
+
+      <div class="poll-break" data-poll="P9"></div>
+
+      <h2>What is a tool?</h2>
+      <p>A model can’t open a file or visit a website. It can only produce text. A <strong>tool</strong> is an action the app around the model knows how to perform, such as “read this file” or “search the web for this.” Using one takes three steps:</p>
+      <ol class="steps">
+        <li><strong>The model asks.</strong> Instead of answering, it writes a structured request: use the Read tool on <code>cases/marbury-v-madison.pdf</code>.</li>
+        <li><strong>The app runs it.</strong> Claude Code (or Codex) checks whether that tool is allowed, asks you if the rules say to, and then does the work on your computer.</li>
+        <li><strong>The result comes back.</strong> The text of the file, or the search results, is added to the context window. The model reads it and decides what to do next.</li>
+      </ol>
+      <p>Repeat those three steps until the job is done, and you have an agent. Think of a partner who can only send memos: the memo says “pull the file,” a paralegal pulls it, and the file lands on the partner’s desk for the next decision.</p>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>The model only <em>asks</em>; the app <em>acts</em>. That gap is where you get control. Because every action passes through the app, the app can refuse it, or stop and ask you first. That is what permissions are, and it’s why the next table matters.</p>
+      </div>
+
+      <h2>The access ladder</h2>
+      <p>Each level adds a capability and a risk. The tool names are Claude Code’s; Codex has equivalents.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Level</th><th scope="col">Tools</th><th scope="col">Can do</th><th scope="col">New risk</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1. Read only</th><td>Read, Glob, Grep</td><td>Read and find files</td><td>Almost none</td></tr>
+            <tr><th scope="row">2. Write</th><td>+ Write, Edit</td><td>Create and change files</td><td>Overwrites your work</td></tr>
+            <tr><th scope="row">3. Run commands</th><td>+ Bash</td><td>Run programs, move or delete files</td><td>Almost anything on your machine</td></tr>
+            <tr><th scope="row">4. Internet</th><td>+ WebSearch, WebFetch</td><td>Search and read web pages</td><td>Untrusted content, invented sources</td></tr>
+            <tr><th scope="row">5. Outside apps</th><td>+ MCP tools (MCP is the <strong>Model Context Protocol</strong>, a standard way to plug outside services into an AI app)</td><td>Email, calendar, databases</td><td>Acts in your real account</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The ladder is a way to think, not a rule that you must climb in order. You choose tools one by one. The case briefer you’ll build in lesson 7 gets <code>Read, Glob, Write</code>: it can read the opinion and save a brief, but it has no Bash, no Edit and no web. The checker you add in lesson 8 gets <code>Read, Glob, WebSearch, WebFetch</code>: it can look up cited cases online, but it can’t change any file. Every tool on those lines is a decision someone made.</p>
+      <p>One risk sits on every rung, even the first: whatever the agent reads goes into the context window, and the model runs on the AI company’s servers. Reading is low-risk for your files, but not automatically low-risk for confidentiality.</p>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>An agent will help you review a client’s documents. Which rung would you allow, and which single tool would you be most reluctant to add? Would your answer change if the documents were already public?</li>
+          <li>For an agent, “the agent decides the steps” is the whole point. Is that acceptable for legal work? Where would you insist on a workflow, with steps you wrote, instead?</li>
+        </ol>
+      </div>
+
+      <details class="deeper">
+        <summary>The agent loop, step by step</summary>
+        <div class="deeper__body">
+          <p>Anthropic’s widely cited essay <a href="https://www.anthropic.com/engineering/building-effective-agents">“Building effective agents”</a> draws the same line this lesson does, in one sentence each:</p>
+          <ul>
+            <li><strong>Workflows</strong>: “Workflows are systems where LLMs and tools are orchestrated through predefined code paths.”</li>
+            <li><strong>Agents</strong>: “Agents, on the other hand, are systems where LLMs dynamically direct their own processes and tool usage.”</li>
+          </ul>
+          <p>It describes agents as “typically just LLMs using tools based on environmental feedback in a loop.” At each step the agent gets “ground truth” from the environment: the actual contents of the file, the actual search results. It can pause for human feedback at checkpoints, and it stops when the task is done or when a stopping condition, like a maximum number of steps, kicks in.</p>
+          <figure class="diagram">
+            <div class="figure-scroll">
+              <svg viewBox="0 0 720 330" role="img" aria-labelledby="l2-loop-t l2-loop-d">
+                <title id="l2-loop-t">The agent loop</title>
+                <desc id="l2-loop-d">You give the model a goal. The model asks for a tool call, such as reading a file. The app runs it in the environment, which may include a permission check where you are asked to approve. The result is added to the context, and the model reads it and decides the next step. The loop repeats until the task is done or a stop condition is reached, such as a step limit.</desc>
+                <defs>
+                  <marker id="l2-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+                  <marker id="l2-aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--accent" d="M0 0L10 5L0 10z"/></marker>
+                </defs>
+
+                <rect class="d-box" x="10" y="40" width="120" height="70" rx="10"/>
+                <text class="d-text d-text--title" x="70" y="70" text-anchor="middle">You</text>
+                <text class="d-text d-text--small" x="70" y="90" text-anchor="middle">set the goal</text>
+                <path class="d-line" d="M132 75H174" marker-end="url(#l2-ah)"/>
+
+                <rect class="d-box--agent" x="180" y="30" width="170" height="90" rx="12"/>
+                <text class="d-text d-text--title d-text--on-agent" x="265" y="62" text-anchor="middle">Model</text>
+                <text class="d-text d-text--on-agent" x="265" y="84" text-anchor="middle" style="font-size:12px">reads the context,</text>
+                <text class="d-text d-text--on-agent" x="265" y="101" text-anchor="middle" style="font-size:12px">picks the next step</text>
+
+                <path class="d-line d-line--accent" d="M352 75H424" marker-end="url(#l2-aha)"/>
+                <text class="d-text d-text--small" x="388" y="66" text-anchor="middle">asks</text>
+
+                <rect class="d-box--accent" x="430" y="30" width="170" height="90" rx="12"/>
+                <text class="d-text d-text--title" x="515" y="62" text-anchor="middle">Tool call</text>
+                <text class="d-text d-text--mono" x="515" y="86" text-anchor="middle" style="font-size:11.5px">Read</text>
+                <text class="d-text d-text--mono" x="515" y="104" text-anchor="middle" style="font-size:11px">marbury-v-madison.pdf</text>
+
+                <path class="d-line d-line--accent" d="M515 122V184" marker-end="url(#l2-aha)"/>
+                <text class="d-text d-text--small" x="498" y="150" text-anchor="end">the app runs it</text>
+                <circle class="d-box--why" cx="515" cy="153" r="9"/>
+                <text class="d-text d-text--small" x="530" y="149" style="fill: var(--why)">checkpoint: you may</text>
+                <text class="d-text d-text--small" x="530" y="164" style="fill: var(--why)">be asked to approve</text>
+
+                <rect class="d-box" x="430" y="190" width="170" height="90" rx="12"/>
+                <text class="d-text d-text--title" x="515" y="222" text-anchor="middle">Environment</text>
+                <text class="d-text d-text--small" x="515" y="244" text-anchor="middle">your files, the web,</text>
+                <text class="d-text d-text--small" x="515" y="260" text-anchor="middle">programs, outside apps</text>
+
+                <path class="d-line d-line--accent" d="M428 235H356" marker-end="url(#l2-aha)"/>
+                <text class="d-text d-text--small" x="392" y="226" text-anchor="middle">result</text>
+
+                <rect class="d-box--file" x="180" y="190" width="170" height="90" rx="12"/>
+                <text class="d-text d-text--title" x="265" y="222" text-anchor="middle">Result</text>
+                <text class="d-text d-text--small" x="265" y="244" text-anchor="middle">added to the context:</text>
+                <text class="d-text d-text--small" x="265" y="260" text-anchor="middle">“ground truth”</text>
+
+                <path class="d-line d-line--accent" d="M265 188V124" marker-end="url(#l2-aha)"/>
+                <text class="d-text d-text--small" x="275" y="160">decide again</text>
+
+                <path class="d-line d-line--dash" d="M200 122V150H70V184" marker-end="url(#l2-ah)"/>
+                <rect class="d-box--ok" x="10" y="190" width="120" height="90" rx="10"/>
+                <text class="d-text d-text--title" x="70" y="222" text-anchor="middle">Stop</text>
+                <text class="d-text d-text--small" x="70" y="244" text-anchor="middle">task done, or a</text>
+                <text class="d-text d-text--small" x="70" y="260" text-anchor="middle">limit is reached</text>
+
+                <text class="d-text d-text--small" x="360" y="314" text-anchor="middle">One trip around the loop is one step. A research task can take dozens.</text>
+              </svg>
+            </div>
+            <figcaption>The model never touches your files directly: it asks, the app acts, and the result comes back as text. <span class="source">Source: adapted from Anthropic, <a href="https://www.anthropic.com/engineering/building-effective-agents">“Building effective agents”</a> (Dec. 2024).</span></figcaption>
+          </figure>
+          <p>Claude Code’s own documentation describes its loop as <strong>gather context → take action → verify results</strong>, repeated until the task is complete, and notes that you can interrupt at any point. The verify step is the one to watch: an agent that checks its own work against the environment (did the file save? does the link open?) is far more reliable than one that only reasons about it.</p>
+          <h3>Where you fit in the loop</h3>
+          <p>You can enter the loop in three places: when you <strong>set the goal</strong>, at a <strong>checkpoint</strong> when the app asks you to approve an action, and at the <strong>end</strong>, when you read what it produced. The permission mode you choose in lesson 6 decides how often the middle one happens.</p>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>The access ladder as a staircase</summary>
+        <div class="deeper__body">
+          <p>Picture the ladder as stairs. Each step up lets the agent do more, and makes the worst case worse. The labels above each step give the new capability (first line) and the new risk (second line).</p>
+          <figure class="diagram">
+            <div class="figure-scroll">
+              <svg viewBox="0 0 750 420" role="img" aria-labelledby="l2-stairs-t l2-stairs-d">
+                <title id="l2-stairs-t">The access ladder as a staircase</title>
+                <desc id="l2-stairs-d">Five steps rising from left to right. Step 1, Read only: Read, Glob, Grep; reads and finds files; risk almost none. Step 2, Write: adds Write and Edit; changes files; risk overwrites your work. Step 3, Run commands: adds Bash; runs any program; risk the whole computer. Step 4, Internet: adds WebSearch and WebFetch; reads the open web; risk untrusted text. Step 5, Outside apps: adds MCP tools; acts in your accounts; risk it acts as you. Steps 3 and 5 are highlighted as the highest-risk rungs. A note says your case-briefer uses Read, Glob and Write, and your brief-checker uses Read, Glob, WebSearch and WebFetch; neither has Bash or Edit.</desc>
+                <text class="d-text d-text--label" x="20" y="28">More capability, more risk →</text>
+                <rect class="d-group" x="20" y="52" width="270" height="140" rx="10"/>
+                <text class="d-text d-text--title" x="36" y="80">Your two agents</text>
+                <text class="d-text d-text--mono" x="36" y="104" style="font-size:12px">case-briefer: Read, Glob, Write</text>
+                <text class="d-text d-text--mono" x="36" y="122" style="font-size:12px">brief-checker: Read, Glob,</text>
+                <text class="d-text d-text--mono" x="36" y="140" style="font-size:12px" xml:space="preserve">  WebSearch, WebFetch</text>
+                <text class="d-text d-text--small" x="36" y="172">parts of steps 1, 2 and 4; no Bash, no Edit</text>
+                <rect class="d-box--ok" x="20" y="320" width="138" height="80" rx="6"/>
+                <text class="d-text d-text--label" x="32" y="340">Step 1</text>
+                <text class="d-text d-text--title" x="32" y="360">Read only</text>
+                <text class="d-text d-text--mono" x="32" y="380" style="font-size:11px" xml:space="preserve">Read, Glob, Grep</text>
+                <text class="d-text d-text--small" x="22" y="290">reads, finds files</text>
+                <text class="d-text d-text--small" x="22" y="306" style="fill: var(--tip)">risk: almost none</text>
+                <rect class="d-box--accent" x="164" y="264" width="138" height="136" rx="6"/>
+                <text class="d-text d-text--label" x="176" y="284">Step 2</text>
+                <text class="d-text d-text--title" x="176" y="304">Write</text>
+                <text class="d-text d-text--mono" x="176" y="324" style="font-size:11px" xml:space="preserve">+ Write, Edit</text>
+                <text class="d-text d-text--small" x="166" y="234">changes files</text>
+                <text class="d-text d-text--small" x="166" y="250" style="fill: var(--watch)">risk: overwrites work</text>
+                <rect class="d-box--warn" x="308" y="208" width="138" height="192" rx="6"/>
+                <text class="d-text d-text--label" x="320" y="228">Step 3</text>
+                <text class="d-text d-text--title" x="320" y="248">Run commands</text>
+                <text class="d-text d-text--mono" x="320" y="268" style="font-size:11px" xml:space="preserve">+ Bash</text>
+                <text class="d-text d-text--small" x="310" y="178">runs any program</text>
+                <text class="d-text d-text--small" x="310" y="194" style="fill: var(--watch)">risk: whole computer</text>
+                <rect class="d-box--accent" x="452" y="152" width="138" height="248" rx="6"/>
+                <text class="d-text d-text--label" x="464" y="172">Step 4</text>
+                <text class="d-text d-text--title" x="464" y="192">Internet</text>
+                <text class="d-text d-text--mono" x="464" y="212" style="font-size:11px" xml:space="preserve">+ WebSearch,</text>
+                <text class="d-text d-text--mono" x="464" y="228" style="font-size:11px" xml:space="preserve">  WebFetch</text>
+                <text class="d-text d-text--small" x="454" y="122">reads the open web</text>
+                <text class="d-text d-text--small" x="454" y="138" style="fill: var(--watch)">risk: untrusted text</text>
+                <rect class="d-box--warn" x="596" y="96" width="138" height="304" rx="6"/>
+                <text class="d-text d-text--label" x="608" y="116">Step 5</text>
+                <text class="d-text d-text--title" x="608" y="136">Outside apps</text>
+                <text class="d-text d-text--mono" x="608" y="156" style="font-size:11px" xml:space="preserve">+ MCP tools</text>
+                <text class="d-text d-text--small" x="598" y="66">acts in your accounts</text>
+                <text class="d-text d-text--small" x="598" y="82" style="fill: var(--watch)">risk: acts as you</text>
+              </svg>
+            </div>
+            <figcaption>Orange marks the two rungs whose effects reach furthest beyond your documents: running programs, and acting in real accounts such as email. Neither of your agents gets step 3.</figcaption>
+          </figure>
+          <h3>Three things the staircase hides</h3>
+          <ul>
+            <li><strong>Bash nearly contains the other steps.</strong> A program run from the command line can read, write, delete, and reach the internet. Giving an agent Bash is close to giving it everything below <em>and</em> above it.</li>
+            <li><strong>The internet rung imports risk.</strong> Web pages and PDFs can contain hidden instructions aimed at AI readers. Reading untrusted text is how an agent gets talked into things. You’ll test this in lesson 9, by hiding an instruction inside a brief.</li>
+            <li><strong>MCP is about whose account it is.</strong> An MCP server connects the agent to a real service (your email, your calendar, a firm database) using your login. Its actions are your actions.</li>
+          </ul>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> <span class="by">· Anthropic (Erik Schluntz and Barry Zhang, Dec. 2024)</span><p>The standard explainer on workflows versus agents, and when you need neither.</p></li>
+            <li><a href="https://code.claude.com/docs/en/how-claude-code-works">How Claude Code works</a> <span class="by">· Claude Code docs</span><p>The agentic loop, the built-in tools, and where permissions come in.</p></li>
+            <li><a href="https://www.anthropic.com/engineering/writing-tools-for-agents">Writing effective tools for agents — with agents</a> <span class="by">· Anthropic (Sept. 2025)</span><p>How the tools an agent calls are designed and tested, from the builder’s side.</p></li>
+            <li><a href="https://modelcontextprotocol.io/">Model Context Protocol</a> <span class="by">· MCP project</span><p>The open standard behind rung 5, which describes itself as a “USB-C port for AI applications.”</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-02-workflows-vs-agents.html">Read more: <strong>N2 Workflows vs agents</strong></a>
+        <a class="note-chip" href="../notes/note-03-tools-and-permissions.html">Read more: <strong>N3 Tools and permissions</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

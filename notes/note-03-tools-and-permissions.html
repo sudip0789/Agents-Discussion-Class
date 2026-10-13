@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N3: Tools and permissions · Class 3 Workbook</title>
+  <meta name="description" content="Concept note on agent tools and permissions: Claude Code’s tools, permission modes (Manual, Edit automatically, Plan, Auto, Bypass permissions), allow/ask/deny rules in settings.json, and how Codex sandboxing and approval modes compare.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-03">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N3</p>
+        <h1>Tools and permissions</h1>
+        <p class="summary"><strong>In one line:</strong> tools decide what an agent can do; permissions decide whether it has to ask first.</p>
+      </header>
+
+      <p class="lead">A model on its own can only write text. <strong>Tools</strong> let it act: open files, change them, run programs, search the web. Every tool you hand an agent is a new power and a new way for things to go wrong. <strong>Permissions</strong> are how you supervise those powers, the way a partner decides what a new associate can sign without checking in.</p>
+
+      <h2>Four layers of control</h2>
+      <p>In Claude Code, four separate settings shape what an agent can do. They stack: an action has to get past every layer.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Layer</th><th scope="col">What it controls</th><th scope="col">Where you set it</th><th scope="col">In your project</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Tools line</th><td>Which tools a subagent has at all</td><td>The <code>tools:</code> line in an agent file</td><td>brief-checker gets only <code>Read, Glob, WebSearch, WebFetch</code>: no Write, no Edit</td></tr>
+            <tr><th scope="row">Permission mode</th><td>How often Claude Code stops to ask you</td><td><kbd>Shift</kbd> + <kbd>Tab</kbd>, or the mode indicator in VS Code</td><td>Manual while you learn</td></tr>
+            <tr><th scope="row">Permission rules</th><td>Specific actions that are always allowed, always asked about, or never allowed</td><td><code>.claude/settings.json</code></td><td>Block edits to <code>.claude/</code> and reads of <code>.env</code></td></tr>
+            <tr><th scope="row">Sandbox</th><td>What files and websites commands can reach, enforced by the operating system</td><td><code>/sandbox</code> and settings</td><td>Not used in class</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Claude Code’s tools</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Tool</th><th scope="col">What it does</th><th scope="col">Risk</th><th scope="col">Your agents</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Read</th><td>Opens a file</td><td>Low, unless the file is secret</td><td>briefer, checker</td></tr>
+            <tr><th scope="row">Glob</th><td>Finds files by name</td><td>Low</td><td>briefer, checker</td></tr>
+            <tr><th scope="row">Grep</th><td>Searches inside files</td><td>Low</td><td>—</td></tr>
+            <tr><th scope="row">Write</th><td>Creates or overwrites a file</td><td>Can overwrite your work</td><td>briefer (only the brief file it’s given)</td></tr>
+            <tr><th scope="row">Edit</th><td>Changes part of an existing file</td><td>Can change any file it can reach</td><td>—</td></tr>
+            <tr><th scope="row">Bash</th><td>Runs a command or program</td><td>Can do almost anything</td><td>—</td></tr>
+            <tr><th scope="row">WebSearch</th><td>Searches the public web</td><td>Untrusted results</td><td>checker (until lesson 10)</td></tr>
+            <tr><th scope="row">WebFetch</th><td>Opens one web page</td><td>Untrusted content, which may contain hidden instructions</td><td>checker (until lesson 10)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A subagent with <strong>no</strong> <code>tools:</code> line doesn’t get “no tools.” It inherits every tool available to subagents, including Bash. That is why both of your agent files list their tools explicitly.</p>
+
+      <h2>Permission modes in Claude Code</h2>
+      <p>The permission mode sets the baseline: what Claude Code may do without stopping to ask you. You can change it at any time during a session.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Mode</th><th scope="col">What runs without asking</th><th scope="col">Use it when</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Manual</th><td>Reading files only. It asks before editing files, running commands or reaching the network.</td><td><strong>While you’re learning</strong>, and for sensitive work. This is the mode for class.</td></tr>
+            <tr><th scope="row">Edit automatically</th><td>Reads, file edits, and common file commands like <code>mkdir</code>, <code>mv</code> and <code>cp</code> inside your project. Still asks before other commands.</td><td>You’re reviewing the changes as they happen and trust the task.</td></tr>
+            <tr><th scope="row">Plan</th><td>Reads and explores, but doesn’t change your files. It proposes a plan and waits for your approval.</td><td>Before a big change, to see what it would do first.</td></tr>
+            <tr><th scope="row">Auto</th><td>Almost everything. Instead of asking you, a second model (a “classifier”) checks actions like commands and web requests against your request.</td><td>Long tasks once you know what you’re doing. Fewer prompts doesn’t mean safer.</td></tr>
+            <tr><th scope="row">Bypass permissions</th><td>Everything, with a few built-in exceptions. No prompts.</td><td>Only inside an isolated container or virtual machine. Never on your own laptop.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://code.claude.com/docs/en/permission-modes">Choose a permission mode</a>, Claude Code docs. In settings files, Manual is written <code>default</code> and Edit automatically is <code>acceptEdits</code>.</p>
+
+      <h3>How to switch modes</h3>
+      <ul>
+        <li><strong>In the terminal:</strong> press <kbd>Shift</kbd> + <kbd>Tab</kbd> to cycle through the modes. The status line shows the current one, for example “⏸ manual mode on.”</li>
+        <li><strong>In VS Code:</strong> click the mode indicator under the prompt box and choose a mode.</li>
+        <li><strong>Bypass permissions</strong> appears in the cycle only if the session was started with a special flag or setting.</li>
+      </ul>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Newer versions of Claude Code <strong>start in Auto mode</strong>. Check the mode indicator every time you open a session, and switch to Manual while you’re learning, so you see and approve each edit and command.</p>
+      </div>
+
+      <h2>Permission rules</h2>
+      <p>Modes are broad. <strong>Permission rules</strong> are precise: they name a tool and, optionally, a path, command or website. There are three kinds:</p>
+      <ul>
+        <li><strong>Allow</strong>: use this without asking.</li>
+        <li><strong>Ask</strong>: always ask me first, whatever the mode.</li>
+        <li><strong>Deny</strong>: never do this. A deny rule applies in every mode, including Bypass permissions.</li>
+      </ul>
+      <p>Rules live in settings files. The one you’ll use is the project file, which you commit so the rules travel with the project:</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">File</th><th scope="col">Applies to</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>.claude/settings.json</code></th><td>This project, for everyone who uses it (committed to Git)</td></tr>
+            <tr><th scope="row"><code>.claude/settings.local.json</code></th><td>This project, just you (not committed)</td></tr>
+            <tr><th scope="row"><code>~/.claude/settings.json</code></th><td>All your projects on this computer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Your project’s rules</h3>
+      <p>This is the file you add in lesson 9. It blocks the agent from editing its own instructions and from reading your API token:</p>
+      <div class="copy-block">
+        <div class="copy-block__bar"><span class="copy-block__file">.claude/settings.json</span></div>
+        <pre><code>{
+  "permissions": {
+    "deny": [
+      "Edit(./.claude/**)",
+      "Read(./.env)"
+    ]
+  }
+}</code></pre>
+      </div>
+
+      <h3>More examples</h3>
+      <p>For reference only; this isn’t a file you need for class. It shows all three kinds of rule together:</p>
+      <div class="copy-block">
+        <div class="copy-block__bar"><span class="copy-block__kind">Example</span></div>
+        <pre><code>{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:courtlistener.com)",
+      "WebFetch(domain:*.courtlistener.com)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Edit(./.claude/**)",
+      "Read(./.env)"
+    ]
+  }
+}</code></pre>
+      </div>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Rule</th><th scope="col">Matches</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>Read(./.env)</code></th><td>Reading the <code>.env</code> file in the current folder</td></tr>
+            <tr><th scope="row"><code>Edit(./.claude/**)</code></th><td>Changing anything inside <code>.claude/</code>, at any depth (<code>**</code> means “any folders below”)</td></tr>
+            <tr><th scope="row"><code>WebFetch(domain:courtlistener.com)</code></th><td>Opening pages on <code>courtlistener.com</code> only</td></tr>
+            <tr><th scope="row"><code>WebFetch(domain:*.courtlistener.com)</code></th><td>Opening pages on any subdomain, such as <code>www.courtlistener.com</code> or <code>storage.courtlistener.com</code>, but not <code>courtlistener.com</code> itself</td></tr>
+            <tr><th scope="row"><code>Bash(git push *)</code></th><td>Any command that starts with <code>git push</code></td></tr>
+            <tr><th scope="row"><code>WebSearch</code></th><td>A bare tool name matches every use of that tool</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Notice the WebFetch pair. <code>WebFetch(domain:courtlistener.com)</code> matches <code>courtlistener.com</code> and nothing else. To cover subdomains like <code>www.courtlistener.com</code> as well, you need the second rule with <code>*.</code> in front.</p>
+
+      <h3>How a request is decided</h3>
+      <p>Every time Claude wants to use a tool, Claude Code checks the rules in a fixed order: <strong>deny, then ask, then allow</strong>. The first match decides. If nothing matches, the permission mode decides.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 500" role="img" aria-labelledby="n3-flow-t n3-flow-d">
+            <title id="n3-flow-t">How Claude Code evaluates a tool request</title>
+            <desc id="n3-flow-d">A tool request, for example Read(./.env), is checked against the rules in order. First: does it match a deny rule? If yes, it is blocked, in every mode, even if an allow rule also matches. If no: does it match an ask rule? If yes, Claude Code asks you first, in every mode. If no: does it match an allow rule? If yes, it runs without asking. If no rule matches, the permission mode decides: Manual asks, Edit automatically lets file edits through, Plan doesn’t change files, and Auto lets a classifier check the action.</desc>
+            <defs>
+              <marker id="n3-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="n3-ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--warn" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+
+            <rect class="d-box--accent" x="60" y="10" width="220" height="58" rx="10"/>
+            <text class="d-text d-text--title" x="170" y="35" text-anchor="middle">A tool request</text>
+            <text class="d-text d-text--mono" x="170" y="56" text-anchor="middle" style="font-size:12px">e.g. Read(./.env)</text>
+            <path class="d-line" d="M170 70V86" marker-end="url(#n3-ah)"/>
+
+            <!-- decision 1 -->
+            <polygon class="d-box" points="170,90 290,132 170,174 50,132"/>
+            <text class="d-text" x="170" y="128" text-anchor="middle" style="font-size:13px;font-weight:600">Matches a</text>
+            <text class="d-text" x="170" y="146" text-anchor="middle" style="font-size:13px;font-weight:600">deny rule?</text>
+            <path class="d-line d-line--warn" d="M292 132H346" marker-end="url(#n3-ahw)"/>
+            <text class="d-text d-text--small" x="306" y="124">yes</text>
+            <rect class="d-box--warn" x="350" y="104" width="370" height="56" rx="10"/>
+            <text class="d-text d-text--title d-text--warn" x="366" y="128">Blocked</text>
+            <text class="d-text d-text--small" x="366" y="147">in every mode, even if an allow rule also matches</text>
+            <path class="d-line" d="M170 176V196" marker-end="url(#n3-ah)"/>
+            <text class="d-text d-text--small" x="180" y="191">no</text>
+
+            <!-- decision 2 -->
+            <polygon class="d-box" points="170,200 290,242 170,284 50,242"/>
+            <text class="d-text" x="170" y="238" text-anchor="middle" style="font-size:13px;font-weight:600">Matches an</text>
+            <text class="d-text" x="170" y="256" text-anchor="middle" style="font-size:13px;font-weight:600">ask rule?</text>
+            <path class="d-line" d="M292 242H346" marker-end="url(#n3-ah)"/>
+            <text class="d-text d-text--small" x="306" y="234">yes</text>
+            <rect class="d-box--why" x="350" y="214" width="370" height="56" rx="10"/>
+            <text class="d-text d-text--title" x="366" y="238">Asks you first</text>
+            <text class="d-text d-text--small" x="366" y="257">in every mode, even if an allow rule also matches</text>
+            <path class="d-line" d="M170 286V306" marker-end="url(#n3-ah)"/>
+            <text class="d-text d-text--small" x="180" y="301">no</text>
+
+            <!-- decision 3 -->
+            <polygon class="d-box" points="170,310 290,352 170,394 50,352"/>
+            <text class="d-text" x="170" y="348" text-anchor="middle" style="font-size:13px;font-weight:600">Matches an</text>
+            <text class="d-text" x="170" y="366" text-anchor="middle" style="font-size:13px;font-weight:600">allow rule?</text>
+            <path class="d-line" d="M292 352H346" marker-end="url(#n3-ah)"/>
+            <text class="d-text d-text--small" x="306" y="344">yes</text>
+            <rect class="d-box--ok" x="350" y="324" width="370" height="56" rx="10"/>
+            <text class="d-text d-text--title" x="366" y="348">Runs without asking</text>
+            <text class="d-text d-text--small" x="366" y="367">no prompt, unless the action is one no mode auto-approves</text>
+            <path class="d-line" d="M170 396V416" marker-end="url(#n3-ah)"/>
+            <text class="d-text d-text--small" x="180" y="411">no</text>
+
+            <!-- fallback -->
+            <rect class="d-box--accent" x="50" y="420" width="670" height="70" rx="10"/>
+            <text class="d-text d-text--title" x="66" y="444">No rule matches: the permission mode decides</text>
+            <text class="d-text d-text--small" x="66" y="464">Manual asks · Edit automatically lets file edits through · Plan doesn’t change files</text>
+            <text class="d-text d-text--small" x="66" y="480">Auto lets a classifier check the action · Bypass permissions runs it</text>
+          </svg>
+        </div>
+        <figcaption>Rules are checked in a fixed order, and the first match wins. A specific allow rule can’t carve an exception out of a broader deny rule. <span class="source">Source: adapted from <a href="https://code.claude.com/docs/en/permissions">Configure permissions</a>, Claude Code docs.</span></figcaption>
+      </figure>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>Rules are enforced by Claude Code, not by the model. “Never read .env” in CLAUDE.md is a request the model weighs; <code>"deny": ["Read(./.env)"]</code> is a lock the software enforces, no matter what a document or a clever prompt says.</p>
+      </div>
+
+      <h3>Where a path starts from</h3>
+      <p>File rules use a pattern syntax borrowed from Git. The beginning of the path decides where it is anchored, and the difference between one slash and two matters:</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Pattern</th><th scope="col">Starts from</th><th scope="col">Example</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>./path</code> or <code>path</code></th><td>The current folder</td><td><code>Read(./.env)</code></td></tr>
+            <tr><th scope="row"><code>/path</code></th><td>The settings file’s location: the project root for project settings, <em>not</em> the top of your hard drive</td><td><code>Edit(/src/**)</code></td></tr>
+            <tr><th scope="row"><code>~/path</code></th><td>Your home folder</td><td><code>Read(~/notes.txt)</code></td></tr>
+            <tr><th scope="row"><code>//path</code></th><td>The very top of the file system (an absolute path)</td><td><code>Read(//tmp/notes.txt)</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://code.claude.com/docs/en/permissions">Configure permissions</a>, Claude Code docs.</p>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p><strong>Bash can do almost anything any other tool can.</strong> Claude Code applies your Read and Edit deny rules to the file commands it recognizes in Bash, such as <code>cat</code>, <code>head</code>, <code>tail</code> and <code>sed</code>, and to redirects like <code>&gt; file</code>. It does <em>not</em> apply them to programs that open files themselves, like a Python script, or to a search like <code>grep -r</code> across a whole folder. (That’s also how <code>lookup.py</code>, a program you run, can read your token from <code>.env</code> while the agent’s Read tool can’t.) Real operating-system blocking needs the sandbox. Keep command prompts on, and read each command before approving it.</p>
+      </div>
+
+      <h2>Codex works differently</h2>
+      <p>OpenAI’s Codex, which also runs in VS Code, takes a different approach. Instead of starting from a list of tools per agent, it puts commands inside a <strong>sandbox</strong>, a boundary enforced by the operating system, and then lets you choose how often it asks before crossing that boundary.</p>
+      <h3>Sandbox levels</h3>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Sandbox</th><th scope="col">What the agent can do</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>read-only</code></th><td>Inspect files, but not edit them or run commands without approval</td></tr>
+            <tr><th scope="row"><code>workspace-write</code> (default)</th><td>Read files, edit inside your project folder, and run routine local commands inside that boundary</td></tr>
+            <tr><th scope="row"><code>danger-full-access</code></th><td>No sandbox: the file and network boundaries are removed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://learn.chatgpt.com/docs/sandboxing">Sandbox</a>, Codex docs.</p>
+      <h3>Approval modes</h3>
+      <p>In the Codex extension, the permissions control below the message box offers these choices (in the Codex terminal app, type <code>/permissions</code>):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Mode</th><th scope="col">What it does</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Ask for approval</th><td>Always asks before editing files outside the project or using the internet. The recommended starting mode.</td></tr>
+            <tr><th scope="row">Approve for me</th><td>Asks only about actions detected as potentially unsafe</td></tr>
+            <tr><th scope="row">Full access</th><td>Unrestricted access to the internet and any file on your computer</td></tr>
+            <tr><th scope="row">Custom (config.toml)</th><td>Your own combination of sandbox and approval settings, written in a configuration file</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://learn.chatgpt.com/docs/permission-modes">Permission modes</a>, Codex docs.</p>
+
+      <div class="table-wrap min-wide">
+        <table>
+          <caption>Claude Code and Codex, side by side</caption>
+          <thead><tr><th scope="col"></th><th scope="col">Claude Code</th><th scope="col">Codex</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Main way to limit an agent</th><td>Which tools it has, plus allow/ask/deny rules</td><td>A sandbox boundary around everything it runs</td></tr>
+            <tr><th scope="row">How often it asks</th><td>Permission mode (Manual, Edit automatically, Plan, Auto, Bypass permissions)</td><td>Approval mode (Ask for approval, Approve for me, Full access, Custom)</td></tr>
+            <tr><th scope="row">Recommended while learning</th><td>Manual</td><td>Ask for approval</td></tr>
+            <tr><th scope="row">The “never on your laptop” setting</th><td>Bypass permissions</td><td>Full access / <code>danger-full-access</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <details class="deeper">
+        <summary>“Excessive agency”: the security name for this problem</summary>
+        <div class="deeper__body">
+          <p>The OWASP GenAI Security Project, which publishes the standard list of risks for AI applications, calls this risk <strong>Excessive Agency</strong> (LLM06:2025): an AI system that can take harmful actions in response to output that is unexpected, unclear or manipulated. It names three root causes. Each one maps to a control on this page:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Root cause</th><th scope="col">What it means</th><th scope="col">Your control</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Excessive functionality</th><td>The agent has tools it doesn’t need</td><td>A short <code>tools:</code> line</td></tr>
+                <tr><th scope="row">Excessive permissions</th><td>Its tools reach more than they should</td><td>Deny rules for <code>.env</code> and <code>.claude/</code></td></tr>
+                <tr><th scope="row">Excessive autonomy</th><td>It acts without a human check</td><td>Manual mode and approving the plan</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: <a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">LLM06:2025 Excessive Agency</a>, OWASP GenAI Security Project.</p>
+          <p>The legal parallel is the principle of least privilege you already see in practice: a paralegal gets access to the matters they work on, not the whole document system. Give each agent the smallest set of tools and the narrowest reach that lets it do its job.</p>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>When settings files disagree, and how to see your rules</summary>
+        <div class="deeper__body">
+          <p>Several settings files can apply at once. When they conflict, the more specific or more authoritative one wins, in this order:</p>
+          <ol>
+            <li>Managed settings set by an organization (for example, a firm’s IT department)</li>
+            <li>Options typed on the command line when Claude Code starts</li>
+            <li><code>.claude/settings.local.json</code> (this project, just you)</li>
+            <li><code>.claude/settings.json</code> (this project, shared)</li>
+            <li><code>~/.claude/settings.json</code> (all your projects)</li>
+          </ol>
+          <p>A deny rule in any of them still blocks the action, because deny is checked before allow everywhere.</p>
+          <p>To see every rule currently in force and which file it came from, type <code>/permissions</code> in Claude Code. When you approve an action with “Yes, and don’t ask again,” Claude Code adds an allow rule for you; <code>/permissions</code> is where you can review and remove those.</p>
+        </div>
+      </details>
+
+      <h2>Further reading</h2>
+      <ul class="reading">
+        <li><a href="https://code.claude.com/docs/en/permissions">Configure permissions</a> <span class="by">· Claude Code docs</span><p>Allow, ask and deny rules (deny wins), path syntax, and protecting files like <code>.env</code>.</p></li>
+        <li><a href="https://code.claude.com/docs/en/permission-modes">Choose a permission mode</a> <span class="by">· Claude Code docs</span><p>What Manual, Edit automatically, Plan and Auto allow, and how to switch between them.</p></li>
+        <li><a href="https://code.claude.com/docs/en/settings">Settings</a> <span class="by">· Claude Code docs</span><p>Where settings files live and which one wins.</p></li>
+        <li><a href="https://code.claude.com/docs/en/subagents">Subagents</a> <span class="by">· Claude Code docs</span><p>How the <code>tools:</code> line limits what a subagent can do.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/permission-modes">Permission modes</a> <span class="by">· Codex docs (OpenAI)</span><p>Ask for approval, Approve for me and Full access.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/sandboxing">Sandbox</a> <span class="by">· Codex docs (OpenAI)</span><p>The read-only, workspace-write and danger-full-access boundaries.</p></li>
+        <li><a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">LLM06:2025 Excessive Agency</a> <span class="by">· OWASP GenAI Security Project</span><p>The security community’s name for giving an agent more tools, permissions or autonomy than it needs.</p></li>
+        <li><a href="https://www.anthropic.com/engineering/writing-tools-for-agents">Writing effective tools for agents — with agents</a> <span class="by">· Anthropic (Sept 2025)</span><p>How the tools an agent calls are designed and tested.</p></li>
+      </ul>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-02-workflows-agents-and-tools.html">Used in: <strong>Lesson 2</strong></a>
+        <a class="note-chip" href="../lessons/lesson-07-build-the-briefer.html">Used in: <strong>Lesson 7</strong></a>
+        <a class="note-chip" href="../lessons/lesson-09-test-and-lock.html">Used in: <strong>Lesson 9</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

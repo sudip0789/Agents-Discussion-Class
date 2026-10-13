@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 13: Wrap-up · Class 3 Workbook</title>
+  <meta name="description" content="See how your view of AI agents changed, learn the routine for using your research agent after class, and the checks to run before you rely on its output.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-13">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 13 · Part 2: Build</p>
+        <h1>Wrap-up</h1>
+        <span class="badge">Talk + discussion</span>
+        <p class="goal"><strong>Goal:</strong> see how your view changed, and keep using your agent.</p>
+      </header>
+
+      <p class="lead">Since the start of class you’ve built an AI agent that reads and writes files on your laptop, watched it make mistakes, and locked down what it may touch.</p>
+
+      <h2>Using your agent from now on</h2>
+      <p>The agent is yours. It lives in a folder on your laptop, with a private copy on GitHub. Here is the routine.</p>
+      <ol class="steps">
+        <li>Open the project folder in VS Code (<strong>File › Open Recent</strong>, or <strong>File › Open Folder</strong>). Open Claude Code and check that the mode reads <strong>Manual</strong>.</li>
+        <li>Start every new case with an empty conversation. Anything worth keeping is already in files.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/clear</code></pre>
+          </div>
+        </li>
+        <li>Brief a case. Drag the opinion’s PDF into the <code>cases/</code> folder in the Explorer, then give its path.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/brief cases/[file name].pdf</code></pre>
+          </div>
+          Or skip the PDF and give a citation; the workflow fetches the opinion from CourtListener.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/brief [case name, citation]</code></pre>
+          </div>
+        </li>
+        <li>Read the checker’s report before you read the brief, then check anything surprising against the opinion yourself. Run the same case again any time: the new brief is saved next to the old one, never over it.</li>
+        <li>Commit and push after each brief. Over a semester, your history becomes a case log: every brief, with a date. In the terminal:
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git add .
+git status
+git commit -m "Brief: [case name]"
+git push</code></pre>
+          </div>
+          Read the <code>git status</code> list before you commit. (The <strong>Sync Changes</strong> button in the Source Control panel pushes too.)
+        </li>
+      </ol>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Everything your agent reads is sent to the model provider’s servers. Keep client files and anything confidential out of <code>cases/</code> unless you know your account’s data settings, and your school’s or employer’s policy, allow it.</p>
+      </div>
+
+      <h2>Before you rely on an agent’s output</h2>
+      <p>Five questions, every time. They’re the same habits you’d use to supervise a junior associate’s memo.</p>
+      <ul class="checklist">
+        <li>Did you read the plan before approving it?</li>
+        <li>Does every claim have a quote and a pinpoint, and did the checker pass it?</li>
+        <li>Did you read the diff, not just the summary?</li>
+        <li>Did you check surprising claims against the opinion?</li>
+        <li>Is there anything secret or personal in what you’re about to share?</li>
+      </ul>
+
+      <h2>Keep going</h2>
+      <div>
+      <ul class="reading">
+        <li><a href="https://github.com/obra/superpowers">Superpowers</a> <span class="by">· Jesse Vincent / Prime Radiant</span><p>The skills library from lesson 4: brainstorming, planning, testing, debugging and code review, ready to install.</p></li>
+        <li><a href="https://code.claude.com/docs/en/subagents">Subagents</a> <span class="by">· Claude Code docs</span><p>Build more helpers like your briefer and checker, each with its own instructions and tools.</p></li>
+        <li><a href="https://code.claude.com/docs/en/skills">Extend Claude with skills</a> <span class="by">· Claude Code docs</span><p>Turn another task you repeat into a slash command like <code>/brief</code>.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/codex/ide">Codex IDE extension</a> <span class="by">· OpenAI</span><p>OpenAI’s coding agent in VS Code: try the same project with a different agent and compare.</p></li>
+        <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">CourtListener REST API</a> <span class="by">· Free Law Project</span><p>Everything else CourtListener’s free API can do: search opinions, dockets and judges.</p></li>
+        <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a> <span class="by">· Free Law Project</span><p>The database behind your switched citation check, and its limits.</p></li>
+      </ul>
+      </div>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>Where in law school or practice would you use this agent first, and what rule would you add to it before you did?</li>
+        </ol>
+      </div>
+
+      <div class="note-links">
+        <a class="note-chip" href="../resources/further-reading.html">Read more: <strong>Further reading</strong></a>
+        <a class="note-chip" href="../resources/glossary.html">Look up a term: <strong>Glossary</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

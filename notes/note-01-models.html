@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N1: Models · Class 3 Workbook</title>
+  <meta name="description" content="Concept note on models: tokens, training and parameters, fine-tuning, context windows, system prompts, knowledge cutoffs, sampling and temperature, hallucination, reasoning, model tiers, open-weight models and multimodal input.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-01">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N1</p>
+        <h1>Models</h1>
+        <p class="summary"><strong>In one line:</strong> a model predicts the next piece of text; everything else in an AI product is built around it.</p>
+      </header>
+
+      <p class="lead">ChatGPT, Claude and Claude Code are <em>apps</em>. Inside each one is a <strong>model</strong>: a program that reads text and predicts what comes next, one small piece at a time. The app wraps the model in instructions, tools, memory and a chat window. Knowing which abilities belong to the model and which belong to the app explains most of what AI tools get right and wrong.</p>
+
+      <h2>The vocabulary at a glance</h2>
+      <p>Each term gets a fuller explanation further down the page.</p>
+      <div class="terms">
+        <p class="terms__title">Terms</p>
+        <dl>
+          <div><dt>Model (LLM)</dt><dd>A large language model: the trained program that predicts the next piece of text. ChatGPT and Claude are apps built around models.</dd></div>
+          <div><dt>Token</dt><dd>The unit a model reads and writes. As a rough rule of thumb, a token is about three-quarters of an English word, but it varies by model and language. Context limits and prices are counted in tokens.</dd></div>
+          <div><dt>Training and parameters</dt><dd>Training adjusts billions of numbers, the parameters, until the model predicts text well. After training they’re fixed.</dd></div>
+          <div><dt>Fine-tuning</dt><dd>Training a model further on new examples, which changes its parameters. Prompts, skills and instruction files guide a model without changing it.</dd></div>
+          <div><dt>Context window</dt><dd>Everything the model can see at once: instructions, the conversation so far, and every file an agent reads.</dd></div>
+          <div><dt>System prompt</dt><dd>Instructions the app gives the model before your message, usually hidden from you. Agent files and CLAUDE.md work the same way.</dd></div>
+          <div><dt>Knowledge cutoff</dt><dd>The date where the training data stops. Anything newer reaches the model only through tools like search.</dd></div>
+          <div><dt>Sampling and temperature</dt><dd>The model picks among likely next tokens with some randomness, so the same prompt can give different answers. Temperature sets how much randomness.</dd></div>
+          <div><dt>Hallucination</dt><dd>Confident output that isn’t true, such as an invented case or a paper that doesn’t exist.</dd></div>
+          <div><dt>Reasoning (“thinking”)</dt><dd>The model writes scratch work before its answer. Better on hard problems, but slower and costlier. In Claude Code, effort settings control how much it thinks.</dd></div>
+          <div><dt>Model tiers</dt><dd>Companies offer larger and smaller models. Claude comes as Opus, Sonnet and Haiku. Larger is more capable, slower and costlier.</dd></div>
+          <div><dt>Open-weight vs closed</dt><dd>Open-weight models can be downloaded and run on your own computer. That isn’t the same as open source: the training data and code can stay private.</dd></div>
+          <div><dt>Multimodal</dt><dd>The model can read images and PDFs, not only text.</dd></div>
+        </dl>
+      </div>
+
+      <h2>How a model is made</h2>
+      <h3>Training and parameters</h3>
+      <p>A model starts as billions of random numbers, its <strong>parameters</strong>. During <strong>training</strong>, it reads an enormous amount of text and repeatedly guesses the next token. Each wrong guess nudges the parameters a little, so the next guess is slightly better. After trillions of guesses, the parameters encode patterns of grammar, facts, reasoning and style.</p>
+      <p>When training ends, the parameters are <strong>frozen</strong>. Nothing you type changes them. The model you talk to on Monday is the same model on Friday, even if you corrected it a dozen times in between.</p>
+      <h3>Fine-tuning vs instructions</h3>
+      <p>There are two ways to change how a model behaves, and they’re easy to confuse:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Fine-tuning</th><th scope="col">Instructions</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Changes the parameters?</th><td>Yes</td><td>No</td></tr>
+            <tr><th scope="row">Examples</th><td>A company training a model on legal documents</td><td>Prompts, skills, agent files, CLAUDE.md</td></tr>
+            <tr><th scope="row">Who does it</th><td>The company, or a developer with training data and computing power</td><td>Anyone who can type</td></tr>
+            <tr><th scope="row">How long it lasts</th><td>Permanently, in that version of the model</td><td>Only while the text is in the context window</td></tr>
+            <tr><th scope="row">Legal analogy</th><td>Years of practice that shape an associate’s judgment</td><td>The assignment memo you hand them this morning</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Everything you build in this class is the second kind. Your agent files, skills and CLAUDE.md are instructions: they guide the model each time it runs, and they work only because the app puts them into the context window.</p>
+
+      <h2>Tokens</h2>
+      <p>Models don’t read letters or words. They read <strong>tokens</strong>: chunks of text from a fixed vocabulary, usually a whole common word, part of a longer word, a number or a punctuation mark. As a rough rule of thumb from OpenAI, a token is about ¾ of an English word, so 100 tokens is about 75 words. That ratio varies: Anthropic notes that its newer Claude models split the same text into roughly 30% more tokens than earlier ones, and other languages often need more tokens per word.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 320" role="img" aria-labelledby="n1-tok-t n1-tok-d">
+            <title id="n1-tok-t">Three pieces of legal text split into tokens (illustrative)</title>
+            <desc id="n1-tok-d">Illustrative only. The sentence “The court granted the motion to dismiss.” is seven words and splits into eight tokens: The, court, granted, the, motion, to, dismiss, and the period. The citation “Mata v. Avianca, 678 F. Supp. 3d 443” is seven word-like pieces but splits into fourteen tokens, because abbreviations, punctuation and numbers each become separate tokens: Mata, v, period, Av, ianca, comma, 678, F, period, Supp, period, 3, d, 443. The single rare word “unconscionability” splits into four tokens: un, consc, ion, ability.</desc>
+            <text class="d-text d-text--label" x="20" y="56">A plain sentence · 7 words</text>
+            <rect class="d-box--accent" x="20" y="70" width="43" height="34" rx="7"/><text class="d-text d-text--mono" x="41.5" y="92" text-anchor="middle">The</text>
+            <rect class="d-box--why" x="69" y="70" width="59" height="34" rx="7"/><text class="d-text d-text--mono" x="98.5" y="92" text-anchor="middle">court</text>
+            <rect class="d-box--ok" x="134" y="70" width="75" height="34" rx="7"/><text class="d-text d-text--mono" x="171.5" y="92" text-anchor="middle">granted</text>
+            <rect class="d-box--accent" x="215" y="70" width="43" height="34" rx="7"/><text class="d-text d-text--mono" x="236.5" y="92" text-anchor="middle">the</text>
+            <rect class="d-box--why" x="264" y="70" width="67" height="34" rx="7"/><text class="d-text d-text--mono" x="297.5" y="92" text-anchor="middle">motion</text>
+            <rect class="d-box--ok" x="337" y="70" width="36" height="34" rx="7"/><text class="d-text d-text--mono" x="355" y="92" text-anchor="middle">to</text>
+            <rect class="d-box--accent" x="379" y="70" width="75" height="34" rx="7"/><text class="d-text d-text--mono" x="416.5" y="92" text-anchor="middle">dismiss</text>
+            <rect class="d-box--why" x="460" y="70" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="474" y="92" text-anchor="middle">.</text>
+            <text class="d-text d-text--title" x="720" y="92" text-anchor="end">8 tokens</text>
+
+            <text class="d-text d-text--label" x="20" y="156">A citation · 7 “words”</text>
+            <rect class="d-box--accent" x="20" y="170" width="51" height="34" rx="7"/><text class="d-text d-text--mono" x="45.5" y="192" text-anchor="middle">Mata</text>
+            <rect class="d-box--why" x="77" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="91" y="192" text-anchor="middle">v</text>
+            <rect class="d-box--ok" x="111" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="125" y="192" text-anchor="middle">.</text>
+            <rect class="d-box--accent" x="145" y="170" width="36" height="34" rx="7"/><text class="d-text d-text--mono" x="163" y="192" text-anchor="middle">Av</text>
+            <rect class="d-box--why" x="187" y="170" width="59" height="34" rx="7"/><text class="d-text d-text--mono" x="216.5" y="192" text-anchor="middle">ianca</text>
+            <rect class="d-box--ok" x="252" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="266" y="192" text-anchor="middle">,</text>
+            <rect class="d-box--accent" x="286" y="170" width="43" height="34" rx="7"/><text class="d-text d-text--mono" x="307.5" y="192" text-anchor="middle">678</text>
+            <rect class="d-box--why" x="335" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="349" y="192" text-anchor="middle">F</text>
+            <rect class="d-box--ok" x="369" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="383" y="192" text-anchor="middle">.</text>
+            <rect class="d-box--accent" x="403" y="170" width="51" height="34" rx="7"/><text class="d-text d-text--mono" x="428.5" y="192" text-anchor="middle">Supp</text>
+            <rect class="d-box--why" x="460" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="474" y="192" text-anchor="middle">.</text>
+            <rect class="d-box--ok" x="494" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="508" y="192" text-anchor="middle">3</text>
+            <rect class="d-box--accent" x="528" y="170" width="28" height="34" rx="7"/><text class="d-text d-text--mono" x="542" y="192" text-anchor="middle">d</text>
+            <rect class="d-box--why" x="562" y="170" width="43" height="34" rx="7"/><text class="d-text d-text--mono" x="583.5" y="192" text-anchor="middle">443</text>
+            <text class="d-text d-text--title" x="720" y="192" text-anchor="end">14 tokens</text>
+
+            <text class="d-text d-text--label" x="20" y="256">A rare legal word · 1 word</text>
+            <rect class="d-box--accent" x="20" y="270" width="36" height="34" rx="7"/><text class="d-text d-text--mono" x="38" y="292" text-anchor="middle">un</text>
+            <rect class="d-box--why" x="62" y="270" width="59" height="34" rx="7"/><text class="d-text d-text--mono" x="91.5" y="292" text-anchor="middle">consc</text>
+            <rect class="d-box--ok" x="127" y="270" width="43" height="34" rx="7"/><text class="d-text d-text--mono" x="148.5" y="292" text-anchor="middle">ion</text>
+            <rect class="d-box--accent" x="176" y="270" width="75" height="34" rx="7"/><text class="d-text d-text--mono" x="213.5" y="292" text-anchor="middle">ability</text>
+            <text class="d-text d-text--title" x="720" y="292" text-anchor="end">4 tokens</text>
+
+            <text class="d-text d-text--warn" x="20" y="22" style="font-size:12.5px;font-weight:600">Illustrative: real tokenizers split text differently; try the OpenAI Tokenizer.</text>
+          </svg>
+        </div>
+        <figcaption>Illustrative: real tokenizers split text differently, and each model family has its own. Common words are usually one token; citations, numbers and rare words cost more. Try your own text in the <a href="https://platform.openai.com/tokenizer">OpenAI Tokenizer</a> or <a href="https://tiktokenizer.vercel.app/">Tiktokenizer</a>.</figcaption>
+      </figure>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>Legal text is token-hungry. Citations, section symbols, pin cites and Latin phrases split into many small tokens, so a 40-page brief fills more of the context window, and costs more, than 40 pages of plain prose. Splitting text into pieces is also part of why models are bad at tasks like counting letters or checking exact page numbers: they never see the characters one by one.</p>
+      </div>
+
+      <h2>The context window</h2>
+      <p>The <strong>context window</strong> is the model’s whole working desk: everything it can see while writing its next token. It has a fixed size, measured in tokens. Anything not on the desk doesn’t exist for the model, and anything that is on the desk competes for its attention.</p>
+      <p>In an agent like Claude Code, the desk fills up fast. Before you type a word, it holds the app’s <strong>system prompt</strong>, your <strong>CLAUDE.md</strong>, and the descriptions of your tools and skills. Every message, every file the agent opens and every web page it fetches is added on top.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 400" role="img" aria-labelledby="n1-ctx-t n1-ctx-d">
+            <title id="n1-ctx-t">The context window fills up as you work</title>
+            <desc id="n1-ctx-d">Two bars of the same fixed size. At the start of a session the context window holds the system prompt, CLAUDE.md and skill descriptions, a short conversation, and your message, with most of the space still free. An hour into a long task it holds the same system prompt and CLAUDE.md, a long conversation, many files and web pages the agent read, and your latest message, and it is nearly full. When it fills, older material is summarized or crowded out, so start each new topic with /clear.</desc>
+            <defs>
+              <marker id="n1-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+            </defs>
+            <text class="d-text d-text--label" x="60" y="30">Start of a session</text>
+            <rect class="d-group" x="60" y="42" width="250" height="280" rx="10"/>
+            <rect class="d-box" x="70" y="52" width="230" height="32" rx="6"/><text class="d-text" x="84" y="73" style="font-size:12.5px">System prompt (from the app)</text>
+            <rect class="d-box--file" x="70" y="88" width="230" height="32" rx="6"/><text class="d-text" x="84" y="109" style="font-size:12.5px">CLAUDE.md + skill descriptions</text>
+            <rect class="d-box--why" x="70" y="124" width="230" height="26" rx="6"/><text class="d-text" x="84" y="142" style="font-size:12.5px">Conversation so far</text>
+            <rect class="d-box--accent" x="70" y="154" width="230" height="32" rx="6"/><text class="d-text d-text--accent" x="84" y="175" style="font-size:12.5px;font-weight:700">Your message</text>
+            <text class="d-text d-text--small" x="185" y="256" text-anchor="middle">free space</text>
+            <text class="d-text d-text--title" x="185" y="346" text-anchor="middle">Plenty of room</text>
+
+            <path class="d-line" d="M326 182H414" marker-end="url(#n1-ah)"/>
+            <text class="d-text d-text--small" x="370" y="172" text-anchor="middle">as you work</text>
+
+            <text class="d-text d-text--label" x="430" y="30">An hour into a long task</text>
+            <rect class="d-group" x="430" y="42" width="250" height="280" rx="10"/>
+            <rect class="d-box" x="440" y="52" width="230" height="32" rx="6"/><text class="d-text" x="454" y="73" style="font-size:12.5px">System prompt (from the app)</text>
+            <rect class="d-box--file" x="440" y="88" width="230" height="32" rx="6"/><text class="d-text" x="454" y="109" style="font-size:12.5px">CLAUDE.md + skill descriptions</text>
+            <rect class="d-box--why" x="440" y="124" width="230" height="64" rx="6"/><text class="d-text" x="454" y="146" style="font-size:12.5px">Conversation so far</text>
+            <text class="d-text d-text--small" x="454" y="164">every question, answer and</text>
+            <text class="d-text d-text--small" x="454" y="179">correction since you started</text>
+            <rect class="d-box--ok" x="440" y="192" width="230" height="84" rx="6"/><text class="d-text" x="454" y="214" style="font-size:12.5px">Files and pages it read</text>
+            <text class="d-text d-text--small" x="454" y="232">PDFs, web pages, search</text>
+            <text class="d-text d-text--small" x="454" y="247">results, tool output</text>
+            <rect class="d-box--accent" x="440" y="280" width="230" height="32" rx="6"/><text class="d-text d-text--accent" x="454" y="301" style="font-size:12.5px;font-weight:700">Your message</text>
+            <text class="d-text d-text--title d-text--warn" x="555" y="346" text-anchor="middle">Nearly full</text>
+
+            <text class="d-text d-text--small" x="370" y="380" text-anchor="middle">When it fills, older material gets summarized or crowded out. Start each new topic with /clear.</text>
+          </svg>
+        </div>
+        <figcaption>Same window, different load. The size is fixed by the model; what fills it is up to the app, the agent and you. Proportions are illustrative.</figcaption>
+      </figure>
+
+      <p>Three practical consequences:</p>
+      <ul>
+        <li><strong>Long sessions get worse, not better.</strong> As the window fills, older details are summarized (Claude Code calls this <em>compacting</em>) or simply get less attention. Instructions you gave an hour ago can fade.</li>
+        <li><strong><code>/clear</code> is your friend.</strong> It empties the conversation and starts fresh. Anything worth keeping should live in a file, where the agent can read it again.</li>
+        <li><strong>Every always-loaded thing has a cost.</strong> A long CLAUDE.md or a dozen installed skills take space in every session, before you’ve asked anything. In Claude Code, <code>/context</code> shows how the window is being used.</li>
+      </ul>
+
+      <h3>The system prompt</h3>
+      <p>The <strong>system prompt</strong> is the first thing in the window: instructions from the app, placed before your message and usually hidden from you. It tells the model who it is, what tools it has, today’s date, and how to behave. When you write CLAUDE.md, an agent file or a skill, you are writing more of the same thing: text the app slips into the context window ahead of your request.</p>
+
+      <h3>The knowledge cutoff</h3>
+      <p>A model’s <strong>knowledge cutoff</strong> is the date its training data ends. It has never seen anything newer: a case decided last month, a rule amended last week, a paper posted yesterday. Worse, it doesn’t always know that it doesn’t know. Ask about a recent event and it may answer from older patterns. Anything current has to come in through a tool, such as web search or a database query.</p>
+
+      <h2>Sampling and temperature</h2>
+      <p>At each step the model doesn’t produce one answer. It produces a <strong>probability for every token in its vocabulary</strong>, then the app <strong>samples</strong> one, like drawing from a weighted hat. <strong>Temperature</strong> sets how the weights are used. Low temperature sharpens the odds toward the likeliest token; high temperature flattens them so less likely tokens get picked more often.</p>
+
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 740 300" role="img" aria-labelledby="n1-temp-t n1-temp-d">
+            <title id="n1-temp-t">Next-token probabilities for “The court granted the …” at low and high temperature (illustrative numbers)</title>
+            <desc id="n1-temp-d">Illustrative numbers, not real data. Prompt: “The court granted the …”. At low temperature, “motion” has 82 percent, “petition” 9 percent, “defendant’s” 4 percent, “request” 3 percent and “injunction” 2 percent, so the model almost always picks “motion”. At high temperature the same candidates are flatter: motion 34 percent, petition 19 percent, defendant’s 16 percent, request 13 percent, injunction 10 percent, with the rest spread over other tokens, so different runs pick different words.</desc>
+            <text class="d-text d-text--mono" x="20" y="26" style="font-size:13px">The court granted the …</text>
+            <text class="d-text d-text--warn" x="720" y="26" text-anchor="end" style="font-size:12.5px;font-weight:600">Illustrative numbers, not real data</text>
+
+            <text class="d-text d-text--title" x="20" y="62">Low temperature</text>
+            <text class="d-text d-text--small" x="20" y="80">nearly the same word every time</text>
+            <path class="d-line" d="M125 94V270" style="stroke: var(--line-strong); stroke-width:1.2"/>
+            <text class="d-text d-text--mono" x="117" y="114" text-anchor="end">motion</text><rect class="d-fill-accent" x="126" y="100" width="164" height="20" rx="4"/><text class="d-text" x="296" y="115" style="font-size:12.5px">82%</text>
+            <text class="d-text d-text--mono" x="117" y="148" text-anchor="end">petition</text><rect class="d-fill-accent" x="126" y="134" width="18" height="20" rx="4"/><text class="d-text" x="150" y="149" style="font-size:12.5px">9%</text>
+            <text class="d-text d-text--mono" x="117" y="182" text-anchor="end">defendant’s</text><rect class="d-fill-accent" x="126" y="168" width="8" height="20" rx="3"/><text class="d-text" x="140" y="183" style="font-size:12.5px">4%</text>
+            <text class="d-text d-text--mono" x="117" y="216" text-anchor="end">request</text><rect class="d-fill-accent" x="126" y="202" width="6" height="20" rx="3"/><text class="d-text" x="138" y="217" style="font-size:12.5px">3%</text>
+            <text class="d-text d-text--mono" x="117" y="250" text-anchor="end">injunction</text><rect class="d-fill-accent" x="126" y="236" width="4" height="20" rx="2"/><text class="d-text" x="136" y="251" style="font-size:12.5px">2%</text>
+
+            <path class="d-line d-line--dash" d="M375 50V280" style="stroke: var(--line); stroke-width:1.2"/>
+
+            <text class="d-text d-text--title" x="400" y="62">High temperature</text>
+            <text class="d-text d-text--small" x="400" y="80">more variety, and more surprises</text>
+            <path class="d-line" d="M505 94V270" style="stroke: var(--line-strong); stroke-width:1.2"/>
+            <text class="d-text d-text--mono" x="497" y="114" text-anchor="end">motion</text><rect class="d-fill-accent" x="506" y="100" width="68" height="20" rx="4"/><text class="d-text" x="580" y="115" style="font-size:12.5px">34%</text>
+            <text class="d-text d-text--mono" x="497" y="148" text-anchor="end">petition</text><rect class="d-fill-accent" x="506" y="134" width="38" height="20" rx="4"/><text class="d-text" x="550" y="149" style="font-size:12.5px">19%</text>
+            <text class="d-text d-text--mono" x="497" y="182" text-anchor="end">defendant’s</text><rect class="d-fill-accent" x="506" y="168" width="32" height="20" rx="4"/><text class="d-text" x="544" y="183" style="font-size:12.5px">16%</text>
+            <text class="d-text d-text--mono" x="497" y="216" text-anchor="end">request</text><rect class="d-fill-accent" x="506" y="202" width="26" height="20" rx="4"/><text class="d-text" x="538" y="217" style="font-size:12.5px">13%</text>
+            <text class="d-text d-text--mono" x="497" y="250" text-anchor="end">injunction</text><rect class="d-fill-accent" x="506" y="236" width="20" height="20" rx="4"/><text class="d-text" x="532" y="251" style="font-size:12.5px">10%</text>
+            <text class="d-text d-text--small" x="400" y="288">The other 8% is spread over thousands of other tokens.</text>
+          </svg>
+        </div>
+        <figcaption>Illustrative numbers, not real data. Both panels use the same scale. Real models assign a probability to every token in a vocabulary of tens of thousands.</figcaption>
+      </figure>
+
+      <p>Two things follow. First, <strong>the same prompt can give different answers</strong>, which is fine for brainstorming and a problem for anything you’ll cite. Second, a low temperature makes a model <em>consistent</em>, not <em>correct</em>: if the most likely continuation is wrong, it will be wrong every time. Developers can set temperature through the API; in chat apps and Claude Code you usually can’t.</p>
+
+      <h2>Hallucination</h2>
+      <p>A <strong>hallucination</strong> is confident output that isn’t true. It isn’t a glitch; it’s the same mechanism working as designed. The model produces the text that is most likely to come next. A case citation that <em>looks right</em>, with a plausible party name, reporter and page, is very likely text, whether or not the case exists.</p>
+      <p>The most famous legal example is <em>Mata v. Avianca, Inc.</em>, No. 22-cv-1461 (PKC) (S.D.N.Y. June 22, 2023), where lawyers filed a brief citing cases ChatGPT had invented, including “Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019).” The court imposed a $5,000 penalty. The lesson for agents: <strong>a model can’t vouch for its own sources</strong>. Something outside the model, such as a database lookup, an opened link or you, has to check.</p>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Hallucinations aren’t limited to fake cases. Real cases with the wrong holding, real papers with the wrong authors, and accurate quotes with invented page numbers are all common, and harder to spot.</p>
+      </div>
+
+      <h2>Choosing and describing models</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Term</th><th scope="col">What it means for you</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Reasoning (“thinking”)</th><td>Before answering, the model writes out scratch work, much like you outline before drafting. It helps on multi-step problems and costs time and tokens. In Claude Code, the effort setting controls how much it thinks.</td></tr>
+            <tr><th scope="row">Model tiers</th><td>Companies sell several sizes. Claude comes as <strong>Opus</strong> (largest and most capable), <strong>Sonnet</strong> (the balanced middle) and <strong>Haiku</strong> (smallest, fastest and cheapest). In Claude Code, <code>/model</code> switches between them.</td></tr>
+            <tr><th scope="row">Open-weight vs closed</th><td><strong>Closed</strong> models, like Claude, run only on the company’s servers, through its app or API. <strong>Open-weight</strong> models publish their parameters so anyone can download and run them, even on a laptop, which can keep confidential documents off someone else’s servers. Open weights aren’t “open source”: the training data and code may stay private.</td></tr>
+            <tr><th scope="row">Multimodal</th><td>The model reads images, scanned pages and PDFs, not only text. Useful for exhibits and scanned filings, but check what it read: small print, tables and handwriting are still error-prone.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What a model can’t do on its own</h2>
+      <p>The model by itself only turns text into more text. Each ability below is added by the <em>app</em>, which is why the same model can seem far more capable inside an agent than in a plain chat.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Capability</th><th scope="col">The model alone</th><th scope="col">How apps add it</th><th scope="col">In your project</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Know today’s date</th><td>Only knows its training data; may guess a date near its cutoff</td><td>The app writes the date into the system prompt</td><td>Claude Code includes the date, so the agent doesn’t have to guess it</td></tr>
+            <tr><th scope="row">Know recent events</th><td>Stops at the knowledge cutoff</td><td>A search tool and a page-fetch tool</td><td>WebSearch and WebFetch, which your brief-checker uses to confirm cited cases exist</td></tr>
+            <tr><th scope="row">Remember you between conversations</th><td>Starts every conversation blank</td><td>Memory files the app loads at the start, or a built-in memory feature</td><td>CLAUDE.md, your project rules, loaded at the start of every session</td></tr>
+            <tr><th scope="row">Run code or calculate exactly</th><td>Predicts what the answer looks like</td><td>A code-execution tool that runs a real program</td><td>Bash, and the lookup.py program you’ll write</td></tr>
+            <tr><th scope="row">Read your files</th><td>Sees only what is pasted into the conversation</td><td>File tools that open, search and list files</td><td>Read, Glob and Grep</td></tr>
+            <tr><th scope="row">Check that a source is real</th><td>Can’t tell a real citation from a plausible one</td><td>A tool that queries a database of record</td><td>The checker’s web check at first; from lesson 10, lookup.py with CourtListener</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>When an AI tool surprises you, good or bad, ask: was that the model, or something the app gave it? “It looked it up” means a tool ran. “It knew” means it predicted. Only the first one can be checked.</p>
+      </div>
+
+      <details class="deeper">
+        <summary>How next-token prediction actually works</summary>
+        <div class="deeper__body">
+          <p>Modern language models are built on an architecture called the <strong>transformer</strong>, introduced by Google researchers in 2017. In very rough outline:</p>
+          <ol class="steps">
+            <li><strong>Tokens become numbers.</strong> Each token is turned into a long list of numbers (a <em>vector</em>) that captures something about its meaning. Words used in similar ways end up with similar vectors.</li>
+            <li><strong>Attention mixes in context.</strong> Layer after layer, each token’s vector is updated by “attending” to the other tokens in the window. That is how “granted” in “the court granted” comes to mean something different from “granted” in “take it for granted.”</li>
+            <li><strong>The last vector becomes probabilities.</strong> After the final layer, the model converts the vector at the end of the text into a probability for every token in its vocabulary. That is the distribution in the bar chart above.</li>
+            <li><strong>Sample, append, repeat.</strong> One token is chosen, added to the text, and the whole process runs again for the next one.</li>
+          </ol>
+          <p>The parameters are the numbers inside steps 1 to 3. Training tunes them; the architecture stays the same.</p>
+          <p>After this <em>pretraining</em> on raw text, companies train the model further on examples of helpful conversations and on human (or AI) ratings of its answers, often called RLHF (reinforcement learning from human feedback). That second stage is what turns a text predictor into an assistant that follows instructions, and it is a form of fine-tuning.</p>
+          <p>The 3Blue1Brown videos and Jay Alammar’s <em>Illustrated Transformer</em> in the reading list below show all of this visually.</p>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>How often do legal AI tools hallucinate?</summary>
+        <div class="deeper__body">
+          <p>Two Stanford studies measured it directly. The first tested general-purpose chatbots on verifiable questions about federal case law and found hallucination rates <strong>between 58% (GPT-4) and 88% (Llama 2)</strong> (Dahl, Magesh, Suzgun &amp; Ho, “Large Legal Fictions,” <em>J. Legal Analysis</em>, 2024).</p>
+          <p>The second tested purpose-built legal research tools, which use retrieval from real legal databases, and found they still hallucinate, though less often:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Share of answers containing a hallucination</caption>
+              <thead><tr><th scope="col">Tool</th><th scope="col">Hallucinated</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Lexis+ AI</th><td>17%</td></tr>
+                <tr><th scope="row">Ask Practical Law AI</th><td>17%</td></tr>
+                <tr><th scope="row">Westlaw AI-Assisted Research</th><td>33%</td></tr>
+                <tr><th scope="row">GPT-4 (no retrieval)</th><td>43%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: Magesh, Surani, Dahl, Suzgun, Manning &amp; Ho, <a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">“Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools,”</a> <em>J. Empirical Legal Stud.</em> 22(2): 216–242 (2025), Table B1.</p>
+          <p>Accuracy and hallucination are different measures. In the same study, Ask Practical Law AI hallucinated rarely but gave incomplete answers or refused on more than 60% of queries. A tool that says less isn’t necessarily more useful.</p>
+          <p>The takeaway for your agent: retrieval (looking things up) reduces hallucination but doesn’t eliminate it. That is why your project adds a separate checker and a database lookup instead of trusting any single step.</p>
+        </div>
+      </details>
+
+      <h2>Further reading</h2>
+      <h3>Watch and read</h3>
+      <ul class="reading">
+        <li><a href="https://www.youtube.com/watch?v=LPZh9BOjkQs">Large Language Models explained briefly</a> <span class="by">· 3Blue1Brown (video, 8 min)</span><p>The clearest short visual introduction to next-word prediction and training.</p></li>
+        <li><a href="https://www.3blue1brown.com/lessons/mini-llm">Large Language Models explained briefly (text lesson)</a> <span class="by">· 3Blue1Brown</span><p>The written version: pretraining, RLHF and transformers in plain English.</p></li>
+        <li><a href="https://www.youtube.com/watch?v=wjZofJX0v4M">Transformers, the tech behind LLMs</a> <span class="by">· 3Blue1Brown (Deep Learning, Chapter 5)</span><p>A deeper visual tour of how text becomes vectors and then next-token probabilities.</p></li>
+        <li><a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a> <span class="by">· Jay Alammar</span><p>The classic diagram-heavy walkthrough of attention, the idea behind GPT and Claude.</p></li>
+      </ul>
+      <h3>Try it yourself</h3>
+      <ul class="reading">
+        <li><a href="https://platform.openai.com/tokenizer">Tokenizer</a> <span class="by">· OpenAI</span><p>Paste a paragraph and see how it splits into tokens. Try a case citation.</p></li>
+        <li><a href="https://tiktokenizer.vercel.app/">Tiktokenizer</a> <span class="by">· open-source tool</span><p>The same idea, with a choice of tokenizers so you can compare models.</p></li>
+      </ul>
+      <h3>Reference</h3>
+      <ul class="reading">
+        <li><a href="https://platform.claude.com/docs/en/about-claude/glossary">Glossary</a> <span class="by">· Anthropic</span><p>Short, plain definitions of tokens, context windows, temperature and more.</p></li>
+        <li><a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them">What are tokens and how to count them?</a> <span class="by">· OpenAI Help Center</span><p>Where the “about ¾ of a word” rule of thumb comes from.</p></li>
+        <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents</a> <span class="by">· Anthropic (2025)</span><p>Why what fills the context window matters so much for agents.</p></li>
+      </ul>
+      <h3>Hallucination and the law</h3>
+      <ul class="reading">
+        <li><a href="https://storage.courtlistener.com/recap/gov.uscourts.nysd.575368/gov.uscourts.nysd.575368.54.0.pdf">Mata v. Avianca, Opinion and Order on Sanctions</a> <span class="by">· S.D.N.Y. June 22, 2023 (Dkt. 54)</span><p>The fake-citations sanctions opinion. Worth reading for how the court describes the lawyers’ duty to check.</p></li>
+        <li><a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools</a> <span class="by">· Stanford RegLab (JELS 2025)</span><p>Even Lexis and Westlaw AI tools hallucinated on 17–33% of queries.</p></li>
+        <li><a href="https://arxiv.org/abs/2401.01301">Large Legal Fictions</a> <span class="by">· Dahl, Magesh, Suzgun &amp; Ho (J. Legal Analysis 2024)</span><p>General chatbots hallucinated 58–88% of the time on verifiable case-law questions.</p></li>
+      </ul>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-01-from-chat-to-agents.html">Used in: <strong>Lesson 1</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

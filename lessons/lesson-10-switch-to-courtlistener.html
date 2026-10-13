@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 10: Switch to CourtListener · Class 3 Workbook</title>
+  <meta name="description" content="Measure your web-based citation check, write a small program that queries CourtListener, switch the checker to it, and measure again.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-10">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 10 · Part 2: Build</p>
+        <h1>Switch to CourtListener</h1>
+        <span class="badge">Hands-on</span>
+        <p class="goal"><strong>Goal:</strong> measure your agent, make one change, and measure again.</p>
+      </header>
+
+      <p class="lead">Your checker confirms citations with a general web search: Google, not Westlaw. Each answer depends on which pages the search turned up and how the checker read them. In this lesson you give it a small program that asks a case-law database directly, and you test whether that actually helps. Measure, change one thing, measure again: that is how you find out whether an improvement is real.</p>
+
+      <h2>Measure the web version</h2>
+      <p>Open the citations tables at the end of <code>output/marbury-v-madison/brief.md</code> and <code>output/marbury-v-madison/brief-fake-cite.md</code> (from test 3). Fill in the first row.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <caption>Your worksheet</caption>
+          <thead><tr><th scope="col">Run</th><th scope="col">Citations listed</th><th scope="col">Marked found</th><th scope="col">Not found or unclear</th><th scope="col">Pages opened</th><th scope="col">Wrong calls (your judgment)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">v1: web search</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><th scope="row">v2: CourtListener</th><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">A wrong call is a real case marked not found, or a fake one marked found. Copy the table into your notes, or print this page.</p>
+
+      <h2 id="courtlistener">Add your key</h2>
+      <p>CourtListener is Free Law Project’s free database of U.S. case law. Its citation lookup needs a free <strong>API token</strong>: a password for a program. It lives in a file called <code>.env</code>, which Git ignores and your agent is blocked from reading.</p>
+      <ol class="steps">
+        <li>Sign in to <a href="https://www.courtlistener.com/register/">CourtListener</a> (create a free account if you haven’t). Your token is on your profile, on the <a href="https://www.courtlistener.com/profile/api-token/">API token page</a>. Copy it.</li>
+        <li>Make your own <code>.env</code> by copying the example file the starter project includes. Open the terminal with <strong>View › Terminal</strong>, then:
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal · Mac</span></div>
+            <pre><code>cp .env.example .env</code></pre>
+          </div>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal · Windows</span></div>
+            <pre><code>copy .env.example .env</code></pre>
+          </div>
+          Or do it in the Explorer: right-click <code>.env.example</code>, choose <strong>Copy</strong>, right-click an empty spot, choose <strong>Paste</strong>, and rename the copy to <code>.env</code>.
+        </li>
+        <li>Open <code>.env</code>. It starts as a copy of the example:
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__file">.env.example</span></div>
+            <pre><code>COURTLISTENER_TOKEN=paste-your-token-here</code></pre>
+          </div>
+          Replace <code>paste-your-token-here</code> with your token: no quotes, no spaces. Save.
+        </li>
+      </ol>
+
+      <div class="callout callout--watch">
+        <p class="callout__title">Watch out</p>
+        <p>Never paste your token into the chat with the agent. Everything you type is sent to the model’s servers. In the Explorer, <code>.env</code> appears greyed out: that is VS Code showing that Git ignores it, so it will never be committed.</p>
+      </div>
+
+      <h2 id="lookup">Write a tool: lookup.py</h2>
+      <p>A <strong>tool</strong>, for an agent, can be an ordinary program. You’ll have the agent write a short Python program that calls CourtListener. “Only Python’s standard library” means nothing extra to install.</p>
+      <ol class="steps" style="counter-reset: step 3">
+        <li>
+          <strong>Send this prompt.</strong> In Manual mode, Claude Code shows you the new file before creating it and asks before running any test command. Read each one before you approve.
+          <div class="copy-block" id="prompt-lookup">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt 6 · lookup.py</span></div>
+            <pre><code>Write lookup.py using only Python's standard library. It uses the CourtListener REST API v4 and reads the token from .env as COURTLISTENER_TOKEN. Never print the token.
+Commands:
+- python lookup.py verify &lt;file&gt;: send the file's text to CourtListener's citation lookup API and print a table: citation, found / not found, case name, link.
+- python lookup.py verify-citation "&lt;citation&gt;": the same check for one citation.
+- python lookup.py fetch "&lt;citation&gt;": find the case, download the text of its lead opinion, and save it as cases/[case-slug].txt. Begin the file with the case name, citation, court, date, and CourtListener link. Don't overwrite an existing file.
+- python lookup.py cited-by "&lt;citation&gt;" [n]: list up to n (default 10) later opinions that cite this case, newest first: case name, court, date, citation, link.
+- python lookup.py search "&lt;query&gt;": 5 matching opinions with case name, court, date, citation, link.
+If a request fails or hits a rate limit, say so plainly and keep going.</code></pre>
+          </div>
+        </li>
+        <li>
+          <strong>Try it yourself.</strong> In the terminal (on Windows, use <code>py</code> if <code>python</code> doesn’t work):
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>python lookup.py verify-citation "5 U.S. 137"
+python lookup.py verify-citation "5 U.S. 901"
+python lookup.py verify-citation "Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)"</code></pre>
+          </div>
+          <p>The first should be found: <em>Marbury</em>. The second, your invented <em>Henderson v. Pickering</em>, should not. The third is one of the cases ChatGPT invented in <em>Mata v. Avianca</em>. If anything comes back as “found,” read the result closely: what case name did the database actually return? A citation that points to a different case is still a fake citation.</p>
+        </li>
+        <li>
+          <strong>Understand one line.</strong> Open <code>lookup.py</code> and pick any line that puzzles you.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>Explain line [number] of lookup.py three ways: to a 10-year-old, to a law student, and to an engineer.</code></pre>
+          </div>
+        </li>
+      </ol>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Databases limit how often you can ask. CourtListener’s limits for a signed-in user are low: about 5 requests a minute (and 50 an hour, 125 a day). Check one case at a time, and if you hit a limit, wait a minute and try again.</p>
+      </div>
+
+      <h2 id="switch">Switch the checker</h2>
+      <p>Now point the workflow at the database. Your lock from lesson 9 blocks the agent from changing anything in <code>.claude/</code>, so the agent proposes the changes and <strong>you</strong> paste them in. That’s the lock doing its job.</p>
+      <ol class="steps" style="counter-reset: step 6">
+        <li>
+          <strong>Ask for the changes.</strong>
+          <div class="copy-block" id="prompt-switch">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt 7 · Switch to CourtListener</span></div>
+            <pre><code>Show me the exact changes to make, as text I can paste:
+1. In .claude/skills/brief/SKILL.md: (a) if $ARGUMENTS is a citation rather than a file, first run python lookup.py fetch on it and brief the saved file; (b) after the brief is written, run python lookup.py verify on the brief and give the results to brief-checker along with the brief.
+2. In .claude/agents/brief-checker.md: change the tools line to Read, Glob (no more web), and replace the citations-table instructions so it fills in "exists" and "link" from the lookup.py results instead of searching the web. If no lookup.py results are provided, mark every citation "not checked".
+Don't edit these files. I'll paste the changes in myself.</code></pre>
+          </div>
+        </li>
+        <li>
+          <strong>Paste them in.</strong> Open each file in the editor, make the changes, and save. Read the checker’s new tools line: <code>Read, Glob</code>. It has lost the internet; the database lookup is now done by a program you approve, not by the checker. Then run <strong>Developer: Reload Window</strong>.
+        </li>
+        <li>
+          <strong>Measure v2.</strong> Run the same two checks again. When the workflow runs <code>lookup.py</code>, Claude Code asks before running the command: read it, then approve.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/clear</code></pre>
+          </div>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/brief cases/marbury-v-madison.pdf</code></pre>
+          </div>
+          <p>Use the same answers to the three questions as before. Then run <code>/clear</code> and re-send <a href="lesson-09-test-and-lock.html#tests">test 3</a>, adding at the end: <em>“First run python lookup.py verify on the copy and give the results to the checker.”</em> Fill in the v2 row of your worksheet.</p>
+        </li>
+      </ol>
+
+      <h2>Two things the web couldn’t do well</h2>
+      <ol class="steps" style="counter-reset: step 9">
+        <li>
+          <strong>Brief a case from its citation.</strong> No PDF needed: the workflow fetches the opinion from CourtListener into <code>cases/</code>, then briefs it.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>/brief Lindke v. Freed, 601 U.S. 187 (2024)</code></pre>
+          </div>
+          <p>A text file from CourtListener may not mark the official page numbers. If it doesn’t, the briefer should cite page numbers of the file instead, and say so. That’s the “never guess a page” rule at work.</p>
+        </li>
+        <li>
+          <strong>See who cites a case.</strong>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
+            <pre><code>Run python lookup.py cited-by "5 U.S. 137" 10 and summarize what the results do and don't tell us. Can we tell from them whether Marbury is still good law?</code></pre>
+          </div>
+          <p>The right answer is <strong>no</strong>. A list of citing cases isn’t a <strong>citator</strong>: it doesn’t say whether a later case followed, distinguished, or overruled this one. That’s what KeyCite and Shepard’s are for, and why your briefer’s Limitations section says later treatment was not researched.</p>
+        </li>
+      </ol>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>Was the switch an improvement? What does the database check that the web didn’t, and what could the web catch that CourtListener can’t, such as a decision from last week?</li>
+          <li>“Found” here means a case exists at that citation. What does it <em>not</em> tell you about whether the case supports the point the brief makes?</li>
+        </ol>
+      </div>
+
+      <div class="checkpoint" data-checkpoint="lesson-10"><label><input type="checkbox">
+        <span><span class="checkpoint__head">You’re done when…</span>you have v1 and v2 rows in your worksheet, and <code>5 U.S. 901</code> came back not found from CourtListener.</span>
+      </label></div>
+
+      <details class="deeper">
+        <summary>Why lookup.py can read .env when the agent can’t</summary>
+        <div class="deeper__body">
+          <p>Permission rules govern <strong>Claude Code’s tools</strong>: Read, Edit, and the shell commands it recognizes as reading or writing files. They don’t reach inside a program once it runs. When you approve <code>python lookup.py …</code>, Python opens <code>.env</code> by itself, and Claude Code never sees that file being opened.</p>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Who tries to read .env</th><th scope="col">What happens</th><th scope="col">Why</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">The agent’s Read tool</th><td>Blocked</td><td>The <code>Read(./.env)</code> deny rule</td></tr>
+                <tr><th scope="row">The agent running <code>cat .env</code></th><td>Blocked</td><td>Claude Code recognizes <code>cat</code> as reading a file and applies the same rule</td></tr>
+                <tr><th scope="row"><code>python lookup.py …</code></th><td>Reads it</td><td>A program you approved opens the file itself; the rules check the command, not what the program does inside</td></tr>
+                <tr><th scope="row">You, in the editor</th><td>Reads it</td><td>Permission rules limit the agent, not you</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Here that gap is useful. The token goes straight from <code>.env</code> to CourtListener and never enters the conversation, so the model never sees it. That is why the prompt says “Never print the token”: anything the program prints lands in the agent’s context.</p>
+          <p>The same gap is also a risk. Any program the agent runs could read <code>.env</code>. So keep the defenses layered: read commands before approving them, keep the token out of chat and out of Git, and for real enforcement use OS-level sandboxing, where the operating system blocks the file for every program.</p>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://code.claude.com/docs/en/permissions">Configure permissions</a> <span class="by">· Claude Code docs</span><p>What Read and Edit rules cover in Bash, what they don’t, and how the sandbox closes the gap.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="deeper">
+        <summary>What a citation lookup request looks like</summary>
+        <div class="deeper__body">
+          <p><code>lookup.py</code> doesn’t do anything magical. For <code>verify-citation</code>, it sends one web request to CourtListener’s citation lookup API (version 4) and reads the answer. Here is the same request written as a terminal command. You don’t need to run it; it’s here so you can see the parts.</p>
+          <div class="copy-block copy-block--nowrap">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal · example request</span></div>
+            <pre><code>curl -X POST "https://www.courtlistener.com/api/rest/v4/citation-lookup/" \
+  --header 'Authorization: Token &lt;your-token-here&gt;' \
+  --data 'text=Henderson v. Pickering, 5 U.S. 901 (1803)'</code></pre>
+          </div>
+          <ul>
+            <li><strong>The endpoint</strong> is the address that ends in <code>/citation-lookup/</code>. <code>POST</code> means “here is some data for you to process.”</li>
+            <li><strong>The header</strong> <code>Authorization: Token …</code> carries your token. The token is the only part that identifies you, which is why it stays in <code>.env</code>.</li>
+            <li><strong>The data</strong> is a piece of text. CourtListener finds every citation in it, so you can send a whole paragraph, or a whole brief.</li>
+          </ul>
+          <p>The answer comes back as <strong>JSON</strong>, a structured text format, with one entry per citation it found. Simplified, a not-found result looks like this:</p>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Response · simplified</span></div>
+            <pre><code>[
+  {
+    "citation": "5 U.S. 901",
+    "status": 404,
+    "clusters": []
+  }
+]</code></pre>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Status</th><th scope="col">Meaning</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">200</th><td>Found: a case exists at that citation. <code>clusters</code> holds the matching case, including its name.</td></tr>
+                <tr><th scope="row">300</th><td>More than one match (for example, several decisions on the same printed page).</td></tr>
+                <tr><th scope="row">400</th><td>Looks like a citation, but the reporter isn’t one CourtListener knows.</td></tr>
+                <tr><th scope="row">404</th><td>A valid-looking citation that isn’t in CourtListener.</td></tr>
+                <tr><th scope="row">429</th><td>Too many: over the per-request limit or a rate limit. Wait and try again.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: <a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">CourtListener Citation Lookup API docs</a>.</p>
+          <p>Notice what the lookup matches on: the volume, reporter and page, not the case <em>name</em> you typed. Even a 200 only tells you that <em>some</em> case lives at that citation, so a good checker also compares the name, and a good lawyer reads the case.</p>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a> <span class="by">· Free Law Project</span><p>The official docs for the endpoint above, built to catch hallucinated citations.</p></li>
+            <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">CourtListener REST API v4 overview</a> <span class="by">· Free Law Project</span><p>How tokens work, and the rate limits for signed-in users.</p></li>
+            <li><a href="https://storage.courtlistener.com/recap/gov.uscourts.nysd.575368/gov.uscourts.nysd.575368.54.0.pdf">Mata v. Avianca, Opinion and Order on Sanctions</a> <span class="by">· S.D.N.Y. June 22, 2023 (PDF)</span><p>Judge Castel’s opinion, which discusses the fake <em>Varghese</em> citation and the others.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-05-apis-and-databases.html">Read more: <strong>N5 APIs and databases</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

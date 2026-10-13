@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Further reading · Class 3 Workbook</title>
+  <meta name="description" content="Checked links for going deeper on models, agents, skills, safety, law and AI, APIs, Git and the course tools.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="further-reading">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Resources</p>
+        <h1>Further reading</h1>
+        <p class="summary"><strong>In one line:</strong> the best short reads and videos for going deeper on anything from class, chosen for law students rather than engineers.</p>
+      </header>
+
+      <p>Nothing here is required. Each group starts with the most approachable item. All links were checked on October 12, 2026; if one has moved, search for its title.</p>
+
+      <h2>How models work</h2>
+      <ul class="reading">
+        <li><a href="https://www.youtube.com/watch?v=LPZh9BOjkQs">Large Language Models explained briefly</a> <span class="by">· 3Blue1Brown (video)</span><p>An 8-minute visual introduction to how a chatbot predicts the next word. Start here.</p></li>
+        <li><a href="https://www.3blue1brown.com/lessons/mini-llm">Large Language Models explained briefly (text lesson)</a> <span class="by">· 3Blue1Brown</span><p>The written version of the video: pretraining, human feedback and transformers in plain English.</p></li>
+        <li><a href="https://www.youtube.com/watch?v=wjZofJX0v4M">Transformers, the tech behind LLMs (Deep Learning, chapter 5)</a> <span class="by">· 3Blue1Brown (video)</span><p>A deeper visual tour of how text becomes numbers and then next-word probabilities.</p></li>
+        <li><a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a> <span class="by">· Jay Alammar</span><p>A classic, diagram-heavy walkthrough of the “attention” design behind GPT and Claude. More technical, still readable.</p></li>
+        <li><a href="https://tiktokenizer.vercel.app/">Tiktokenizer</a> <span class="by">· open-source tool</span><p>Paste a paragraph and see exactly how it splits into tokens. Try a case citation or a Latin phrase.</p></li>
+        <li><a href="https://platform.openai.com/tokenizer">Tokenizer</a> <span class="by">· OpenAI</span><p>OpenAI’s own version of the same tool.</p></li>
+        <li><a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them">What are tokens and how to count them?</a> <span class="by">· OpenAI Help Center</span><p>The source of the “roughly ¾ of a word” rule of thumb, with its caveats.</p></li>
+        <li><a href="https://platform.claude.com/docs/en/about-claude/glossary">Glossary</a> <span class="by">· Anthropic</span><p>Short, plain definitions of tokens, context windows, temperature and other words used in class.</p></li>
+      </ul>
+
+      <h2>Agents and tools</h2>
+      <ul class="reading">
+        <li><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> <span class="by">· Anthropic (Erik Schluntz and Barry Zhang, Dec. 2024)</span><p>The standard explainer on workflows versus agents and the tool-use loop. The source for lesson 2’s distinction.</p></li>
+        <li><a href="https://code.claude.com/docs/en/how-claude-code-works">How Claude Code works</a> <span class="by">· Anthropic</span><p>The agent loop (gather context, take action, verify), its tools, checkpoints and permissions.</p></li>
+        <li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents</a> <span class="by">· Anthropic (Sept. 2025)</span><p>Why what sits in the model’s limited “working memory” matters, and how agents manage it.</p></li>
+        <li><a href="https://www.anthropic.com/engineering/writing-tools-for-agents">Writing effective tools for agents — with agents</a> <span class="by">· Anthropic (Sept. 2025)</span><p>How the tools an agent can call are designed and tested.</p></li>
+        <li><a href="https://code.claude.com/docs/en/permission-modes">Choose a permission mode</a> <span class="by">· Anthropic</span><p>What Manual, Edit automatically, Plan and Auto each allow, and how to switch between them.</p></li>
+        <li><a href="https://code.claude.com/docs/en/permissions">Configure permissions</a> <span class="by">· Anthropic</span><p>Allow, ask and deny rules (deny always wins), how to write paths, and how to protect files like <code>.env</code>.</p></li>
+        <li><a href="https://code.claude.com/docs/en/subagents">Subagents</a> <span class="by">· Anthropic</span><p>How to create helper agents with their own instructions and tool limits, like your case-briefer and brief-checker.</p></li>
+        <li><a href="https://code.claude.com/docs/en/memory">How Claude remembers your project</a> <span class="by">· Anthropic</span><p>Where CLAUDE.md and other standing instructions live, and when they load.</p></li>
+        <li><a href="https://modelcontextprotocol.io/">Model Context Protocol</a> <span class="by">· MCP project</span><p>The “USB-C port” standard for connecting AI apps to outside tools and data.</p></li>
+      </ul>
+
+      <h2>Skills</h2>
+      <ul class="reading">
+        <li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Equipping agents for the real world with Agent Skills</a> <span class="by">· Anthropic (Oct. 2025)</span><p>What skills are, how agents load them only when needed, and why to install only skills you trust.</p></li>
+        <li><a href="https://agentskills.io/">Agent Skills</a> <span class="by">· Agent Skills project (originally Anthropic)</span><p>The open SKILL.md format and the list of tools that support it.</p></li>
+        <li><a href="https://code.claude.com/docs/en/skills">Extend Claude with skills</a> <span class="by">· Anthropic</span><p>How to write a skill that becomes a slash command, with <code>$ARGUMENTS</code> and frontmatter.</p></li>
+        <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Agent Skills overview (see “Security considerations”)</a> <span class="by">· Anthropic</span><p>The official warning: treat installing a skill like installing software.</p></li>
+        <li><a href="https://github.com/anthropics/skills">anthropics/skills</a> <span class="by">· Anthropic</span><p>Example skills to read and borrow from, including skills for Word, PDF, PowerPoint and Excel files.</p></li>
+        <li><a href="https://github.com/obra/superpowers">Superpowers</a> <span class="by">· Jesse Vincent and Prime Radiant</span><p>The popular skills library from lesson 4, for disciplined brainstorming, planning, testing and review.</p></li>
+        <li><a href="https://github.com/NVIDIA/SkillSpector">SkillSpector</a> <span class="by">· NVIDIA</span><p>The free scanner from lesson 4: it rates a skill 0–100 and says Safe, Caution or Do Not Install.</p></li>
+        <li><a href="https://arxiv.org/abs/2601.10338">Agent Skills in the Wild</a> <span class="by">· Liu et al. (arXiv preprint, Jan. 2026)</span><p>The academic study of about 31,000 public skills behind the “26.1% had a vulnerability” figure.</p></li>
+      </ul>
+
+      <h2>Safety and prompt injection</h2>
+      <ul class="reading">
+        <li><a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">The lethal trifecta for AI agents</a> <span class="by">· Simon Willison</span><p>Why an agent with private data, untrusted content and a way to send messages out is dangerous. Short and memorable.</p></li>
+        <li><a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">LLM01:2025 Prompt Injection</a> <span class="by">· OWASP GenAI Security Project</span><p>The security industry’s top-ranked AI risk, including “indirect” injection hidden in documents and web pages.</p></li>
+        <li><a href="https://asia.nikkei.com/Business/Technology/Artificial-intelligence/Positive-review-only-Researchers-hide-AI-prompts-in-papers">“Positive review only”: Researchers hide AI prompts in papers</a> <span class="by">· Nikkei Asia (July 1, 2025)</span><p>The real-world hidden-prompt case behind lesson 9’s prompt-injection test: 17 arXiv preprints aimed at AI peer reviewers.</p></li>
+        <li><a href="https://academica.ca/top-ten/researchers-embedded-ai-prompts-in-preprints-to-secure-favourable-reviews/">Researchers embedded AI prompts in preprints to secure favourable reviews</a> <span class="by">· Academica Group</span><p>A short, open-access summary of the Nikkei story.</p></li>
+        <li><a href="https://simonwillison.net/tags/prompt-injection/">Prompt injection (tag archive)</a> <span class="by">· Simon Willison</span><p>More than 160 posts tracking real prompt-injection incidents as they happen.</p></li>
+      </ul>
+
+      <h2>Law and AI</h2>
+      <ul class="reading">
+        <li><a href="https://www.americanbar.org/content/dam/aba/administrative/professional_responsibility/ethics-opinions/aba-formal-opinion-512.pdf">Formal Opinion 512: Generative Artificial Intelligence Tools</a> <span class="by">· ABA Standing Committee on Ethics and Professional Responsibility (July 29, 2024)</span><p>The ABA’s guidance on competence, confidentiality, candor, supervision and fees when lawyers use AI.</p></li>
+        <li><a href="https://storage.courtlistener.com/recap/gov.uscourts.nysd.575368/gov.uscourts.nysd.575368.54.0.pdf"><em>Mata v. Avianca, Inc.</em>, Opinion and Order on Sanctions (S.D.N.Y. June 22, 2023)</a> <span class="by">· CourtListener (RECAP)</span><p>Judge Castel’s opinion sanctioning lawyers for filing cases ChatGPT invented. Worth reading in full.</p></li>
+        <li><a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools</a> <span class="by">· Magesh et al., Stanford (J. Empirical Legal Stud. 2025)</span><p>Even Lexis+ AI and Westlaw’s AI tools hallucinated on 17–33% of test queries. Also on <a href="https://arxiv.org/abs/2405.20362">arXiv</a>.</p></li>
+        <li><a href="https://hai.stanford.edu/news/ai-trial-legal-models-hallucinate-1-out-6-or-more-benchmarking-queries">AI on Trial: Legal Models Hallucinate in 1 out of 6 (or More) Benchmarking Queries</a> <span class="by">· Stanford HAI</span><p>A readable summary of the study above.</p></li>
+        <li><a href="https://arxiv.org/abs/2401.01301">Large Legal Fictions: Profiling Legal Hallucinations in Large Language Models</a> <span class="by">· Dahl, Magesh, Suzgun and Ho (J. Legal Analysis 2024)</span><p>General chatbots got verifiable case-law questions wrong 58–88% of the time.</p></li>
+        <li><a href="https://www.damiencharlotin.com/hallucinations/">AI Hallucination Cases Database</a> <span class="by">· Damien Charlotin</span><p>A running list of court decisions about AI-hallucinated filings, more than 2,000 at our last check.</p></li>
+        <li><a href="https://law.stanford.edu/codex-the-stanford-center-for-legal-informatics/">CodeX: The Stanford Center for Legal Informatics</a> <span class="by">· Stanford Law School</span><p>Stanford’s center for legal technology and computational law, if you want to keep going.</p></li>
+      </ul>
+
+      <h2>APIs and databases</h2>
+      <ul class="reading">
+        <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a> <span class="by">· Free Law Project (CourtListener)</span><p>The API your <code>lookup.py</code> uses in lesson 10 to check whether a citation is real. Needs a free token.</p></li>
+        <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/overview">CourtListener REST API v4 overview</a> <span class="by">· Free Law Project</span><p>How to send your token and what the rate limits are.</p></li>
+        <li><a href="https://info.arxiv.org/help/api/user-manual.html">arXiv API User’s Manual</a> <span class="by">· arXiv</span><p>Free and no key needed; the docs ask you to wait about three seconds between calls.</p></li>
+        <li><a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a> <span class="by">· Crossref</span><p>Free DOI and article lookup with no sign-up.</p></li>
+        <li><a href="https://www.semanticscholar.org/product/api">Semantic Scholar API</a> <span class="by">· Allen Institute for AI</span><p>Paper search with citation links. Works without a key, but is often busy; a free key helps.</p></li>
+        <li><a href="https://www.federalregister.gov/developers/documentation/api/v1">Federal Register API</a> <span class="by">· Office of the Federal Register</span><p>Search proposed and final rules and notices. Free, no key.</p></li>
+        <li><a href="https://www.ecfr.gov/developers/documentation/api/v1">eCFR API</a> <span class="by">· Office of the Federal Register</span><p>The current Code of Federal Regulations and its past versions. Free, no key.</p></li>
+      </ul>
+
+      <h2>Git and VS Code</h2>
+      <ul class="reading">
+        <li><a href="https://github.com/skills/introduction-to-github">Introduction to GitHub</a> <span class="by">· GitHub Skills</span><p>A free, hands-on course of under an hour: branch, commit, pull request, merge.</p></li>
+        <li><a href="https://code.visualstudio.com/docs/sourcecontrol/overview">Source control in VS Code</a> <span class="by">· Microsoft</span><p>Committing and reading diffs from the Source Control panel, without the command line.</p></li>
+        <li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files">Ignoring files</a> <span class="by">· GitHub Docs</span><p>How <code>.gitignore</code> keeps secrets and clutter out of your repo.</p></li>
+        <li><a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">Removing sensitive data from a repository</a> <span class="by">· GitHub Docs</span><p>What to do if you commit a password or key. Step one: revoke it.</p></li>
+        <li><a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">What is Git? (Pro Git, section 1.3)</a> <span class="by">· Scott Chacon and Ben Straub</span><p>The “three states” of a file (modified, staged, committed) in a few pages.</p></li>
+        <li><a href="https://git-scm.com/book/en/v2">Pro Git</a> <span class="by">· Scott Chacon and Ben Straub</span><p>The standard Git textbook, free online.</p></li>
+        <li><a href="https://code.visualstudio.com/docs/languages/markdown">Markdown and Visual Studio Code</a> <span class="by">· Microsoft</span><p>Writing and previewing <code>.md</code> files such as CLAUDE.md and SKILL.md.</p></li>
+      </ul>
+
+      <h2>Course tools</h2>
+      <ul class="reading">
+        <li><a href="https://code.claude.com/docs/en/quickstart">Claude Code quickstart</a> <span class="by">· Anthropic</span><p>Install, first session and the essential commands.</p></li>
+        <li><a href="https://code.claude.com/docs/en/vs-code">Use Claude Code in VS Code</a> <span class="by">· Anthropic</span><p>Installing and using the extension you used in class.</p></li>
+        <li><a href="https://code.claude.com/docs/en/commands">Commands reference</a> <span class="by">· Anthropic</span><p>Every slash command, including <code>/clear</code>, <code>/context</code> and <code>/rewind</code>.</p></li>
+        <li><a href="https://code.claude.com/docs/en/checkpointing">Checkpointing</a> <span class="by">· Anthropic</span><p>Undoing Claude’s edits with <kbd>Esc</kbd> <kbd>Esc</kbd> or <code>/rewind</code>, and what it can’t undo.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/codex/ide">Codex IDE extension</a> <span class="by">· OpenAI</span><p>OpenAI’s coding agent inside VS Code.</p></li>
+        <li><a href="https://marketplace.visualstudio.com/items?itemName=openai.chatgpt">Codex in the VS Code Marketplace</a> <span class="by">· OpenAI</span><p>Where to install the Codex extension.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/permission-modes">Codex permission modes</a> <span class="by">· OpenAI</span><p>What Ask for approval, Approve for me and Full access each allow.</p></li>
+        <li><a href="https://learn.chatgpt.com/docs/sandboxing">Codex sandboxing</a> <span class="by">· OpenAI</span><p>How Codex limits where its commands can reach: read-only, workspace-write and full access.</p></li>
+      </ul>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

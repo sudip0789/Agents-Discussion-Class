@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 11: Save and share: Git vs GitHub · Class 3 Workbook</title>
+  <meta name="description" content="Read your project's history in VS Code, check what .gitignore keeps out, and publish your agent to a private GitHub repository without your token or reader profile.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-11">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 11 · Part 2: Build</p>
+        <h1>Save and share: Git vs GitHub</h1>
+        <span class="badge">Hands-on</span>
+        <p class="goal"><strong>Goal:</strong> put your agent online privately, without your secrets.</p>
+      </header>
+
+      <p class="lead">Everything you built today lives in one folder on your laptop, and nothing has recorded how it got there. <strong>Git</strong> fixes that: it saves snapshots of the folder, each with a short message. In this lesson you check what Git must never save, make your first snapshot, and then put a copy online where only you can see it.</p>
+
+      <div class="poll-break" data-poll="P12, then P13"></div>
+
+      <h2>What Git will never see</h2>
+      <ol class="steps">
+        <li>Open <code>.gitignore</code>. It came with the starter project:
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__file">.gitignore</span></div>
+            <pre><code># Your API token. Never commit it.
+.env
+# Personal Claude Code settings and system files.
+.claude/settings.local.json
+.DS_Store
+__pycache__/</code></pre>
+          </div>
+          Git doesn’t track any file listed here. Because <code>.env</code> is listed, your CourtListener token will never be saved in a snapshot. In the Explorer, it appears greyed out.
+        </li>
+        <li>Think about what else would belong here in practice. Your <code>cases/</code> and <code>output/</code> folders hold public opinions and your briefs of them, so saving them is fine. A client’s documents, or a memo about a client’s matter, would not be. Confidential files belong in <code>.gitignore</code> from day one, before the first snapshot.</li>
+      </ol>
+
+      <h2>Make your first commit</h2>
+      <p>This time you type the Git commands yourself instead of asking the agent. They’re the same commands the agent would run, so this is also how you learn to read them before you approve them.</p>
+      <ol class="steps" style="counter-reset: step 2">
+        <li>
+          <strong>Open the terminal.</strong> Choose <strong>View › Terminal</strong>. It opens in your project folder. Type each command below and press <kbd>Enter</kbd>. The commands are the same on Mac and Windows.
+        </li>
+        <li>
+          <strong>Turn the folder into a Git repository.</strong> The folder you downloaded is ordinary files; Git isn’t watching it yet.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git init</code></pre>
+          </div>
+          <p>Git replies “Initialized empty Git repository.” It has created a hidden <code>.git</code> folder, where every snapshot will be kept. Run this once per project, never again.</p>
+        </li>
+        <li>
+          <strong>See what Git sees.</strong>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git status</code></pre>
+          </div>
+          <p>Git lists every file under <strong>Untracked files</strong>, in red: <code>.claude/</code>, <code>.env.example</code>, <code>.gitignore</code>, <code>CLAUDE.md</code>, <code>cases/</code>, <code>lookup.py</code>, <code>output/</code>. <code>.env</code> isn’t there, because <code>.gitignore</code> hides it from Git.</p>
+          <div class="callout callout--tip">
+            <p class="callout__title">Tip</p>
+            <p>If the terminal says <code>git: command not found</code> (or “not recognized” on Windows), Git isn’t installed. Install it from <a href="https://git-scm.com/downloads">git-scm.com/downloads</a>, close and reopen VS Code, and start again from <code>git init</code>.</p>
+          </div>
+        </li>
+        <li>
+          <strong>Tell Git who you are.</strong> Only the first time on this computer. Use your own name, and the email address on your GitHub account.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal · first time only</span></div>
+            <pre><code>git config --global user.name "Your Name"
+git config --global user.email "you@example.com"</code></pre>
+          </div>
+          <p>Every commit is signed with this name and email. If you skip this step, Git stops at the commit and replies “Please tell me who you are.”</p>
+        </li>
+        <li>
+          <strong>Stage the files.</strong> Staging chooses what goes into the next snapshot. The dot means “everything in this folder that isn’t ignored.”
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git add .
+git status</code></pre>
+          </div>
+          <p>The same files now appear in green under <strong>Changes to be committed</strong>. Read the list before you go on. If <code>.env</code> or anything confidential were there, this is the moment to stop.</p>
+        </li>
+        <li>
+          <strong>Commit.</strong> A <strong>commit</strong> is a saved snapshot of everything you staged, with a message saying what changed.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git commit -m "Legal research agent: briefer, checker, /brief, CourtListener"</code></pre>
+          </div>
+          <p><code>-m</code> stands for <em>message</em>. Git replies with a short summary: how many files changed, and a line for each new file.</p>
+        </li>
+        <li>
+          <strong>Read the history.</strong>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git log --oneline</code></pre>
+          </div>
+          <p>One line per commit, newest first. For now there’s only yours. The code at the start of the line, such as <code>3f9c2ab</code>, is the commit’s ID. Git also calls your newest commit <code>HEAD</code>.</p>
+        </li>
+        <li>
+          <strong>Look inside your commit.</strong>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git show --stat HEAD</code></pre>
+          </div>
+          <p>This lists every file the commit saved and how many lines each one added. Check that <code>.env</code> is <em>not</em> in the list. If the output fills the screen and ends with a <code>:</code>, Git is showing it one page at a time: press <kbd>Space</kbd> to scroll and <kbd>q</kbd> to quit.</p>
+        </li>
+        <li>
+          <strong>Read a diff.</strong> A <strong>diff</strong> shows exactly which lines changed.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git show HEAD -- .claude/agents/brief-checker.md</code></pre>
+          </div>
+          <p>Added lines start with <code>+</code> and removed lines with <code>-</code>. In a first commit everything is new, so every line starts with <code>+</code>. The same view, in color, is in the <strong>Source Control</strong> panel (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd>): in the <strong>Graph</strong> section, click your commit, then click a file. From now on, every commit shows exactly what changed, which is how you check what an agent actually did instead of trusting its summary.</p>
+        </li>
+      </ol>
+
+      <details class="deeper">
+        <summary>More Git commands, and the ones to be careful with</summary>
+        <div class="deeper__body">
+          <p>You don’t need these today. They’re the commands you’ll meet next, including in the approval requests an agent sends you. Words in angle brackets are placeholders: replace <code>&lt;file&gt;</code> with a file name and <code>&lt;commit&gt;</code> with a commit ID from <code>git log --oneline</code>.</p>
+
+          <h3>Looking: safe, they change nothing</h3>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it shows</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>git status</code></th><td>What’s changed, what’s staged, and what Git isn’t tracking yet</td></tr>
+                <tr><th scope="row"><code>git diff</code></th><td>Changes you haven’t staged yet, line by line</td></tr>
+                <tr><th scope="row"><code>git diff --staged</code></th><td>Changes you’ve staged, which will go into the next commit</td></tr>
+                <tr><th scope="row"><code>git log --oneline</code></th><td>The history, one line per commit</td></tr>
+                <tr><th scope="row"><code>git log -p &lt;file&gt;</code></th><td>Every change ever made to one file, oldest at the bottom: the redline history of an agent’s instructions</td></tr>
+                <tr><th scope="row"><code>git show &lt;commit&gt;</code></th><td>One commit: its message and its diff</td></tr>
+                <tr><th scope="row"><code>git blame &lt;file&gt;</code></th><td>For each line of a file, the commit that last changed it</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Saving</h3>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>git add &lt;file&gt;</code></th><td>Stages one file. Safer than <code>git add .</code> when you only meant to save one change</td></tr>
+                <tr><th scope="row"><code>git add .</code></th><td>Stages everything in the folder that isn’t ignored</td></tr>
+                <tr><th scope="row"><code>git commit -m "message"</code></th><td>Saves the staged changes as a commit</td></tr>
+                <tr><th scope="row"><code>git commit --amend -m "message"</code></th><td>Replaces your last commit with a corrected one. Only before you’ve pushed it</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Undoing</h3>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>git restore --staged &lt;file&gt;</code></th><td>Unstages a file. Your edits stay in the file</td></tr>
+                <tr><th scope="row"><code>git restore &lt;file&gt;</code></th><td>Throws away your unsaved edits to a file and goes back to the last commit. The edits are gone for good</td></tr>
+                <tr><th scope="row"><code>git restore --source=&lt;commit&gt; &lt;file&gt;</code></th><td>Brings back a file as it was in an earlier commit, for example an agent file before a bad edit</td></tr>
+                <tr><th scope="row"><code>git revert &lt;commit&gt;</code></th><td>Makes a new commit that undoes an earlier one. The history keeps both, which is why it’s the safe way to undo something already shared</td></tr>
+                <tr><th scope="row"><code>git rm --cached &lt;file&gt;</code></th><td>Stops tracking a file without deleting it. Use it after adding a file to <code>.gitignore</code> that was already committed</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Branches: try something without touching your working version</h3>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>git branch</code></th><td>Lists branches; a star marks the one you’re on</td></tr>
+                <tr><th scope="row"><code>git switch -c &lt;name&gt;</code></th><td>Creates a new branch and moves to it, for example to try a stricter checker</td></tr>
+                <tr><th scope="row"><code>git switch &lt;name&gt;</code></th><td>Moves to an existing branch; your files change to match it</td></tr>
+                <tr><th scope="row"><code>git merge &lt;name&gt;</code></th><td>Brings another branch’s commits into the one you’re on</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Working with GitHub</h3>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><code>git init</code></th><td>Turns a folder into a Git repository (what you did above). Once per project</td></tr>
+                <tr><th scope="row"><code>git clone &lt;url&gt;</code></th><td>Copies a repository from GitHub, with its whole history, onto your computer</td></tr>
+                <tr><th scope="row"><code>git remote -v</code></th><td>Shows which online repositories this folder is linked to</td></tr>
+                <tr><th scope="row"><code>git remote add origin &lt;url&gt;</code></th><td>Links this folder to an online repository. VS Code’s <strong>Publish</strong> button does this for you</td></tr>
+                <tr><th scope="row"><code>git push</code></th><td>Uploads your new commits to GitHub</td></tr>
+                <tr><th scope="row"><code>git pull</code></th><td>Downloads new commits from GitHub and merges them into your folder</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout--watch">
+            <p class="callout__title">Watch out</p>
+            <p>Some commands destroy work or rewrite history, and none of them asks “are you sure?” Never approve one from an agent unless you know exactly why it’s needed.</p>
+            <ul>
+              <li><code>git reset --hard</code>: throws away every uncommitted change in the folder.</li>
+              <li><code>git clean -fd</code>: deletes every untracked file, including new briefs you haven’t committed.</li>
+              <li><code>git push --force</code>: overwrites the history on GitHub, including other people’s commits.</li>
+              <li><code>git checkout .</code> or <code>git restore .</code>: throws away all unsaved edits in the folder.</li>
+            </ul>
+          </div>
+
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Pro Git: Recording changes to the repository</a> <span class="by">· git-scm.com</span><p>status, add, diff and commit, step by step.</p></li>
+            <li><a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">Pro Git: Undoing things</a> <span class="by">· git-scm.com</span><p>Amend, unstage and restore, and which undos can’t be undone.</p></li>
+            <li><a href="https://education.github.com/git-cheat-sheet-education.pdf">Git cheat sheet</a> <span class="by">· GitHub Education (PDF)</span><p>The common commands on two printable pages.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <h2>Publish to GitHub, privately</h2>
+      <p><strong>Git</strong> is the tool you just used to record your history, entirely on your laptop. <strong>GitHub</strong> is a website that keeps a copy online. <strong>Pushing</strong> sends your commits there. First you make an empty repository on GitHub to receive them.</p>
+      <ol class="steps">
+        <li>
+          <strong>Create an empty private repository.</strong> Go to <a href="https://github.com/new">github.com/new</a> and sign in. Name it <code>legal-research-agent</code> and choose <strong>Private</strong>: only you, and anyone you invite, can see it. Leave <strong>Add a README</strong>, <strong>.gitignore</strong> and <strong>license</strong> off, so the repository starts empty. Click <strong>Create repository</strong>.
+          <div class="callout callout--watch">
+            <p class="callout__title">Watch out</p>
+            <p>If you tick “Add a README,” GitHub makes a commit your laptop doesn’t have, and your first push is rejected. Start empty.</p>
+          </div>
+        </li>
+        <li>
+          <strong>Copy its address.</strong> The next page shows a <strong>Quick setup</strong> box. Make sure <strong>HTTPS</strong> is selected and copy the address. It looks like <code>https://github.com/your-name/legal-research-agent.git</code>.
+        </li>
+        <li>
+          <strong>Link your folder to it.</strong> Back in the VS Code terminal, paste your own address in place of the example:
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git remote add origin https://github.com/your-name/legal-research-agent.git
+git remote -v</code></pre>
+          </div>
+          <p>A <strong>remote</strong> is a saved link to an online copy; <code>origin</code> is the usual name for the main one. <code>git remote -v</code> shows the link, twice: once for fetching and once for pushing.</p>
+        </li>
+        <li>
+          <strong>Name your branch <code>main</code>.</strong> Depending on how Git was installed, your first branch may be called <code>master</code>. GitHub expects <code>main</code>.
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git branch -M main</code></pre>
+          </div>
+        </li>
+        <li>
+          <strong>Push.</strong>
+          <div class="copy-block">
+            <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+            <pre><code>git push -u origin main</code></pre>
+          </div>
+          <p>The first time, GitHub asks who you are. VS Code usually shows a pop-up or opens your browser: sign in to GitHub and approve. <code>-u</code> remembers where to push, so from now on a plain <code>git push</code> is enough.</p>
+          <div class="callout callout--watch">
+            <p class="callout__title">Watch out</p>
+            <p>If the terminal asks for a <strong>password</strong>, your GitHub password won’t work: GitHub stopped accepting passwords for Git in 2021. Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to cancel and use the bonus tip below instead, which signs you in through VS Code.</p>
+          </div>
+        </li>
+        <li>
+          <strong>Check it on GitHub.</strong> Refresh the repository page. Check that it’s marked <strong>Private</strong> next to its name, that your files and commit message are there, and that <code>.env</code> is <em>not</em> in the file list.
+        </li>
+      </ol>
+
+      <div class="callout callout--try">
+        <p class="callout__title">Bonus tip: the one-click way</p>
+        <p>Steps 1 to 5 can also be done without typing a command. In a project that isn’t on GitHub yet, open the <strong>Source Control</strong> panel and click <strong>Publish Branch</strong> (or run <strong>Publish to GitHub</strong> from the Command Palette), then choose <strong>Publish to GitHub private repository</strong>. VS Code signs you in, creates the repository, adds the remote and pushes, all at once. After that, the <strong>Sync Changes</strong> button pushes new commits. Two other shortcuts do the same job:</p>
+        <ul>
+          <li><strong>GitHub CLI</strong>, a free command-line tool from GitHub (<a href="https://cli.github.com/">cli.github.com</a>). After a one-time <code>gh auth login</code>, one command creates the repository and pushes: <code>gh repo create legal-research-agent --private --source=. --push</code></li>
+          <li><strong>Ask Claude Code</strong>: “Publish this project to a new private GitHub repository.” It runs the same commands you just typed, so read each one before you approve it, and check that it says <em>private</em>.</li>
+        </ul>
+        <p>Knowing the commands is what lets you check what a button, or an agent, did on your behalf.</p>
+      </div>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Claude Code has its own undo: press <kbd>Esc</kbd> twice on an empty prompt, or type <code>/rewind</code>, to go back to an earlier point in the conversation and restore files. It’s a quick undo inside a session, and it doesn’t track changes made by Bash commands. Git is the permanent record.</p>
+      </div>
+
+      <details class="deeper">
+        <summary>If a secret ever gets committed</summary>
+        <div class="deeper__body">
+          <p>Deleting a file and committing again does not remove it from Git. Every earlier snapshot still contains it, and anyone with a copy of the repository has those snapshots. If your token lands in a commit, especially one you’ve pushed:</p>
+          <ol class="steps">
+            <li><strong>Revoke or replace the key first.</strong> Do this in the service that issued it (for this class, your CourtListener account). Once the old key stops working, a leaked copy is useless. Cleaning the history comes second, because you can never be sure nobody copied it in the meantime.</li>
+            <li><strong>Then clean the history</strong>, if you need to. Rewriting Git history is fiddly, and on GitHub it can involve cached views and copies other people made. Follow GitHub’s guide, or ask for help.</li>
+            <li><strong>Prevent a repeat:</strong> add the file to <code>.gitignore</code>, and read the list of changed files before every commit.</li>
+          </ol>
+          <p>A private repo lowers the risk but doesn’t remove it: collaborators can see everything, and a repo can be made public later with its whole history.</p>
+
+          <h3>Git vs GitHub, side by side</h3>
+          <figure class="diagram">
+            <div class="figure-scroll">
+              <svg viewBox="0 0 740 262" role="img" aria-labelledby="l11-git-t l11-git-d">
+                <title id="l11-git-t">Where Git and GitHub keep your project</title>
+                <desc id="l11-git-d">On your laptop, your working folder holds CLAUDE.md, lookup.py, output files, and the ignored file .env. Committing saves snapshots into the Git history, also on your laptop, which works offline. Pushing sends a copy of the history to GitHub, in a private repository; pulling brings changes back. GitHub never sees .env because it was never committed.</desc>
+                <defs>
+                  <marker id="l11-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0 0L10 5L0 10z"/></marker>
+                  <marker id="l11-aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead--accent" d="M0 0L10 5L0 10z"/></marker>
+                </defs>
+                <rect class="d-group" x="14" y="34" width="440" height="214" rx="12"/>
+                <text class="d-text d-text--label" x="28" y="26">Your laptop: Git</text>
+
+                <rect class="d-box" x="30" y="52" width="184" height="180" rx="10"/>
+                <text class="d-text d-text--title" x="44" y="78">Working folder</text>
+                <text class="d-text d-text--mono" x="44" y="104">CLAUDE.md</text>
+                <text class="d-text d-text--mono" x="44" y="124">lookup.py</text>
+                <text class="d-text d-text--mono" x="44" y="144">output/…</text>
+                <line class="d-line d-line--dash" x1="44" y1="158" x2="200" y2="158"/>
+                <text class="d-text d-text--mono d-text--warn" x="44" y="186">.env</text>
+                <text class="d-text d-text--small" x="44" y="210">ignored: never committed</text>
+
+                <path class="d-line" d="M216 142H262" marker-end="url(#l11-ah)"/>
+                <text class="d-text d-text--small" x="240" y="132" text-anchor="middle">commit</text>
+
+                <rect class="d-box--file" x="268" y="96" width="172" height="92" rx="10"/>
+                <text class="d-text d-text--title" x="354" y="130" text-anchor="middle">Git history</text>
+                <text class="d-text d-text--small" x="354" y="152" text-anchor="middle">every snapshot</text>
+                <text class="d-text d-text--small" x="354" y="170" text-anchor="middle">works offline</text>
+
+                <path class="d-line d-line--accent" d="M442 130H524" marker-end="url(#l11-aha)"/>
+                <text class="d-text d-text--small" x="484" y="120" text-anchor="middle">push</text>
+                <path class="d-line d-line--dash" d="M524 158H446" marker-end="url(#l11-ah)"/>
+                <text class="d-text d-text--small" x="484" y="176" text-anchor="middle">pull</text>
+
+                <rect class="d-box--accent" x="530" y="96" width="196" height="92" rx="10"/>
+                <text class="d-text d-text--title d-text--accent" x="628" y="130" text-anchor="middle">GitHub (private)</text>
+                <text class="d-text d-text--small" x="628" y="152" text-anchor="middle">a copy of the history,</text>
+                <text class="d-text d-text--small" x="628" y="170" text-anchor="middle">online</text>
+                <text class="d-text d-text--small" x="628" y="212" text-anchor="middle">never sees .env</text>
+              </svg>
+            </div>
+            <figcaption>Git keeps the history on your laptop; GitHub holds a copy you choose to send. <span class="source">Source: adapted from <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Pro Git, “What is Git?”</a></span></figcaption>
+          </figure>
+          <div class="table-wrap min-wide">
+            <table>
+              <thead><tr><th scope="col"></th><th scope="col">Git</th><th scope="col">GitHub</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">What it is</th><td>A program that records versions of a folder</td><td>A website that stores Git projects online</td></tr>
+                <tr><th scope="row">Where it runs</th><td>Your computer</td><td>GitHub’s servers</td></tr>
+                <tr><th scope="row">Needs internet?</th><td>No</td><td>Yes</td></tr>
+                <tr><th scope="row">Who can see it</th><td>Whoever can open your laptop</td><td>You and anyone you invite (private), or everyone (public)</td></tr>
+                <tr><th scope="row">Used for</th><td>Commits, diffs, history, undo</td><td>Backup, sharing, review before changes are accepted</td></tr>
+                <tr><th scope="row">Alternatives</th><td>Other version-control tools exist, but Git is the standard</td><td>GitLab, Bitbucket</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">Removing sensitive data from a repository</a> <span class="by">· GitHub Docs</span><p>The official steps if a key or password is committed, starting with revoking it.</p></li>
+            <li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files">Ignoring files</a> <span class="by">· GitHub Docs</span><p>How .gitignore works, and how to stop tracking a file that was already committed.</p></li>
+            <li><a href="https://code.visualstudio.com/docs/sourcecontrol/overview">Source control in VS Code</a> <span class="by">· Microsoft</span><p>Commits, diffs and history without the command line.</p></li>
+            <li><a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Pro Git: What is Git?</a> <span class="by">· Scott Chacon and Ben Straub</span><p>The free standard textbook’s explanation of snapshots and the three states of a file.</p></li>
+            <li><a href="https://github.com/skills/introduction-to-github">Introduction to GitHub</a> <span class="by">· GitHub Skills</span><p>A free, hands-on course of under an hour: branch, commit, pull request, merge.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="checkpoint" data-checkpoint="lesson-11"><label><input type="checkbox">
+        <span><span class="checkpoint__head">You’re done when…</span>your agent is in a private GitHub repo without .env.</span>
+      </label></div>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-06-git-and-github.html">Read more: <strong>N6 Git and GitHub</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

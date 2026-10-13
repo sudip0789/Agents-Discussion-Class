@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N8: VS Code and code basics · Class 3 Workbook</title>
+  <meta name="description" content="The parts of VS Code you use to supervise an agent, the file types in your project, how code runs, useful Claude Code commands, and Markdown in 60 seconds.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="note-08">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Concept note N8</p>
+        <h1>VS Code and code basics</h1>
+        <p class="summary"><strong>In one line:</strong> VS Code puts your files, the agent, and the history side by side, so you can supervise what the agent does.</p>
+      </header>
+
+      <p class="lead">You don’t need to be a programmer to use VS Code well. You need to know where to look: which files changed, what the agent is about to do, and what the history says. This note is a map of the window and a short glossary of the code you’ll see in it.</p>
+
+      <h2>The parts of the window</h2>
+      <figure class="diagram">
+        <div class="figure-scroll">
+          <svg viewBox="0 0 720 440" role="img" aria-labelledby="n8-ui-t n8-ui-d">
+            <title id="n8-ui-t">A simplified VS Code window</title>
+            <desc id="n8-ui-d">A wireframe of a VS Code window with six numbered areas. 1, the Explorer, a file list on the left showing .claude, output, cases, .env, .gitignore, CLAUDE.md, lookup.py and .env.example. 2, the Editor in the middle, showing CLAUDE.md open in a tab. 3, the Claude Code panel on the right, with the conversation, a prompt box, and the permission mode indicator reading Manual below it. 4, the Source Control icon in the activity bar on the far left. 5, the Terminal below the editor, running python lookup.py verify-citation "5 U.S. 137". 6, the Command Palette, a search box that drops down over the top of the editor, here showing Git: Clone. A status bar along the bottom shows the branch name, main.</desc>
+
+            <rect class="d-box" x="10" y="10" width="700" height="420" rx="10"/>
+            <circle class="d-fill-muted" cx="28" cy="24" r="5"/><circle class="d-fill-muted" cx="44" cy="24" r="5"/><circle class="d-fill-muted" cx="60" cy="24" r="5"/>
+            <text class="d-text d-text--small" x="360" y="28" text-anchor="middle">research-agent · Visual Studio Code</text>
+            <path class="d-line" d="M10 38H710" style="stroke-width:1"/>
+
+            <!-- activity bar -->
+            <rect class="d-box--file" x="11" y="39" width="40" height="365"/>
+            <rect class="d-fill-muted" x="21" y="52" width="20" height="20" rx="4"/>
+            <rect class="d-fill-muted" x="21" y="86" width="20" height="20" rx="4"/>
+            <rect class="d-fill-accent" x="21" y="120" width="20" height="20" rx="4"/>
+            <rect class="d-fill-muted" x="21" y="154" width="20" height="20" rx="4"/>
+
+            <!-- explorer -->
+            <rect class="d-box" x="51" y="39" width="150" height="365" style="stroke-width:1"/>
+            <text class="d-text d-text--label" x="63" y="60">Explorer</text>
+            <text class="d-text d-text--mono" x="63" y="86" style="font-size:11.5px">.claude/</text>
+            <text class="d-text d-text--mono" x="63" y="106" style="font-size:11.5px">output/</text>
+            <text class="d-text d-text--mono" x="63" y="126" style="font-size:11.5px">cases/</text>
+            <text class="d-text d-text--mono" x="63" y="146" style="font-size:11.5px">.env</text>
+            <text class="d-text d-text--mono" x="63" y="166" style="font-size:11.5px">.gitignore</text>
+            <rect class="d-fill-soft" x="56" y="174" width="140" height="18" rx="3"/>
+            <text class="d-text d-text--mono d-text--accent" x="63" y="187" style="font-size:11.5px">CLAUDE.md</text>
+            <text class="d-text d-text--mono" x="63" y="207" style="font-size:11.5px">lookup.py</text>
+            <text class="d-text d-text--mono" x="63" y="227" style="font-size:11.5px">.env.example</text>
+
+            <!-- editor -->
+            <rect class="d-box--file" x="201" y="39" width="270" height="26" style="stroke-width:1"/>
+            <rect class="d-box" x="201" y="39" width="100" height="26" style="stroke-width:1"/>
+            <text class="d-text d-text--mono" x="213" y="57" style="font-size:11.5px">CLAUDE.md</text>
+            <text class="d-text d-text--accent" x="456" y="57" text-anchor="middle" style="font-size:15px">✻</text>
+            <text class="d-text d-text--mono" x="215" y="124" style="font-size:12px"># Project rules</text>
+            <rect class="d-fill-muted" x="215" y="136" width="220" height="7" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="215" y="152" width="185" height="7" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="215" y="168" width="200" height="7" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="215" y="184" width="150" height="7" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="215" y="200" width="210" height="7" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="215" y="216" width="170" height="7" rx="3" style="opacity:.55"/>
+
+            <!-- command palette overlay -->
+            <rect class="d-box--accent" x="226" y="72" width="214" height="30" rx="6"/>
+            <text class="d-text d-text--mono" x="238" y="92" style="font-size:12px">&gt; Developer: Reload Window</text>
+
+            <!-- terminal -->
+            <rect class="d-box--file" x="201" y="270" width="270" height="134" style="stroke-width:1"/>
+            <text class="d-text d-text--label" x="213" y="290">Terminal</text>
+            <text class="d-text d-text--mono" x="213" y="314" style="font-size:11.5px">$ python lookup.py verify-citation</text>
+            <text class="d-text d-text--mono" x="213" y="332" style="font-size:11.5px" xml:space="preserve">    "5 U.S. 137"</text>
+            <rect class="d-fill-muted" x="213" y="346" width="190" height="6" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="213" y="360" width="160" height="6" rx="3" style="opacity:.55"/>
+            <rect class="d-fill-muted" x="213" y="374" width="175" height="6" rx="3" style="opacity:.55"/>
+
+            <!-- claude code panel -->
+            <rect class="d-box" x="471" y="39" width="238" height="365" style="stroke-width:1"/>
+            <text class="d-text d-text--label" x="483" y="60">Claude Code</text>
+            <rect class="d-box--file" x="555" y="74" width="140" height="40" rx="8"/>
+            <text class="d-text d-text--small" x="565" y="91">What files are in</text>
+            <text class="d-text d-text--small" x="565" y="106">this folder?</text>
+            <rect class="d-fill-soft" x="483" y="124" width="190" height="64" rx="8"/>
+            <text class="d-text d-text--small" x="493" y="142" style="fill: var(--ink-2)">I see CLAUDE.md, a cases</text>
+            <text class="d-text d-text--small" x="493" y="158" style="fill: var(--ink-2)">folder with three opinions,</text>
+            <text class="d-text d-text--small" x="493" y="174" style="fill: var(--ink-2)">and an output folder. …</text>
+            <rect class="d-box--accent" x="483" y="318" width="214" height="40" rx="8"/>
+            <text class="d-text d-text--small" x="495" y="342">Ask Claude…</text>
+            <rect class="d-box" x="483" y="368" width="84" height="24" rx="12"/>
+            <text class="d-text" x="525" y="385" text-anchor="middle" style="font-size:12px">⏸ Manual</text>
+            <text class="d-text d-text--small" x="575" y="385">mode indicator</text>
+
+            <!-- status bar -->
+            <rect class="d-fill-accent" x="11" y="404" width="698" height="25" rx="0"/>
+            <text class="d-text d-text--on-agent" x="22" y="421" style="font-size:12px">main</text>
+            <text class="d-text d-text--on-agent" x="698" y="421" text-anchor="end" style="font-size:12px">✻ Claude Code</text>
+
+            <!-- numbered badges -->
+            <g>
+              <circle class="d-box--agent" cx="186" cy="56" r="11"/><text class="d-text d-text--title d-text--on-agent" x="186" y="61" text-anchor="middle" style="font-size:13px">1</text>
+              <circle class="d-box--agent" cx="452" cy="160" r="11"/><text class="d-text d-text--title d-text--on-agent" x="452" y="165" text-anchor="middle" style="font-size:13px">2</text>
+              <circle class="d-box--agent" cx="692" cy="56" r="11"/><text class="d-text d-text--title d-text--on-agent" x="692" y="61" text-anchor="middle" style="font-size:13px">3</text>
+              <circle class="d-box--agent" cx="47" cy="117" r="11"/><text class="d-text d-text--title d-text--on-agent" x="47" y="122" text-anchor="middle" style="font-size:13px">4</text>
+              <circle class="d-box--agent" cx="452" cy="286" r="11"/><text class="d-text d-text--title d-text--on-agent" x="452" y="291" text-anchor="middle" style="font-size:13px">5</text>
+              <circle class="d-box--agent" cx="424" cy="87" r="11"/><text class="d-text d-text--title d-text--on-agent" x="424" y="92" text-anchor="middle" style="font-size:13px">6</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>A simplified map, not a screenshot: your layout may differ, and you can drag panels anywhere. The ✻ (Spark) icon opens Claude Code.</figcaption>
+      </figure>
+
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Part</th><th scope="col">What it’s for</th><th scope="col">How to get there</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1 · Explorer</th><td>Your files and folders. New files appear here as the agent creates them.</td><td>Top icon in the activity bar on the far left</td></tr>
+            <tr><th scope="row">2 · Editor</th><td>Opens any file. For Markdown, open the preview to see it formatted.</td><td>Click a file. Preview: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Mac) or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Windows)</td></tr>
+            <tr><th scope="row">3 · Claude Code panel</th><td>Where you talk to the agent. The mode indicator under the prompt box shows the permission mode; <strong>Manual</strong> asks before editing files or running commands.</td><td>Click the ✻ Spark icon. Change modes by clicking the mode indicator (in the terminal, <kbd>Shift</kbd> + <kbd>Tab</kbd> cycles them)</td></tr>
+            <tr><th scope="row">4 · Source Control</th><td>Commits, diffs and history (see <a href="note-06-git-and-github.html">N6</a>).</td><td>Branch-shaped icon in the activity bar</td></tr>
+            <tr><th scope="row">5 · Terminal</th><td>A text box for running commands, such as <code>python lookup.py</code>. On Windows, try <code>py</code> if <code>python</code> doesn’t work.</td><td><strong>View › Terminal</strong>, or <kbd>Ctrl</kbd> + <kbd>`</kbd></td></tr>
+            <tr><th scope="row">6 · Command Palette</th><td>Finds any command by name, such as <strong>Developer: Reload Window</strong>.</td><td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> (Windows)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Sources: <a href="https://code.visualstudio.com/docs/getstarted/userinterface">VS Code user interface</a>; <a href="https://code.visualstudio.com/docs/languages/markdown">Markdown in VS Code</a>; <a href="https://code.claude.com/docs/en/vs-code">Use Claude Code in VS Code</a>.</p>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Supervising an agent is mostly a matter of where your eyes are. Keep the Explorer open to see which files appear, the Claude Code panel to read what it proposes, and Source Control to see exactly what changed.</p>
+      </div>
+
+      <h2>File types in your project</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">File type</th><th scope="col">What it is</th><th scope="col">In your project</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">.md</th><td>Markdown: plain text with simple formatting</td><td>CLAUDE.md, agent files, skills, briefs</td></tr>
+            <tr><th scope="row">.json</th><td>Structured settings, as labeled fields</td><td><code>.claude/settings.json</code></td></tr>
+            <tr><th scope="row">.py</th><td>Python code</td><td><code>lookup.py</code></td></tr>
+            <tr><th scope="row">.env</th><td>Secret values, never committed</td><td>Your CourtListener token</td></tr>
+            <tr><th scope="row">.html, .css, .js</th><td>A web page: content, style, behavior</td><td>This website</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Files whose names start with a dot (<code>.env</code>, <code>.gitignore</code>, <code>.claude/</code>) are hidden in Finder and File Explorer by default, but VS Code shows them.</p>
+
+      <h2>How code runs</h2>
+      <p>Code is text that follows a language’s rules. A Python file is run by the <strong>Python interpreter</strong>, a program that reads it line by line and carries out each instruction. A web page is read and drawn by your browser. When an agent writes code, it writes the same text a person would, and you can open it, read it and edit it.</p>
+      <p>To run <code>lookup.py</code> yourself, type a command in the terminal. The words after the file name are <strong>arguments</strong>: they tell the program what to do.</p>
+      <div class="copy-block">
+        <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
+        <pre><code>python lookup.py verify-citation "5 U.S. 137"</code></pre>
+      </div>
+      <p class="small">On Windows, if that gives an error, replace <code>python</code> with <code>py</code>. On some Macs it’s <code>python3</code>.</p>
+
+      <h2>Useful Claude Code commands</h2>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">Command</th><th scope="col">What it does</th><th scope="col">When to use it</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>/clear</code></th><td>Starts a fresh conversation with an empty context</td><td>Before each new case or test, so old material doesn’t steer the new brief</td></tr>
+            <tr><th scope="row"><code>/context</code></th><td>Shows what’s filling the context window, as a colored grid</td><td>When answers get slow, vague or forgetful</td></tr>
+            <tr><th scope="row"><code>/rewind</code>, or <kbd>Esc</kbd> twice on an empty prompt</th><td>Goes back to an earlier point: restore the conversation, the code, or both</td><td>When the agent went the wrong way. It doesn’t undo changes made by terminal commands, so commit often</td></tr>
+            <tr><th scope="row"><code>/brief cases/[file]</code></th><td>The command you built: briefs an opinion in <code>cases/</code>, then has the checker check the brief</td><td>Every time you want a checked brief</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-source">Source: <a href="https://code.claude.com/docs/en/commands">Commands reference</a> and <a href="https://code.claude.com/docs/en/checkpointing">Checkpointing</a>, Claude Code docs.</p>
+
+      <h2>Markdown in 60 seconds</h2>
+      <p>Agent files, skills, CLAUDE.md and your briefs are all Markdown. A few symbols cover almost everything:</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">You type</th><th scope="col">You get</th><th scope="col">Where you’ll see it</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code># Project rules</code></th><td>A heading (<code>##</code> for a smaller one)</td><td>Top of CLAUDE.md; sections of a brief</td></tr>
+            <tr><th scope="row"><code>**bold**</code></th><td><strong>bold</strong></td><td>Key terms in a brief</td></tr>
+            <tr><th scope="row"><code>- item</code></th><td>A bulleted list (<code>1.</code> for numbered)</td><td>Rules in agent files; skill steps</td></tr>
+            <tr><th scope="row"><code>`code`</code></th><td><code>code</code>, in a fixed-width font</td><td>File names and commands</td></tr>
+            <tr><th scope="row"><code>[link text](https://…)</code></th><td>A clickable link that shows <span style="color: var(--accent-ink); text-decoration: underline">link text</span></td><td>Links in the checker’s citations table</td></tr>
+            <tr><th scope="row"><code>---</code> lines around <code>name:</code>, <code>tools:</code></th><td>Frontmatter: a settings block at the very top of a file</td><td>The start of every agent and skill file</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>To check your formatting, open the preview with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Mac) or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (Windows).</p>
+
+      <details class="deeper">
+        <summary>Reading code you didn’t write</summary>
+        <div class="deeper__body">
+          <p>You won’t write <code>lookup.py</code> by hand, but you are responsible for what it does. Three habits make unfamiliar code readable:</p>
+          <ol class="steps">
+            <li><strong>Read the names first.</strong> Good code names things plainly: <code>verify_citation</code>, <code>COURTLISTENER_TOKEN</code>. Skim for names before you try to follow any logic.</li>
+            <li><strong>Read the comments.</strong> In Python, anything after <code>#</code> on a line is a note for humans, ignored when the program runs.</li>
+            <li><strong>Ask for explanations at different levels.</strong> In Lesson 10 you asked the agent to explain one line three ways: to a 10-year-old, to a law student, and to an engineer. Comparing the three is a quick test of whether you, and it, really understand the line.</li>
+          </ol>
+          <h3>What to look for when reviewing agent-written code</h3>
+          <ul class="checklist">
+            <li>Does it read or print anything secret, like the contents of <code>.env</code>?</li>
+            <li>Does it contact any website you didn’t expect?</li>
+            <li>Does it delete, move or overwrite files?</li>
+            <li>When something fails, does it say so plainly, or quietly carry on?</li>
+          </ul>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://code.visualstudio.com/docs/getstarted/userinterface">User interface</a> <span class="by">· VS Code docs (Microsoft)</span><p>A tour of the activity bar, side bar, editor, panels and status bar.</p></li>
+            <li><a href="https://code.visualstudio.com/docs/terminal/basics">Terminal basics</a> <span class="by">· VS Code docs (Microsoft)</span><p>Opening the integrated terminal and running commands in it.</p></li>
+            <li><a href="https://code.visualstudio.com/docs/languages/markdown">Markdown and Visual Studio Code</a> <span class="by">· Microsoft</span><p>Writing and previewing .md files such as CLAUDE.md and SKILL.md.</p></li>
+            <li><a href="https://code.visualstudio.com/docs/sourcecontrol/overview">Source control in VS Code</a> <span class="by">· Microsoft</span><p>Staging, committing and viewing diffs without the command line.</p></li>
+            <li><a href="https://code.claude.com/docs/en/vs-code">Use Claude Code in VS Code</a> <span class="by">· Anthropic</span><p>Installing the extension, the Spark icon, permission modes and reviewing changes.</p></li>
+            <li><a href="https://code.claude.com/docs/en/commands">Commands reference</a> <span class="by">· Anthropic</span><p>Every slash command, including /clear, /context and /rewind.</p></li>
+            <li><a href="https://learn.chatgpt.com/docs/codex/ide">Codex IDE extension</a> <span class="by">· OpenAI</span><p>OpenAI’s equivalent agent inside VS Code, if you use Codex instead.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../lessons/lesson-06-set-up-your-project.html">Used in: <strong>Lesson 6</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>

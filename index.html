@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome · Class 3 Workbook</title>
+  <meta name="description" content="Class 3 workbook: what models, agents, tools, skills and APIs are, and how to build your own legal research agent in VS Code.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css?v=5">
+  <script defer src="assets/js/config.js?v=5"></script>
+  <script defer src="assets/js/nav.js?v=5"></script>
+  <script defer src="assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="assets/js/app.js?v=5"></script>
+</head>
+<body data-root="" data-page="lesson-00">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 0 · Part 1: Foundations</p>
+        <h1>Welcome</h1>
+        <span class="badge">Talk + polls</span>
+        <p class="goal"><strong>Goal:</strong> see today’s plan and get ready.</p>
+      </header>
+
+      <h2>Today’s plan</h2>
+      <div class="cards">
+        <a class="card" href="lessons/lesson-01-from-chat-to-agents.html">
+          <p class="eyebrow">Part 1 · Lessons 1–5</p>
+          <h3>Foundations</h3>
+          <p>What models, agents, tools, skills and APIs are. Short talks, polls, and a lot of discussion.</p>
+        </a>
+        <a class="card" href="lessons/lesson-06-set-up-your-project.html">
+          <p class="eyebrow">Part 2 · Lessons 6–13</p>
+          <h3>Build</h3>
+          <p>Build your own legal research agent in VS Code, step by step, and test whether you can trust it.</p>
+        </a>
+      </div>
+
+      <div class="table-wrap min-wide">
+        <table>
+          <caption>The lessons at a glance</caption>
+          <thead><tr><th scope="col">#</th><th scope="col">Lesson</th><th scope="col">Format</th><th scope="col">The big question</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><a href="lessons/lesson-01-from-chat-to-agents.html">From chat to agents</a></td><td>Talk + discussion</td><td>What is a model, and what turns it into an agent?</td></tr>
+            <tr><td>2</td><td><a href="lessons/lesson-02-workflows-agents-and-tools.html">Workflows, agents, and tools</a></td><td>Talk + polls</td><td>Who decides the steps, and what is the agent allowed to touch?</td></tr>
+            <tr><td>3</td><td><a href="lessons/lesson-03-guardrails.html">Guardrails</a></td><td>Discussion</td><td>What does an agent do when a rule is missing?</td></tr>
+            <tr><td>4</td><td><a href="lessons/lesson-04-skills.html">Skills, and how to vet them</a></td><td>Demo + discussion</td><td>Would you install a stranger’s instructions?</td></tr>
+            <tr><td>5</td><td><a href="lessons/lesson-05-where-agents-get-facts.html">Where agents get facts</a></td><td>Talk + discussion</td><td>Is a web search good enough for legal research?</td></tr>
+            <tr><td>6</td><td><a href="lessons/lesson-06-set-up-your-project.html">Set up your project</a></td><td>Hands-on</td><td>Download the starter folder, make the agent ask first, and write its rules.</td></tr>
+            <tr><td>7</td><td><a href="lessons/lesson-07-build-the-briefer.html">Build the case briefer</a></td><td>Hands-on</td><td>Create your first agent: it briefs an opinion with a pinpoint quote for every claim.</td></tr>
+            <tr><td>8</td><td><a href="lessons/lesson-08-checker-and-brief-command.html">Add a checker and /brief</a></td><td>Hands-on</td><td>One command runs the workflow; a second agent checks every claim and citation.</td></tr>
+            <tr><td>9</td><td><a href="lessons/lesson-09-test-and-lock.html">Break it, then lock it</a></td><td>Hands-on</td><td>Can you get a wrong brief past the checker, and what should the agent never change?</td></tr>
+            <tr><td>10</td><td><a href="lessons/lesson-10-switch-to-courtlistener.html">Switch to CourtListener</a></td><td>Hands-on</td><td>Measure, change one thing, measure again.</td></tr>
+            <tr><td>11</td><td><a href="lessons/lesson-11-git-and-github.html">Save and share: Git vs GitHub</a></td><td>Hands-on</td><td>Share your agent without your secrets.</td></tr>
+            <tr><td>12</td><td><a href="lessons/lesson-12-risks-and-the-library.html">Risks of using agents</a></td><td>Talk + discussion</td><td>How have AI tools failed in practice, and where should serious research start?</td></tr>
+            <tr><td>13</td><td><a href="lessons/lesson-13-wrap-up.html">Wrap-up</a></td><td>Talk + discussion</td><td>What will you check next time an AI says “done”?</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What you’ll build in Part 2</h2>
+      <p>A <strong>legal research agent</strong> you start with one command, <code>/brief</code>, followed by a court opinion in your <code>cases/</code> folder. It:</p>
+      <ul>
+        <li>asks your level, your purpose and how long the brief should be,</li>
+        <li>briefs the opinion, with an exact quote and a pinpoint cite for every claim,</li>
+        <li>keeps track of who is speaking: counsel, or the Court,</li>
+        <li>checks every claim and every cited case with a second, separate agent, and</li>
+        <li>says plainly that it didn’t research whether the case is still good law.</li>
+      </ul>
+      <p>Then you try to break it, lock it so it can’t change its own rules, and switch its citation check from web search to CourtListener’s case-law database.</p>
+      <div class="copy-block">
+        <div class="copy-block__bar"><span class="copy-block__kind">What you’ll type</span></div>
+        <pre><code>/brief cases/marbury-v-madison.pdf</code></pre>
+      </div>
+
+      <h2>By the end of class you’ll be able to</h2>
+      <ol class="steps">
+        <li><strong>Name the parts</strong> behind every AI product: a model, instructions, tools, and a loop.</li>
+        <li><strong>Decide what an agent may access</strong>, and enforce it with permissions, not just polite instructions.</li>
+        <li><strong>Verify an agent’s work</strong> instead of trusting its summary.</li>
+        <li><strong>Use Git</strong> to see exactly how an agent changed over time.</li>
+      </ol>
+
+      <h2>Setup checklist</h2>
+      <p>Do these before class. If something doesn’t install, come anyway: you can pair with a neighbor.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col">What</th><th scope="col">Why you need it</th><th scope="col">Get it</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">VS Code</th><td>The editor where you’ll see files, the agent and the history side by side.</td><td><a href="https://code.visualstudio.com/download">code.visualstudio.com</a></td></tr>
+            <tr><th scope="row">Git</th><td>Records every version of your project. Macs may already have it.</td><td><a href="https://git-scm.com/downloads">git-scm.com</a></td></tr>
+            <tr><th scope="row">A GitHub account</th><td>To save your finished agent privately online (lesson 11).</td><td><a href="https://github.com/signup">github.com/signup</a></td></tr>
+            <tr><th scope="row">Claude and ChatGPT</th><td>Be logged in to both in your browser. Your plan covers the coding agents.</td><td><a href="https://claude.ai">claude.ai</a> · <a href="https://chatgpt.com">chatgpt.com</a></td></tr>
+            <tr><th scope="row">Claude Code and Codex extensions</th><td>The two coding agents, inside VS Code.</td><td><a href="https://code.claude.com/docs/en/vs-code">Claude Code for VS Code</a> · <a href="https://learn.chatgpt.com/docs/codex/ide">Codex IDE extension</a></td></tr>
+            <tr><th scope="row">Python</th><td>Runs the small lookup tool you’ll build in lesson 10. On Windows, check “Add python.exe to PATH” when installing.</td><td><a href="https://www.python.org/downloads/">python.org</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--tip">
+        <p class="callout__title">Tip</p>
+        <p>Also create a free <a href="https://www.courtlistener.com/register/">CourtListener</a> account. You’ll need its API token in lesson 10.</p>
+      </div>
+
+      <h2>Join the polls</h2>
+      <p>We’ll vote throughout class. Keep this tab open: the <strong>Join the poll</strong> button in the top bar is on every page.</p>
+      <div class="poll-box" aria-label="Join the poll"></div>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>What’s one task in your week you’d happily hand to an AI, and one you never would?</li>
+        </ol>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next lesson"></nav>
+    </main>
+  </div>
+</body>
+</html>

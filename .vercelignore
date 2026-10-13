@@ -1,0 +1,20 @@
+# Everything not listed here is published and public.
+# Only the site itself goes live: index.html, lessons/, notes/, resources/, assets/, vercel.json.
+
+# Private working files
+Class 3 Workbook Build Brief for Claude Code.md
+legal-research-prototype/
+.claude/
+
+# Repo files that don't need to be on the site
+README.md
+.gitignore
+
+# Secrets and system files
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
+node_modules/

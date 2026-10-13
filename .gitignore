@@ -1,0 +1,18 @@
+# Private working files: keep out of the repo
+Class 3 Workbook Build Brief for Claude Code.md
+legal-research-prototype/
+.claude/
+
+# Secrets
+.env
+.env.*
+
+# Vercel CLI link
+.vercel/
+
+# System and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
+node_modules/

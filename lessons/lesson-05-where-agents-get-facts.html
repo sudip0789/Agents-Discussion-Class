@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 5: Where agents get facts · Class 3 Workbook</title>
+  <meta name="description" content="Searching the web versus querying a database, what an API is, the case-law database your agent will use, and why invented sources are a real risk.">
+  <script>try{var t=localStorage.getItem("c3-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+  <link rel="stylesheet" href="../assets/css/styles.css?v=5">
+  <script defer src="../assets/js/config.js?v=5"></script>
+  <script defer src="../assets/js/nav.js?v=5"></script>
+  <script defer src="../assets/js/vendor/qrcode.js?v=5"></script>
+  <script defer src="../assets/js/app.js?v=5"></script>
+</head>
+<body data-root="../" data-page="lesson-05">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="layout">
+    <nav id="sidebar" class="sidebar" aria-label="Course pages">
+      <noscript><p class="nav__inner"><a href="../index.html">Home</a> · Turn on JavaScript for the full menu.</p></noscript>
+    </nav>
+    <main id="main" class="content">
+
+      <header class="page-head">
+        <p class="eyebrow">Lesson 5 · Part 1: Foundations</p>
+        <h1>Where agents get facts</h1>
+        <span class="badge">Talk + discussion</span>
+        <p class="goal"><strong>Goal:</strong> know the difference between searching the web and querying a database, and what an API is.</p>
+      </header>
+
+      <div class="callout callout--why">
+        <p class="callout__title">Why it matters</p>
+        <p>WebSearch is Google, not Westlaw. It finds public web pages; it doesn’t search scholarly or legal databases.</p>
+      </div>
+
+      <h2>Searching the web vs querying a database</h2>
+      <p>An agent can get outside facts in two very different ways. It can run a web search, the way you would in a browser, or it can ask a specific database for records.</p>
+      <div class="table-wrap min-wide">
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Search engine (WebSearch)</th><th scope="col">Database API</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Returns</th><td>Public web pages</td><td>Structured records: title, authors, date, ID</td></tr>
+            <tr><th scope="row">Coverage</th><td>Broad</td><td>Only that database</td></tr>
+            <tr><th scope="row">Reliability</th><td>Pages may be wrong, old, or AI-generated</td><td>Records exist in the database</td></tr>
+            <tr><th scope="row">Analogy</th><td>Google</td><td>Westlaw</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>One caution on that last “Reliability” cell. A database record proves a source <strong>exists</strong>. It doesn’t prove the source says what the agent claims it says. Both checks matter, the same way a cite-check confirms the case is real <em>and</em> that it stands for the proposition.</p>
+
+      <h2>How a program asks a database: APIs</h2>
+      <p>You use Westlaw through a website built for people. A program needs a door built for programs. That door is an API: the program sends a request in an exact format, and the database sends back records in a structured format (usually JSON) that the program can read.</p>
+
+      <div class="terms">
+        <p class="terms__title">Terms</p>
+        <dl>
+          <div><dt>API (application programming interface)</dt><dd>A set of web addresses a program can call to get data or take an action.</dd></div>
+          <div><dt>Endpoint</dt><dd>One of those addresses, like CourtListener’s citation lookup address, <code>https://www.courtlistener.com/api/rest/v4/citation-lookup/</code>.</dd></div>
+          <div><dt>API key (or token)</dt><dd>A password for a program. It identifies you and is sent with each request; for CourtListener, as the header <code>Authorization: Token &lt;your key&gt;</code>.</dd></div>
+          <div><dt>Rate limit</dt><dd>How many requests you may make in a period. Go over it and requests fail until you wait.</dd></div>
+        </dl>
+      </div>
+
+      <h2>The database your agent will use</h2>
+      <p>In lesson 10 your agent gets a small program, <code>lookup.py</code>, that queries one database: CourtListener. It replaces the web search your checker uses to confirm that cited cases exist. CourtListener isn’t the only free research API; the other two rows are examples from outside law.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Database</th><th scope="col">Covers</th><th scope="col">Key needed</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">CourtListener</th><td>U.S. federal and state case law; can verify citations. Your agent uses this one.</td><td>Yes, a free token</td></tr>
+            <tr><th scope="row">arXiv</th><td>Preprints in science, math, computer science, economics</td><td>No</td></tr>
+            <tr><th scope="row">Crossref</th><td>Published articles with DOIs, most fields</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Free doesn’t mean unlimited. CourtListener’s citation lookup handles up to 60 citations a minute, and its general limits for a signed-in user are much lower than you might expect: about 5 requests a minute, 50 an hour and 125 a day. arXiv asks programs to wait about three seconds between repeated calls. Keep lookups small.</p>
+
+      <h2>Invented sources are a real risk</h2>
+      <p>In <a href="https://storage.courtlistener.com/recap/gov.uscourts.nysd.575368/gov.uscourts.nysd.575368.54.0.pdf"><em>Mata v. Avianca, Inc.</em>, 678 F. Supp. 3d 443 (S.D.N.Y. 2023)</a>, two lawyers submitted a court filing that cited judicial opinions that ChatGPT had made up, including <em>Varghese v. China Southern Airlines Co.</em>, 925 F.3d 1339 (11th Cir. 2019). One of them told the court he had “falsely assumed” ChatGPT was “like a super search engine.” When he asked ChatGPT whether Varghese was a real case, it said yes.</p>
+      <p>Judge Castel was clear that the tool wasn’t the problem: “there is nothing inherently improper about using a reliable artificial intelligence tool for assistance. But existing rules impose a gatekeeping role on attorneys to ensure the accuracy of their filings.” The lawyers and their firm were sanctioned for submitting the fake opinions and then standing by them after the court questioned whether they existed. The court imposed a $5,000 penalty and ordered them to send letters to their client and to each real judge falsely named as an author of a fake opinion.</p>
+      <p>Notice the lesson for agents: asking the model to check its own work didn’t help. The check has to go to a source outside the model. In lesson 9 you’ll plant a made-up case in a brief, <em>Henderson v. Pickering</em>, 5 U.S. 901, and see whether your checker catches it with a web search. In lesson 10 you’ll run the same test against CourtListener, and it should come back not found.</p>
+
+      <div class="discuss">
+        <p class="discuss__title">Discuss</p>
+        <ol>
+          <li>Before you cite something an agent found, what has to be true?</li>
+          <li>Should an agent ever use general web search for legal research? When would it be acceptable?</li>
+        </ol>
+      </div>
+
+      <details class="deeper">
+        <summary>Even legal research tools hallucinate</summary>
+        <div class="deeper__body">
+          <p>It’s tempting to think the fix is simply to use a legal research product instead of a general chatbot. A Stanford RegLab study tested exactly that. The researchers wrote a preregistered set of 202 legal questions (general research questions, jurisdiction- or time-specific questions, questions with a false premise, and simple factual recall) and put them to the AI research tools from LexisNexis and Thomson Reuters, plus GPT-4 as a comparison.</p>
+          <figure class="diagram">
+            <div class="figure-scroll">
+              <svg viewBox="0 0 720 270" role="img" aria-labelledby="l5-hal-t l5-hal-d">
+                <title id="l5-hal-t">Share of queries with a hallucinated answer</title>
+                <desc id="l5-hal-d">Horizontal bar chart. Lexis+ AI: 17 percent. Ask Practical Law AI: 17 percent. Westlaw AI-Assisted Research: 33 percent. GPT-4, a general-purpose model: 43 percent. Source: Magesh et al., Journal of Empirical Legal Studies, 2025.</desc>
+                <text class="d-text d-text--label" x="250" y="24">Percent of queries with a hallucinated answer</text>
+                <g class="d-line" style="stroke: var(--line); stroke-width: 1">
+                  <path d="M250 36V200M330 36V200M410 36V200M490 36V200M570 36V200M650 36V200"/>
+                </g>
+                <text class="d-text d-text--small" x="250" y="218" text-anchor="middle">0%</text>
+                <text class="d-text d-text--small" x="330" y="218" text-anchor="middle">10%</text>
+                <text class="d-text d-text--small" x="410" y="218" text-anchor="middle">20%</text>
+                <text class="d-text d-text--small" x="490" y="218" text-anchor="middle">30%</text>
+                <text class="d-text d-text--small" x="570" y="218" text-anchor="middle">40%</text>
+                <text class="d-text d-text--small" x="650" y="218" text-anchor="middle">50%</text>
+
+                <text class="d-text" x="236" y="64" text-anchor="end">Lexis+ AI</text>
+                <g><title>Lexis+ AI: 17%</title><rect class="d-fill-accent" x="250" y="46" width="136" height="26" rx="4"/></g>
+                <text class="d-text d-text--title" x="394" y="64">17%</text>
+
+                <text class="d-text" x="236" y="104" text-anchor="end">Ask Practical Law AI</text>
+                <g><title>Ask Practical Law AI: 17%</title><rect class="d-fill-accent" x="250" y="86" width="136" height="26" rx="4"/></g>
+                <text class="d-text d-text--title" x="394" y="104">17%</text>
+
+                <text class="d-text" x="236" y="144" text-anchor="end">Westlaw AI-Assisted Research</text>
+                <g><title>Westlaw AI-Assisted Research: 33%</title><rect class="d-fill-accent" x="250" y="126" width="264" height="26" rx="4"/></g>
+                <text class="d-text d-text--title" x="522" y="144">33%</text>
+
+                <text class="d-text" x="236" y="178" text-anchor="end">GPT-4</text>
+                <text class="d-text d-text--small" x="236" y="193" text-anchor="end">general model, for comparison</text>
+                <g><title>GPT-4: 43%</title><rect class="d-fill-muted" x="250" y="166" width="344" height="26" rx="4"/></g>
+                <text class="d-text d-text--title" x="602" y="184">43%</text>
+
+                <text class="d-text d-text--small" x="250" y="250">Teal: legal research tools. Gray: a general-purpose model with no legal database.</text>
+              </svg>
+            </div>
+            <figcaption>“Hallucinated” here has a specific meaning: the answer was either <strong>incorrect</strong> (it got the law or the facts wrong) or <strong>misgrounded</strong> (it described the law correctly but cited a source that doesn’t support the claim). The tools were tested in 2024 and have changed since. <span class="source">Source: Varun Magesh, Faiz Surani, Matthew Dahl, Mirac Suzgun, Christopher D. Manning &amp; Daniel E. Ho, <a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">“Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools,”</a> 22 J. Empirical Legal Stud. 216 (2025), Table B1. Preprint: <a href="https://arxiv.org/abs/2405.20362">arXiv:2405.20362</a>.</span></figcaption>
+          </figure>
+          <p>Hallucination isn’t the only thing that matters. A tool that refuses to answer never hallucinates, but it also doesn’t help. So the study also measured how often each tool gave an answer that was both correct and properly supported:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Tool</th><th scope="col">Hallucinated</th><th scope="col">Correct and grounded</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Lexis+ AI</th><td>17%</td><td>65%</td></tr>
+                <tr><th scope="row">Ask Practical Law AI</th><td>17%</td><td>19%</td></tr>
+                <tr><th scope="row">Westlaw AI-Assisted Research</th><td>33%</td><td>41%</td></tr>
+                <tr><th scope="row">GPT-4</th><td>43%</td><td>Not given as a number (figure only)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-source">Source: Magesh et al., <a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">“Hallucination-Free?”</a> (J. Empirical Legal Stud. 2025). Ask Practical Law AI’s low hallucination rate comes partly from giving incomplete answers or declining to answer on more than 60% of queries.</p>
+          <p>An earlier study by some of the same authors, <a href="https://arxiv.org/abs/2401.01301">“Large Legal Fictions”</a> (Dahl, Magesh, Suzgun &amp; Ho, J. Legal Analysis 2024), asked general-purpose chatbots specific, verifiable questions about randomly selected federal court cases. They hallucinated between 58% of the time (ChatGPT 4) and 88% of the time (Llama 2).</p>
+          <p>The takeaway isn’t “never use AI for research.” It’s that <strong>no tool’s output is a citation until you’ve checked it against the source</strong>, which is the job your brief-checker agent, and later <code>lookup.py</code>, will do.</p>
+          <h3>Further reading</h3>
+          <ul class="reading">
+            <li><a href="https://law.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools</a> <span class="by">· Stanford RegLab (Magesh et al., 2025)</span><p>The full study, with its typology of correct, incorrect and misgrounded answers.</p></li>
+            <li><a href="https://hai.stanford.edu/news/ai-trial-legal-models-hallucinate-1-out-6-or-more-benchmarking-queries">AI on Trial: Legal Models Hallucinate in 1 out of 6 (or More) Benchmarking Queries</a> <span class="by">· Stanford HAI</span><p>A readable summary of the study, written for a general audience. It reports the earlier preprint’s numbers, which differ slightly.</p></li>
+            <li><a href="https://arxiv.org/abs/2401.01301">Large Legal Fictions</a> <span class="by">· Dahl, Magesh, Suzgun &amp; Ho (J. Legal Analysis 2024)</span><p>How often general chatbots make up case law, and which kinds of questions trip them up.</p></li>
+            <li><a href="https://storage.courtlistener.com/recap/gov.uscourts.nysd.575368/gov.uscourts.nysd.575368.54.0.pdf">Mata v. Avianca, Opinion and Order on Sanctions</a> <span class="by">· S.D.N.Y., June 22, 2023 (Dkt. 54)</span><p>Judge Castel’s full opinion, including screenshots of the lawyer asking ChatGPT whether its cases were real.</p></li>
+            <li><a href="https://www.damiencharlotin.com/hallucinations/">AI Hallucination Cases Database</a> <span class="by">· Damien Charlotin</span><p>A running list of court decisions dealing with AI-hallucinated content in filings. Mata was not the last.</p></li>
+            <li><a href="https://wiki.free.law/c/courtlistener/help/api/rest/v4/citation-lookup">Citation Lookup API</a> <span class="by">· Free Law Project</span><p>The CourtListener tool built to catch hallucinated citations, which your agent uses in lesson 10.</p></li>
+            <li><a href="https://info.arxiv.org/help/api/user-manual.html">arXiv API User’s Manual</a> <span class="by">· arXiv</span><p>What a real API’s documentation looks like: endpoints, parameters and polite-use rules.</p></li>
+            <li><a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a> <span class="by">· Crossref</span><p>Free lookups for published articles by DOI, with no sign-up.</p></li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note-links">
+        <a class="note-chip" href="../notes/note-05-apis-and-databases.html">Read more: <strong>N5 APIs and databases</strong></a>
+      </div>
+
+      <nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+    </main>
+  </div>
+</body>
+</html>
