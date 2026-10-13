@@ -85,21 +85,21 @@
             <div class="copy-block__bar"><span class="copy-block__kind">Prompt 6 · lookup.py</span></div>
             <pre><code>Write lookup.py using only Python's standard library. It uses the CourtListener REST API v4 and reads the token from .env as COURTLISTENER_TOKEN. Never print the token.
 Commands:
-- python lookup.py verify &lt;file&gt;: send the file's text to CourtListener's citation lookup API and print a table: citation, found / not found, case name, link.
-- python lookup.py verify-citation "&lt;citation&gt;": the same check for one citation.
-- python lookup.py fetch "&lt;citation&gt;": find the case, download the text of its lead opinion, and save it as cases/[case-slug].txt. Begin the file with the case name, citation, court, date, and CourtListener link. Don't overwrite an existing file.
-- python lookup.py cited-by "&lt;citation&gt;" [n]: list up to n (default 10) later opinions that cite this case, newest first: case name, court, date, citation, link.
-- python lookup.py search "&lt;query&gt;": 5 matching opinions with case name, court, date, citation, link.
+- python3 lookup.py verify &lt;file&gt;: send the file's text to CourtListener's citation lookup API and print a table: citation, found / not found, case name, link.
+- python3 lookup.py verify-citation "&lt;citation&gt;": the same check for one citation.
+- python3 lookup.py fetch "&lt;citation&gt;": find the case, download the text of its lead opinion, and save it as cases/[case-slug].txt. Begin the file with the case name, citation, court, date, and CourtListener link. Don't overwrite an existing file.
+- python3 lookup.py cited-by "&lt;citation&gt;" [n]: list up to n (default 10) later opinions that cite this case, newest first: case name, court, date, citation, link.
+- python3 lookup.py search "&lt;query&gt;": 5 matching opinions with case name, court, date, citation, link.
 If a request fails or hits a rate limit, say so plainly and keep going.</code></pre>
           </div>
         </li>
         <li>
-          <strong>Try it yourself.</strong> In the terminal (on Windows, use <code>py</code> if <code>python</code> doesn’t work):
+          <strong>Try it yourself.</strong> In the terminal (on Windows, use <code>py</code> if <code>python3</code> doesn’t work):
           <div class="copy-block">
             <div class="copy-block__bar"><span class="copy-block__kind">Terminal</span></div>
-            <pre><code>python lookup.py verify-citation "5 U.S. 137"
-python lookup.py verify-citation "5 U.S. 901"
-python lookup.py verify-citation "Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)"</code></pre>
+            <pre><code>python3 lookup.py verify-citation "5 U.S. 137"
+python3 lookup.py verify-citation "5 U.S. 901"
+python3 lookup.py verify-citation "Varghese v. China Southern Airlines Co., 925 F.3d 1339 (11th Cir. 2019)"</code></pre>
           </div>
           <p>The first should be found: <em>Marbury</em>. The second, your invented <em>Henderson v. Pickering</em>, should not. The third is one of the cases ChatGPT invented in <em>Mata v. Avianca</em>. If anything comes back as “found,” read the result closely: what case name did the database actually return? A citation that points to a different case is still a fake citation.</p>
         </li>
@@ -125,7 +125,7 @@ python lookup.py verify-citation "Varghese v. China Southern Airlines Co., 925 F
           <div class="copy-block" id="prompt-switch">
             <div class="copy-block__bar"><span class="copy-block__kind">Prompt 7 · Switch to CourtListener</span></div>
             <pre><code>Show me the exact changes to make, as text I can paste:
-1. In .claude/skills/brief/SKILL.md: (a) if $ARGUMENTS is a citation rather than a file, first run python lookup.py fetch on it and brief the saved file; (b) after the brief is written, run python lookup.py verify on the brief and give the results to brief-checker along with the brief.
+1. In .claude/skills/brief/SKILL.md: (a) if $ARGUMENTS is a citation rather than a file, first run python3 lookup.py fetch on it and brief the saved file; (b) after the brief is written, run python3 lookup.py verify on the brief and give the results to brief-checker along with the brief.
 2. In .claude/agents/brief-checker.md: change the tools line to Read, Glob (no more web), and replace the citations-table instructions so it fills in "exists" and "link" from the lookup.py results instead of searching the web. If no lookup.py results are provided, mark every citation "not checked".
 Don't edit these files. I'll paste the changes in myself.</code></pre>
           </div>
@@ -143,7 +143,7 @@ Don't edit these files. I'll paste the changes in myself.</code></pre>
             <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
             <pre><code>/brief cases/marbury-v-madison.pdf</code></pre>
           </div>
-          <p>Use the same answers to the three questions as before. Then run <code>/clear</code> and re-send <a href="lesson-09-test-and-lock.html#tests">test 3</a>, adding at the end: <em>“First run python lookup.py verify on the copy and give the results to the checker.”</em> Fill in the v2 row of your worksheet.</p>
+          <p>Use the same answers to the three questions as before. Then run <code>/clear</code> and re-send <a href="lesson-09-test-and-lock.html#tests">test 3</a>, adding at the end: <em>“First run python3 lookup.py verify on the copy and give the results to the checker.”</em> Fill in the v2 row of your worksheet.</p>
         </li>
       </ol>
 
@@ -161,7 +161,7 @@ Don't edit these files. I'll paste the changes in myself.</code></pre>
           <strong>See who cites a case.</strong>
           <div class="copy-block">
             <div class="copy-block__bar"><span class="copy-block__kind">Prompt</span></div>
-            <pre><code>Run python lookup.py cited-by "5 U.S. 137" 10 and summarize what the results do and don't tell us. Can we tell from them whether Marbury is still good law?</code></pre>
+            <pre><code>Run python3 lookup.py cited-by "5 U.S. 137" 10 and summarize what the results do and don't tell us. Can we tell from them whether Marbury is still good law?</code></pre>
           </div>
           <p>The right answer is <strong>no</strong>. A list of citing cases isn’t a <strong>citator</strong>: it doesn’t say whether a later case followed, distinguished, or overruled this one. That’s what KeyCite and Shepard’s are for, and why your briefer’s Limitations section says later treatment was not researched.</p>
         </li>
@@ -182,14 +182,14 @@ Don't edit these files. I'll paste the changes in myself.</code></pre>
       <details class="deeper">
         <summary>Why lookup.py can read .env when the agent can’t</summary>
         <div class="deeper__body">
-          <p>Permission rules govern <strong>Claude Code’s tools</strong>: Read, Edit, and the shell commands it recognizes as reading or writing files. They don’t reach inside a program once it runs. When you approve <code>python lookup.py …</code>, Python opens <code>.env</code> by itself, and Claude Code never sees that file being opened.</p>
+          <p>Permission rules govern <strong>Claude Code’s tools</strong>: Read, Edit, and the shell commands it recognizes as reading or writing files. They don’t reach inside a program once it runs. When you approve <code>python3 lookup.py …</code>, Python opens <code>.env</code> by itself, and Claude Code never sees that file being opened.</p>
           <div class="table-wrap min-wide">
             <table>
               <thead><tr><th scope="col">Who tries to read .env</th><th scope="col">What happens</th><th scope="col">Why</th></tr></thead>
               <tbody>
                 <tr><th scope="row">The agent’s Read tool</th><td>Blocked</td><td>The <code>Read(./.env)</code> deny rule</td></tr>
                 <tr><th scope="row">The agent running <code>cat .env</code></th><td>Blocked</td><td>Claude Code recognizes <code>cat</code> as reading a file and applies the same rule</td></tr>
-                <tr><th scope="row"><code>python lookup.py …</code></th><td>Reads it</td><td>A program you approved opens the file itself; the rules check the command, not what the program does inside</td></tr>
+                <tr><th scope="row"><code>python3 lookup.py …</code></th><td>Reads it</td><td>A program you approved opens the file itself; the rules check the command, not what the program does inside</td></tr>
                 <tr><th scope="row">You, in the editor</th><td>Reads it</td><td>Permission rules limit the agent, not you</td></tr>
               </tbody>
             </table>
